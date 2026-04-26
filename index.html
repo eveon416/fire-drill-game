@@ -78,6 +78,54 @@ canvas{display:block}
 /* 控制提示 */
 #ctrl-hint{flex-shrink:0;text-align:center;font-size:10px;color:var(--text3);padding-bottom:2px}
 
+/* ══ 說明頁 ══ */
+#tutorial{
+  position:fixed;inset:0;background:var(--bg);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  z-index:150;padding:28px 24px;
+  transition:opacity .35s,transform .35s;
+}
+#tutorial.show{display:flex}
+#tutorial.out{opacity:0;transform:scale(1.04);pointer-events:none}
+.tut-card{
+  width:100%;max-width:340px;
+  background:#14141e;border:1.5px solid #2e2e44;border-radius:22px;
+  padding:36px 28px 32px;display:flex;flex-direction:column;gap:26px;
+  box-shadow:0 20px 60px rgba(0,0,0,.7);
+}
+.tut-title{
+  font-family:'Orbitron',monospace;font-size:13px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,180,60,.9);text-align:center;
+}
+.tut-items{display:flex;flex-direction:column;gap:20px}
+.tut-item{display:flex;align-items:center;gap:16px}
+.tut-icon{
+  font-size:38px;flex-shrink:0;width:52px;text-align:center;
+}
+.tut-icon.fire{animation:tfire .55s ease-in-out infinite alternate}
+.tut-icon.float{animation:tfloat 1.8s ease-in-out infinite}
+.tut-icon.float2{animation:tfloat 1.8s ease-in-out infinite;animation-delay:.4s}
+.tut-icon.float3{animation:tfloat 1.8s ease-in-out infinite;animation-delay:.8s}
+@keyframes tfire{
+  0%{transform:scale(1) rotate(-4deg);filter:brightness(1)}
+  100%{transform:scale(1.2) rotate(4deg);filter:brightness(1.25) drop-shadow(0 0 8px orange)}
+}
+@keyframes tfloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+.tut-text{font-size:15px;color:var(--text);line-height:1.6;font-weight:500}
+.tut-text small{display:block;font-size:12px;color:var(--text2);margin-top:3px;font-weight:400}
+.tut-btn{
+  width:100%;padding:16px;
+  background:linear-gradient(135deg,#ff4400,#ff9900);
+  border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;
+  font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.06em;
+  box-shadow:0 4px 24px rgba(255,68,0,.45);transition:opacity .15s,transform .1s;
+}
+.tut-btn:hover{opacity:.9}.tut-btn:active{transform:scale(.97)}
+
 /* 死亡覆蓋 */
 #death-overlay{
   position:fixed;inset:0;z-index:150;
@@ -141,6 +189,44 @@ canvas{display:block}
   </div>
 </div>
 
+<!-- ══ 說明頁 ══ -->
+<div id="tutorial">
+  <div class="tut-card">
+    <div class="tut-title">📋 遊戲說明</div>
+    <div class="tut-items">
+      <div class="tut-item">
+        <div class="tut-icon fire">🔥</div>
+        <div class="tut-text">
+          走到火焰上會觸發防災題目
+          <small>答對火焰熄滅，20秒後重新出現</small>
+        </div>
+      </div>
+      <div class="tut-item">
+        <div class="tut-icon float">➡️</div>
+        <div class="tut-text">
+          走到門口的箭頭可以換房間
+          <small>建築物共有 9 個科室可以探索</small>
+        </div>
+      </div>
+      <div class="tut-item">
+        <div class="tut-icon float2">❤️</div>
+        <div class="tut-text">
+          答錯扣血，血量歸零會復活
+          <small>復活後回到大禮堂，血量全滿</small>
+        </div>
+      </div>
+      <div class="tut-item">
+        <div class="tut-icon float3">⏱️</div>
+        <div class="tut-text">
+          請在 20 分鐘內探索建築物
+          <small>踩上火焰進行防災知識學習</small>
+        </div>
+      </div>
+    </div>
+    <button class="tut-btn" onclick="confirmTutorial()">我準備好了，開始！🚀</button>
+  </div>
+</div>
+
 <!-- 遊戲 -->
 <div id="game">
   <div id="hud">
@@ -158,7 +244,7 @@ canvas{display:block}
   </div>
   <div id="room-banner">—</div>
   <div id="cv-clip"><div id="cv-slider"><canvas id="gc"></canvas></div></div>
-  <div id="ctrl-hint">← → ↑ ↓ 移動　走到門口換房間　踩上火焰答題</div>
+
 </div>
 
 <!-- 題目 -->
@@ -204,7 +290,7 @@ canvas{display:block}
 // ══════════════════════════════
 // 設定
 // ══════════════════════════════
-const SHEETS_URL  = 'https://script.google.com/macros/s/AKfycbzDJIhdJZQYtOZylwnzA0vkZzuRNvWnXGySH1x8UrkfhjE0_WuVVQ7SHpnC1o_qCUQV/exec';
+const SHEETS_URL  = '';
 const RESPAWN_MS  = 20000;
 const GAME_SECS   = 1200;
 const ROOM_SIZE   = 5;
@@ -331,9 +417,19 @@ function startGame(){
   document.getElementById('login').classList.add('out');
   setTimeout(()=>{
     document.getElementById('login').style.display='none';
-    document.getElementById('game').classList.add('in');
-    initGame();
+    document.getElementById('tutorial').classList.add('show');
   },380);
+}
+
+function confirmTutorial(){
+  const tut=document.getElementById('tutorial');
+  tut.classList.add('out');
+  setTimeout(()=>{
+    tut.classList.remove('show');
+    tut.style.display='none';
+    document.getElementById('game').classList.add('in');
+    initGame(); // 計時從這裡才開始
+  },350);
 }
 
 // ══════════════════════════════
@@ -428,6 +524,7 @@ function respawn(){
   activeFl=null;
   document.getElementById('death-overlay').classList.remove('show');
   renderHP();
+  // 清除舊的火焰emoji
   // 回到大禮堂中心（不呼叫calcTile，避免破壞canvas context）
   questionAttempts={}; // 復活後嘗試次數重置
   curRC=[1,1]; px=2; py=2;
@@ -754,94 +851,32 @@ function drawFurnitureItem(cx,cy,T,type){
 // 火焰動畫（更活潑版）
 // ══════════════════════════════
 function drawFlame(cx,cy,phase,now,T){
-  const t=now/600+phase; // 加快基礎速度
-  const f1=Math.sin(t*4.2)*2.2;
-  const f2=Math.sin(t*6.5+1.3)*1.6;
-  const f3=Math.sin(t*3.1+2.5)*1.2;
-  const f4=Math.sin(t*7.8+0.7)*0.9; // 額外頻率層
-  const fh=T*.44;
+  const t = now / 500 + phase;
+  const scale = 1 + Math.sin(t * 4) * 0.12;
+  const wobble = Math.sin(t * 3.5) * 0.15;
+  const size = Math.floor(T * 1.1 * scale);
 
-  // 地面燒焦圓
-  ctx.globalAlpha=.4;
-  ctx.fillStyle='#1a0500';
-  ctx.beginPath();ctx.ellipse(cx,cy+fh*.55,T*.35,T*.12,0,0,Math.PI*2);ctx.fill();
-  ctx.globalAlpha=1;
-
-  // 外層橙色光暈（大、緩慢脈動）
-  ctx.globalAlpha=.15+Math.sin(t*1.8)*.08;
-  ctx.fillStyle='#ff8800';
-  ctx.beginPath();ctx.arc(cx,cy,T*.62+f1*.02*T,0,Math.PI*2);ctx.fill();
-
-  // 中層橘紅光暈（快速）
-  ctx.globalAlpha=.12+Math.sin(t*3.5)*.06;
-  ctx.fillStyle='#ff4400';
-  ctx.beginPath();ctx.arc(cx,cy,T*.48,0,Math.PI*2);ctx.fill();
-  ctx.globalAlpha=1;
-
-  // 火焰層1 — 最外暗紅（底部寬）
-  ctx.fillStyle='#771100';
-  ctx.beginPath();
-  ctx.ellipse(cx+f4*.01*T,cy+fh*.18,T*.25+f3*.025,fh*1.05+f1*.06,0,0,Math.PI*2);
-  ctx.fill();
-
-  // 火焰層2 — 橘紅（主體）
-  ctx.fillStyle='#ff3300';
-  ctx.beginPath();
-  ctx.ellipse(cx+f2*.012*T,cy+fh*.05,T*.2+f2*.02,fh*.88+f2*.04,0,0,Math.PI*2);
-  ctx.fill();
-
-  // 火焰層3 — 橘色（中段）
-  ctx.fillStyle='#ff7700';
-  ctx.beginPath();
-  ctx.ellipse(cx+f1*.01*T,cy-fh*.12,T*.14+f1*.015,fh*.68+f3*.03,0,0,Math.PI*2);
-  ctx.fill();
-
-  // 火焰層4 — 亮橘黃（上段）
-  ctx.fillStyle='#ffaa00';
-  ctx.beginPath();
-  ctx.ellipse(cx+f3*.008*T,cy-fh*.28,T*.1+f2*.01,fh*.48+f4*.02,0,0,Math.PI*2);
-  ctx.fill();
-
-  // 火焰層5 — 黃色（頂端）
-  ctx.fillStyle='#ffdd00';
-  ctx.beginPath();
-  ctx.ellipse(cx+f2*.006*T,cy-fh*.42,T*.065+f1*.008,fh*.3+f3*.015,0,0,Math.PI*2);
-  ctx.fill();
-
-  // 白核心
-  ctx.fillStyle='rgba(255,252,220,.95)';
-  ctx.beginPath();
-  ctx.ellipse(cx,cy-fh*.48,T*.028,fh*.14+f4*.01,0,0,Math.PI*2);
-  ctx.fill();
-
-  // 火星粒子（5顆，更活潑）
-  for(let s=0;s<5;s++){
-    const a=t*3.2+s*1.257; // 更快旋轉
-    const d=T*(.25+Math.sin(t*4+s)*.12);
-    const sx=cx+Math.cos(a)*d;
-    const sy=cy-fh*.15+Math.sin(a+1)*d*.5;
-    const alpha=Math.max(0,Math.sin(t*5+s)*.65+.25);
-    ctx.globalAlpha=alpha;
-    ctx.fillStyle=s%2===0?'#ffaa00':'#ff6600';
-    ctx.beginPath();ctx.arc(sx,sy,T*(.03+Math.sin(t*3+s)*.02),0,Math.PI*2);ctx.fill();
-  }
-  ctx.globalAlpha=1;
-
-  // 煙霧（頂端半透明）
-  for(let s=0;s<3;s++){
-    const st=t*.4+s*1.1;
-    const sx=cx+Math.sin(st)*T*.15;
-    const sy=cy-fh*.55-s*T*.12;
-    ctx.globalAlpha=Math.max(0,.18-s*.05);
-    ctx.fillStyle='#888888';
-    ctx.beginPath();ctx.arc(sx,sy,T*(.1+s*.04),0,Math.PI*2);ctx.fill();
-  }
-  ctx.globalAlpha=1;
+  ctx.save();
+  ctx.translate(cx, cy - T * 0.1);
+  ctx.rotate(wobble);
+  ctx.font = size + 'px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // 先畫深色底層墊高對比
+  ctx.globalAlpha = 1;
+  ctx.shadowColor = '#ff3300';
+  ctx.shadowBlur = T * 1.5;
+  ctx.fillText('🔥', 0, 0);
+  ctx.shadowColor = '#ff6600';
+  ctx.shadowBlur = T * 0.6;
+  ctx.fillText('🔥', 0, 0);
+  // 最後再畫一次本體確保emoji本身不透明
+  ctx.shadowBlur = 0;
+  ctx.fillText('🔥', 0, 0);
+  ctx.restore();
 }
 
-// ══════════════════════════════
-// 玩家繪製
-// ══════════════════════════════
+
 function drawPlayer(cx,cy,now,T){
   const pulse=Math.sin(now/240)*3;
 
@@ -875,6 +910,13 @@ function drawPlayer(cx,cy,now,T){
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(isDead?'💀':'★',cx,cy+1);
 }
+
+// ══════════════════════════════
+// 🔥 Emoji 火焰覆蓋層
+// ══════════════════════════════
+function buildFlameEmojis(){ /* 已改用 Canvas 直接繪製 */ }
+
+function renderFlameEmojis(){ /* 已改用 Canvas 直接繪製，由 drawRoom 呼叫 */ }
 
 // ══════════════════════════════
 // 主迴圈
