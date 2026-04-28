@@ -156,7 +156,9 @@ canvas{display:block}
 .opt.ok{background:rgba(34,197,94,.18);border-color:var(--ok)}.opt.ok .ol{color:var(--ok)}
 .opt.no{background:rgba(239,68,68,.16);border-color:var(--wrong)}.opt.no .ol{color:var(--wrong)}
 .opt:disabled{cursor:default}
-#qexp{display:none;margin-top:12px;padding:12px 14px;background:rgba(255,255,255,.05);border-radius:10px;border-left:3px solid #ff8800;font-size:13px;color:var(--text2);line-height:1.75}
+#qexp{display:none;margin-top:12px;padding:14px 16px;border-radius:10px;font-size:16px;font-weight:500;line-height:1.75;color:#fff}
+#qexp.correct{background:#16a34a;border-left:4px solid #4ade80}
+#qexp.wrong{background:#dc2626;border-left:4px solid #fca5a5}
 #qcont{display:none;width:100%;margin-top:13px;padding:14px;background:linear-gradient(135deg,#ff4400,#ff9900);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.05em;box-shadow:0 4px 20px rgba(255,68,0,.4)}
 
 /* ══ 結束 ══ */
@@ -251,8 +253,6 @@ canvas{display:block}
 <div id="qpanel">
   <div class="qh"></div>
   <div id="qmeta">
-    <div class="qb" id="qbloom"></div>
-    <div class="qb" id="qcat"></div>
     <div id="qnum"></div>
     <div id="qtmr">00s</div>
   </div>
@@ -1016,15 +1016,9 @@ function checkFlameCollision(){
 // ══════════════════════════════
 function showQ(){
   document.getElementById('qpanel').classList.add('open');
-  const bc=BC[activeQ.bloom]||'#fbbf24';
-  const cc=CC[activeQ.cat]||'#9ca3af';
-  const bb=document.getElementById('qbloom');
-  bb.textContent=activeQ.bloom;bb.style.cssText=`color:${bc};border-color:${bc}66;background:${bc}20`;
-  const cb=document.getElementById('qcat');
-  cb.textContent=activeQ.cat;cb.style.cssText=`color:${cc};border-color:${cc}55;background:${cc}15`;
   document.getElementById('qnum').textContent=`題目 #${activeQ.id}`;
   document.getElementById('qtext').textContent=activeQ.text;
-  document.getElementById('qexp').style.display='none';
+  const expEl=document.getElementById('qexp');expEl.style.display='none';expEl.className='';
   document.getElementById('qcont').style.display='none';
   qSec=0;document.getElementById('qtmr').textContent='00s';
   if(qTmrInt)clearInterval(qTmrInt);
@@ -1086,6 +1080,7 @@ function handleAns(chosen){
     b.disabled=true;
   });
   const ex=document.getElementById('qexp');
+  ex.className=isOk?'correct':'wrong';
   ex.textContent=(isOk?'✓ 正確！':'✗ 答錯了，扣一滴血！')+' 正確答案：'+['A','B','C','D'][q.ans]+'。'+q.opts[q.ans];
   ex.style.display='block';
   document.getElementById('qcont').style.display='block';
