@@ -526,7 +526,7 @@ function respawn(){
   renderHP();
   // 清除舊的火焰emoji
   // 回到大禮堂中心（不呼叫calcTile，避免破壞canvas context）
-  questionAttempts={}; // 復活後嘗試次數重置
+  // questionAttempts 不重置，整個 session 累計
   curRC=[1,1]; px=2; py=2;
   visitedRooms.add('1,1');
   updateBanner();
@@ -1134,6 +1134,24 @@ function endGame(){
   const msgs=['優秀！防災知識掌握度極高，繼續保持！','良好！部分題目可再加強，尤其分析與評鑑題。','尚可，建議課後複習消防法規及逃生應變知識。','加油！建議多閱讀衛生局消防防護計畫熟悉各項規定。'];
   document.getElementById('emsg').textContent=msgs[rate>=90?0:rate>=70?1:rate>=50?2:3];
   document.getElementById('endscreen').classList.add('show');
+  // ── 送出 SESSION_END 紀錄（完整遊玩時間）──
+  if(SHEETS_URL) sendData({
+    Timestamp:        new Date().toISOString(),
+    UserName:         USER,
+    SessionID:        SESSION,
+    QuestionID:       'SESSION_END',
+    BloomLevel:       '',
+    QuestionCategory: '',
+    ResponseTime_ms:  '',
+    IsCorrect:        '',
+    ChosenOption:     '',
+    FirstAttemptCorrect: '',
+    AttemptNum:       '',
+    RoomName:         '',
+    HPAtAnswer:       hp,
+    DeathCount:       deaths,
+    TotalPlayTime:    GAME_SECS - remain, // 實際遊玩秒數（玩滿=1200）
+  });
 }
 
 // ══════════════════════════════
