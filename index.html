@@ -1098,7 +1098,7 @@ function updateBanner(){
   const rd=ROOM_DEFS.find(r=>r.rc[0]===curRC[0]&&r.rc[1]===curRC[1]);
   document.getElementById('room-banner').textContent=rd?'📍 '+rd.label:'—';
 }
-function sendData(r){fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(r)}).catch(()=>{});}
+function sendData(r){fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(r)}).catch(()=>{});}
 
 // ══════════════════════════════
 // 計時
