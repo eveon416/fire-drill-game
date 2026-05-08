@@ -161,6 +161,81 @@ canvas{display:block}
 #qexp.wrong{background:#dc2626;border-left:4px solid #fca5a5}
 #qcont{display:none;width:100%;margin-top:13px;padding:14px;background:linear-gradient(135deg,#ff4400,#ff9900);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.05em;box-shadow:0 4px 20px rgba(255,68,0,.4)}
 
+/* ══ 浮動+1文字 ══ */
+.float-plus{
+  position:absolute;pointer-events:none;z-index:20;
+  font-family:'Orbitron',monospace;font-size:22px;font-weight:900;
+  color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.8);
+  animation:floatup .9s ease-out forwards;
+}
+@keyframes floatup{
+  0%{opacity:1;transform:translateY(0) scale(1)}
+  60%{opacity:1;transform:translateY(-40px) scale(1.2)}
+  100%{opacity:0;transform:translateY(-70px) scale(.8)}
+}
+
+/* ══ 爆炸粒子 ══ */
+.particle{
+  position:absolute;pointer-events:none;z-index:19;
+  border-radius:50%;
+  animation:particle-fly .6s ease-out forwards;
+}
+@keyframes particle-fly{
+  0%{opacity:1;transform:translate(0,0) scale(1)}
+  100%{opacity:0;transform:var(--tx,0) var(--ty,0) scale(0)}
+}
+
+/* ══ 連擊數 ══ */
+#combo-display{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;z-index:15;
+  font-family:'Orbitron',monospace;font-size:28px;font-weight:900;
+  color:#fbbf24;text-shadow:0 0 20px rgba(251,191,36,.9);
+  text-align:center;
+  opacity:0;transition:opacity .2s;
+}
+#combo-display.show{opacity:1;animation:combopop .3s ease-out}
+@keyframes combopop{0%{transform:translate(-50%,-50%) scale(.5)}60%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
+
+/* ══ 每輪結束視窗 ══ */
+#round-end{
+  position:fixed;inset:0;background:rgba(8,8,15,.92);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  z-index:250;padding:24px;
+}
+#round-end.show{display:flex}
+.re-card{
+  width:100%;max-width:340px;
+  background:#14141e;border:2px solid #fbbf24;border-radius:22px;
+  padding:32px 24px;display:flex;flex-direction:column;gap:18px;text-align:center;
+  box-shadow:0 0 40px rgba(251,191,36,.2);
+}
+.re-icon{font-size:48px}
+.re-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#fbbf24;letter-spacing:.1em}
+.re-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.re-stat{background:#08080f;border-radius:10px;padding:12px 8px}
+.re-stat-l{font-size:9px;color:rgba(240,232,216,.3);text-transform:uppercase;letter-spacing:.05em}
+.re-stat-v{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;color:#f0e8d8;margin-top:4px}
+.re-btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.05em;transition:opacity .15s,transform .1s}
+.re-btn:active{transform:scale(.97)}
+.re-btn.primary{background:linear-gradient(135deg,#ff4400,#ff9900);color:#fff;box-shadow:0 4px 20px rgba(255,68,0,.4)}
+.re-btn.secondary{background:#1e1e2c;color:rgba(240,232,216,.6);border:1.5px solid #2e2e46}
+
+/* ══ 鼓勵訊息 ══ */
+#encourage{
+  position:fixed;top:50%;left:50%;
+  transform:translate(-50%,-50%) scale(.8);
+  background:#14141e;border:2px solid #22c55e;border-radius:18px;
+  padding:20px 28px;text-align:center;z-index:200;
+  display:none;opacity:0;
+  transition:opacity .3s,transform .3s;
+  box-shadow:0 0 30px rgba(34,197,94,.25);
+  max-width:300px;width:90%;
+}
+#encourage.show{display:block;opacity:1;transform:translate(-50%,-50%) scale(1)}
+#encourage-text{font-size:15px;font-weight:500;color:#f0e8d8;line-height:1.6}
+
 /* ══ 結束 ══ */
 #endscreen{position:fixed;inset:0;background:rgba(8,8,15,.96);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:300;padding:24px}
 #endscreen.show{display:flex}
@@ -238,6 +313,7 @@ canvas{display:block}
     </div>
     <div class="hst" id="ts"><div class="hst-l">剩餘時間</div><div class="hst-v" id="tv">20:00</div></div>
     <div class="hst"><div class="hst-l">正確率</div><div class="hst-v" id="rv">—</div></div>
+    <div class="hst"><div class="hst-l">已答題</div><div class="hst-v" id="ansv">0</div></div>
   </div>
   <div id="hp-row">
     <div id="hp-label">HP</div>
@@ -245,11 +321,31 @@ canvas{display:block}
     <div id="hp-count">10/10</div>
   </div>
   <div id="room-banner">—</div>
-  <div id="cv-clip"><div id="cv-slider"><canvas id="gc"></canvas></div></div>
+  <div id="cv-clip"><div id="cv-slider"><canvas id="gc"></canvas></div>
+  <div id="combo-display"></div></div>
 
 </div>
 
 <!-- 題目 -->
+<!-- ══ 每輪結束 ══ -->
+<div id="round-end">
+  <div class="re-card">
+    <div class="re-icon">🎉</div>
+    <div class="re-title">完成一輪 40 題！</div>
+    <div class="re-stats">
+      <div class="re-stat"><div class="re-stat-l">本輪答對</div><div class="re-stat-v" id="re-ok" style="color:#22c55e">0</div></div>
+      <div class="re-stat"><div class="re-stat-l">本輪答錯</div><div class="re-stat-v" id="re-fail" style="color:#ef4444">0</div></div>
+      <div class="re-stat"><div class="re-stat-l">累計答題</div><div class="re-stat-v" id="re-total">0</div></div>
+      <div class="re-stat"><div class="re-stat-l">剩餘時間</div><div class="re-stat-v" id="re-time" style="color:#ff8800">—</div></div>
+    </div>
+    <button class="re-btn primary" id="re-continue">繼續練習 🔥</button>
+    <button class="re-btn secondary" id="re-leave">結束學習</button>
+  </div>
+</div>
+
+<!-- ══ 鼓勵訊息 ══ -->
+<div id="encourage"><div id="encourage-text"></div></div>
+
 <div id="qpanel">
   <div class="qh"></div>
   <div id="qmeta">
@@ -394,6 +490,65 @@ let totalAns=0, totalOk=0, seenIds=new Set();
 let remain=GAME_SECS, gameTmrInt=null, over=false;
 let transitioning=false;
 let questionAttempts={}; // 追蹤每題累計嘗試次數
+let combo=0;           // 連擊數
+let roundOk=0;         // 本輪答對數
+let roundFail=0;       // 本輪答錯數
+let totalAnsCount=0;   // 累計總答題次數（含多輪）
+let encourageShown={5:false,10:false,15:false}; // 鼓勵訊息是否已顯示
+let roundCount=0;      // 目前第幾輪（從0開始）
+const ENCOURAGE_MSGS={
+  5:'已進行 5 分鐘！繼續探索，還有很多火焰等著你！🔥',
+  10:'已進行 10 分鐘，過半了！你的防災知識正在提升中，加油！💪',
+  15:'最後 5 分鐘！衝刺吧，看看能答對幾題！🏆'
+};
+
+// ══ localStorage 鍵名 ══
+const LS_KEY = 'fire_drill_save';
+
+// ══════════════════════════════
+// localStorage 存檔 / 讀檔
+// ══════════════════════════════
+function saveGame(){
+  const state={
+    USER,SESSION,
+    curRC,px,py,
+    hp,deaths,
+    remain,
+    totalAns,totalOk,totalAnsCount,
+    combo,roundOk,roundFail,roundCount,
+    seenIds:Array.from(seenIds),
+    visitedRooms:Array.from(visitedRooms),
+    questionAttempts,
+    roomFlames:Object.fromEntries(
+      Object.entries(roomFlames).map(([k,v])=>[k,v.map(f=>({
+        lx:f.lx,ly:f.ly,dead:f.dead,
+        respawnAt:f.respawnAt,phase:f.phase,
+        qid:f.q?f.q.id:null
+      }))])
+    ),
+    savedAt:Date.now()
+  };
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+}
+
+function clearSave(){
+  try{ localStorage.removeItem(LS_KEY); }catch(e){}
+}
+
+function loadSave(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(!raw) return null;
+    const s=JSON.parse(raw);
+    // 超過25分鐘的存檔作廢
+    if(Date.now()-s.savedAt > 25*60*1000){ clearSave(); return null; }
+    return s;
+  }catch(e){ return null; }
+}
+
+function hasSave(){
+  return !!loadSave();
+}
 
 // ══════════════════════════════
 // 登入
@@ -408,6 +563,15 @@ let questionAttempts={}; // 追蹤每題累計嘗試次數
   const ni=document.getElementById('ni'),sb=document.getElementById('sb');
   ni.addEventListener('input',()=>{sb.disabled=ni.value.trim().length<1});
   ni.addEventListener('keydown',e=>{if(e.key==='Enter'&&ni.value.trim())startGame()});
+
+  // 偵測是否有未完成的存檔，自動恢復
+  const save=loadSave();
+  if(save){
+    // 直接跳過登入頁，恢復遊戲
+    document.getElementById('login').style.display='none';
+    document.getElementById('game').classList.add('in');
+    restoreGame(save);
+  }
 })();
 
 function startGame(){
@@ -444,7 +608,48 @@ function initGame(){
   ROOM_DEFS.forEach(rd=>initRoomFlames(rd.rc[0],rd.rc[1]));
   renderHP();
   updateBanner();
+  updateAnsHUD();
   gameTmrInt=setInterval(tickGame,1000);
+  setInterval(saveGame,5000);
+  requestAnimationFrame(loop);
+}
+
+function restoreGame(save){
+  USER=save.USER||''; SESSION=save.SESSION||('S'+Date.now().toString(36).toUpperCase());
+  curRC=save.curRC||[1,1]; px=save.px||2; py=save.py||2;
+  hp=save.hp||MAX_HP; deaths=save.deaths||0;
+  remain=save.remain||GAME_SECS;
+  totalAns=save.totalAns||0; totalOk=save.totalOk||0;
+  totalAnsCount=save.totalAnsCount||0;
+  combo=save.combo||0;
+  roundOk=save.roundOk||0; roundFail=save.roundFail||0;
+  roundCount=save.roundCount||0;
+  seenIds=new Set(save.seenIds||[]);
+  visitedRooms=new Set(save.visitedRooms||['1,1']);
+  questionAttempts=save.questionAttempts||{};
+  const qMap=Object.fromEntries(QS.map(q=>[q.id,q]));
+  if(save.roomFlames){
+    Object.entries(save.roomFlames).forEach(([k,fls])=>{
+      roomFlames[k]=fls.map(f=>({
+        lx:f.lx,ly:f.ly,
+        q:f.qid?(qMap[f.qid]||nextQ()):nextQ(),
+        dead:f.dead||false,
+        respawnAt:f.respawnAt||0,
+        phase:f.phase||Math.random()*Math.PI*2
+      }));
+    });
+  }
+  document.getElementById('hud-name').textContent=USER;
+  cv=document.getElementById('gc');
+  ctx=cv.getContext('2d');
+  calcTile();
+  window.addEventListener('resize',calcTile);
+  renderHP();
+  updateBanner();
+  updateAnsHUD();
+  gameTmrInt=setInterval(tickGame,1000);
+  setInterval(saveGame,5000);
+  setTimeout(buildFlameEmojis,50);
   requestAnimationFrame(loop);
 }
 
@@ -1044,7 +1249,12 @@ function handleAns(chosen){
   if(isOk)totalOk++;
   else loseHP();
   totalAns++;
+  totalAnsCount++;
+  if(isOk){ combo++; roundOk++; }
+  else{ combo=0; roundFail++; }
   updateRate();
+  updateAnsHUD();
+  // updateCombo 移到「繼續探索」按下後才觸發
   // 送出數據（死亡時也要送）— 完整15個欄位
   const attemptNum=questionAttempts[q.id]||1;
   const firstAttemptCorrect=(attemptNum===1&&isOk);
@@ -1072,6 +1282,7 @@ function handleAns(chosen){
   // 火焰熄滅
   fl.dead=true;
   fl.respawnAt=Date.now()+RESPAWN_MS;
+  // 特效與每輪結束偵測都移到「繼續探索」按鈕按下後觸發
   // 若死亡已觸發，讓死亡畫面接管，不再更新題目UI
   if(isDead) return;
   document.querySelectorAll('.opt').forEach((b,i)=>{
@@ -1084,15 +1295,127 @@ function handleAns(chosen){
   ex.textContent=(isOk?'✓ 正確！':'✗ 答錯了，扣一滴血！')+' 正確答案：'+['A','B','C','D'][q.ans]+'。'+q.opts[q.ans];
   ex.style.display='block';
   document.getElementById('qcont').style.display='block';
+  // 存下此次答題的資訊，按「繼續探索」時才觸發特效
+  const _isOk=isOk;
+  const _flLx=fl.lx, _flLy=fl.ly;
   document.getElementById('qcont').onclick=()=>{
     document.getElementById('qpanel').classList.remove('open');
     activeQ=null;activeFl=null;locked=false;
+    // 按繼續後才顯示連擊數和爆炸特效
+    if(_isOk){
+      spawnPlusOne(_flLx, _flLy);
+      spawnExplosion(_flLx, _flLy);
+      updateCombo();
+    } else {
+      updateCombo(); // 答錯也要更新（歸零顯示）
+    }
+    // 每輪40題結束偵測（每答完40題觸發一次）
+    if(totalAnsCount>0 && totalAnsCount%40===0 && !over){
+      setTimeout(()=>showRoundEnd(),400);
+    }
   };
 }
 
 function updateRate(){
   const r=totalAns>0?Math.round(totalOk/totalAns*100):null;
   document.getElementById('rv').textContent=r!==null?r+'%':'—';
+}
+
+function updateAnsHUD(){
+  document.getElementById('ansv').textContent=totalAnsCount;
+}
+
+function updateCombo(){
+  const el=document.getElementById('combo-display');
+  if(combo>=2){
+    el.textContent='🔥 連擊 ×'+combo;
+    el.classList.add('show');
+    clearTimeout(el._timer);
+    el._timer=setTimeout(()=>el.classList.remove('show'),2000);
+  } else {
+    el.classList.remove('show');
+  }
+}
+
+function spawnPlusOne(lx, ly){
+  const clip=document.getElementById('cv-clip');
+  const sl=document.getElementById('cv-slider');
+  const T=TILE_PX;
+  const slRect=sl.getBoundingClientRect();
+  const clipRect=clip.getBoundingClientRect();
+  const x=lx*T+T/2+(slRect.left-clipRect.left);
+  const y=ly*T+T/2+(slRect.top-clipRect.top);
+  const el=document.createElement('div');
+  el.className='float-plus';
+  el.textContent='+1';
+  el.style.left=x+'px';
+  el.style.top=y+'px';
+  el.style.transform='translate(-50%,-50%)';
+  clip.appendChild(el);
+  setTimeout(()=>el.remove(),950);
+}
+
+function spawnExplosion(lx, ly){
+  const clip=document.getElementById('cv-clip');
+  const sl=document.getElementById('cv-slider');
+  const T=TILE_PX;
+  const slRect=sl.getBoundingClientRect();
+  const clipRect=clip.getBoundingClientRect();
+  const cx=lx*T+T/2+(slRect.left-clipRect.left);
+  const cy=ly*T+T/2+(slRect.top-clipRect.top);
+  const colors=['#fbbf24','#ff8800','#ff4400','#ffdd00','#ff6600'];
+  for(let i=0;i<12;i++){
+    const el=document.createElement('div');
+    el.className='particle';
+    const angle=(i/12)*Math.PI*2;
+    const dist=30+Math.random()*30;
+    const tx=`translateX(${Math.cos(angle)*dist}px)`;
+    const ty=`translateY(${Math.sin(angle)*dist}px)`;
+    el.style.cssText=`
+      left:${cx}px;top:${cy}px;
+      width:${4+Math.random()*6}px;
+      height:${4+Math.random()*6}px;
+      background:${colors[i%colors.length]};
+      transform:translate(-50%,-50%);
+      --tx:${tx};--ty:${ty};
+      animation-duration:${0.4+Math.random()*0.2}s;
+    `;
+    clip.appendChild(el);
+    setTimeout(()=>el.remove(),700);
+  }
+}
+
+function showEncourage(msg){
+  if(over)return;
+  const el=document.getElementById('encourage');
+  document.getElementById('encourage-text').textContent=msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3500);
+}
+
+function showRoundEnd(){
+  if(over||isDead)return;
+  // 暫停答題（鎖住移動）
+  locked=true;
+  const m=Math.floor(remain/60),s=remain%60;
+  document.getElementById('re-ok').textContent=roundOk;
+  document.getElementById('re-fail').textContent=roundFail;
+  document.getElementById('re-total').textContent=totalAnsCount;
+  document.getElementById('re-time').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  document.getElementById('round-end').classList.add('show');
+
+  document.getElementById('re-continue').onclick=()=>{
+    document.getElementById('round-end').classList.remove('show');
+    roundOk=0; roundFail=0; roundCount++;
+    locked=false;
+    // 重新洗牌題庫，開始新一輪
+    shufflePool();
+  };
+  document.getElementById('re-leave').onclick=()=>{
+    document.getElementById('round-end').classList.remove('show');
+    locked=false;
+    endGame();
+  };
 }
 function updateBanner(){
   const rd=ROOM_DEFS.find(r=>r.rc[0]===curRC[0]&&r.rc[1]===curRC[1]);
@@ -1109,7 +1432,15 @@ function tickGame(){
   const m=Math.floor(remain/60),s=remain%60;
   document.getElementById('tv').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   if(remain<=60)document.getElementById('ts').classList.add('urgent');
-  if(remain<=0)endGame();
+  if(remain<=0){endGame();return;}
+  // 鼓勵訊息（5、10、15分鐘）
+  const elapsed=Math.floor((GAME_SECS-remain)/60);
+  [5,10,15].forEach(t=>{
+    if(elapsed===t&&!encourageShown[t]){
+      encourageShown[t]=true;
+      showEncourage(ENCOURAGE_MSGS[t]);
+    }
+  });
 }
 
 function endGame(){
