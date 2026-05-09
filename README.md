@@ -24,7 +24,6 @@
 |---|---|
 | 前端 | 純 HTML / JavaScript，單一檔案，無框架依賴 |
 | 後端 | Google Apps Script + Google Sheets（即時寫入）|
-| Apps Script ID | AKfycbzDJIhdJZQYtOZylwnzA0vkZzuRNvWnXGySH1x8UrkfhjE0_WuVVQ7SHpnC1o_qCUQV |
 | 存檔機制 | localStorage，每5秒自動存檔，重整自動恢復，超過25分鐘作廢 |
 
 ---
