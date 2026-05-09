@@ -44,7 +44,7 @@ body{display:flex;flex-direction:column;align-items:center}
 .lhint{font-size:11px;color:var(--text3);text-align:center;line-height:1.8}
 
 /* ══ 遊戲 ══ */
-#game{width:100%;max-width:440px;height:100dvh;display:flex;flex-direction:column;padding:8px 8px 4px;gap:6px;opacity:0;transition:opacity .4s .1s}
+#game{width:100%;max-width:440px;height:100dvh;display:flex;flex-direction:column;padding:8px 8px 4px;gap:6px;opacity:0;transition:opacity .4s .1s;position:relative}
 #game.in{opacity:1}
 
 /* HUD 頂列 */
@@ -176,13 +176,8 @@ canvas{display:block}
 
 /* ══ 爆炸粒子 ══ */
 .particle{
-  position:absolute;pointer-events:none;z-index:19;
+  position:absolute;pointer-events:none;z-index:999;
   border-radius:50%;
-  animation:particle-fly .6s ease-out forwards;
-}
-@keyframes particle-fly{
-  0%{opacity:1;transform:translate(0,0) scale(1)}
-  100%{opacity:0;transform:var(--tx,0) var(--ty,0) scale(0)}
 }
 
 /* ══ 連擊數 ══ */
@@ -236,6 +231,15 @@ canvas{display:block}
 #encourage.show{display:block;opacity:1;transform:translate(-50%,-50%) scale(1)}
 #encourage-text{font-size:15px;font-weight:500;color:#f0e8d8;line-height:1.6}
 
+/* ══ 玩家跑步動畫 ══ */
+@keyframes player-run{
+  0%{transform:translate(-50%,-50%) scaleX(1) rotate(-5deg)}
+  25%{transform:translate(-50%,-60%) scaleX(1) rotate(0deg)}
+  50%{transform:translate(-50%,-50%) scaleX(1) rotate(5deg)}
+  75%{transform:translate(-50%,-60%) scaleX(1) rotate(0deg)}
+  100%{transform:translate(-50%,-50%) scaleX(1) rotate(-5deg)}
+}
+
 /* ══ 結束 ══ */
 #endscreen{position:fixed;inset:0;background:rgba(8,8,15,.96);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:300;padding:24px}
 #endscreen.show{display:flex}
@@ -260,7 +264,7 @@ canvas{display:block}
     <div class="lemblem">🔥</div>
     <div><div class="ltitle">防災演練學習系統</div><div class="lsub">花蓮縣衛生局 × 公民開發者計畫<br>20分鐘無限循環練習</div></div>
     <div class="ldiv"></div>
-    <div><label class="llabel" for="ni">請輸入您的姓名</label><input id="ni" class="linput" type="text" placeholder="例：王小明" maxlength="20" autocomplete="off"></div>
+    <div><label class="llabel" for="ni">請輸入序號</label><input id="ni" class="linput" type="text" placeholder="例：001" maxlength="20" autocomplete="off"></div>
     <button class="lbtn" id="sb" disabled onclick="startGame()">開始學習 →</button>
     <div class="lhint">進入後開始計時 20 分鐘<br>探索各科室，踩上火焰答題<br>答錯扣血，歸零3秒後復活回大禮堂</div>
   </div>
@@ -1109,11 +1113,16 @@ function drawPlayer(cx,cy,now,T){
   ctx.beginPath();ctx.ellipse(cx-T*.09,cy-T*.1,T*.11,T*.07,-.5,0,Math.PI*2);ctx.fill();
   ctx.globalAlpha=1;
 
-  // 圖示
-  ctx.fillStyle='#fff';
-  ctx.font=`${Math.floor(T*.33)}px monospace`;
+  // 圖示：🏃跑步動畫（用sin模擬上下彈跳）
+  const runBounce=Math.sin(now/120)*2;
+  const runLean=Math.sin(now/120)*0.15;
+  ctx.save();
+  ctx.translate(cx, cy+runBounce);
+  ctx.rotate(isDead?0:runLean);
+  ctx.font=`${Math.floor(T*.52)}px serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(isDead?'💀':'★',cx,cy+1);
+  ctx.fillText(isDead?'💀':'🏃',0,0);
+  ctx.restore();
 }
 
 // ══════════════════════════════
@@ -1261,7 +1270,7 @@ function handleAns(chosen){
   const roomName=(ROOM_DEFS.find(r=>r.rc[0]===curRC[0]&&r.rc[1]===curRC[1])||{}).label||'';
   if(SHEETS_URL)sendData({
     // 1. 基礎識別
-    Timestamp:        new Date().toISOString(),
+    Timestamp:        new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}),
     UserName:         USER,
     SessionID:        SESSION,
     // 2. 研究核心
@@ -1298,19 +1307,24 @@ function handleAns(chosen){
   // 存下此次答題的資訊，按「繼續探索」時才觸發特效
   const _isOk=isOk;
   const _flLx=fl.lx, _flLy=fl.ly;
+  const _totalAnsCount=totalAnsCount; // 存下當時的答題數，避免死亡後重複觸發
   document.getElementById('qcont').onclick=()=>{
+    // 若玩家已死亡（題目面板被強制關閉後殘留的onclick），直接忽略
+    if(isDead||over) return;
     document.getElementById('qpanel').classList.remove('open');
     activeQ=null;activeFl=null;locked=false;
-    // 按繼續後才顯示連擊數和爆炸特效
-    if(_isOk){
-      spawnPlusOne(_flLx, _flLy);
-      spawnExplosion(_flLx, _flLy);
-      updateCombo();
-    } else {
-      updateCombo(); // 答錯也要更新（歸零顯示）
-    }
-    // 每輪40題結束偵測（每答完40題觸發一次）
-    if(totalAnsCount>0 && totalAnsCount%40===0 && !over){
+    // 等抽屜縮完（350ms）後才顯示連擊數和爆炸特效
+    setTimeout(()=>{
+      if(_isOk){
+        spawnPlusOne(_flLx, _flLy);
+        spawnExplosion(_flLx, _flLy);
+        updateCombo();
+      } else {
+        updateCombo(); // 答錯也要更新（歸零顯示）
+      }
+    }, 350);
+    // 每輪40題結束偵測（用存下的答題數比對，避免重複觸發）
+    if(_totalAnsCount>0 && _totalAnsCount%40===0 && !over){
       setTimeout(()=>showRoundEnd(),400);
     }
   };
@@ -1356,32 +1370,46 @@ function spawnPlusOne(lx, ly){
 }
 
 function spawnExplosion(lx, ly){
-  const clip=document.getElementById('cv-clip');
+  const game=document.getElementById('game');
   const sl=document.getElementById('cv-slider');
   const T=TILE_PX;
   const slRect=sl.getBoundingClientRect();
-  const clipRect=clip.getBoundingClientRect();
-  const cx=lx*T+T/2+(slRect.left-clipRect.left);
-  const cy=ly*T+T/2+(slRect.top-clipRect.top);
+  const gameRect=game.getBoundingClientRect();
+  const cx=lx*T+T/2+(slRect.left-gameRect.left);
+  const cy=ly*T+T/2+(slRect.top-gameRect.top);
   const colors=['#fbbf24','#ff8800','#ff4400','#ffdd00','#ff6600'];
   for(let i=0;i<12;i++){
+    const angle=(i/12)*Math.PI*2;
+    const dist=40+Math.random()*40;
+    const tx=Math.round(Math.cos(angle)*dist);
+    const ty=Math.round(Math.sin(angle)*dist);
+    const size=Math.round(5+Math.random()*7);
+    const dur=(1.0+Math.random()*0.4).toFixed(2);
+    const color=colors[i%colors.length];
+    const uid='p'+Date.now()+i;
+
+    // 動態注入這顆粒子專屬的 keyframes
+    const styleEl=document.createElement('style');
+    styleEl.textContent=`
+      @keyframes ${uid}{
+        0%  {opacity:1;transform:translate(0px,0px) scale(1)}
+        100%{opacity:0;transform:translate(${tx}px,${ty}px) scale(0)}
+      }
+    `;
+    document.head.appendChild(styleEl);
+
     const el=document.createElement('div');
     el.className='particle';
-    const angle=(i/12)*Math.PI*2;
-    const dist=30+Math.random()*30;
-    const tx=`translateX(${Math.cos(angle)*dist}px)`;
-    const ty=`translateY(${Math.sin(angle)*dist}px)`;
     el.style.cssText=`
-      left:${cx}px;top:${cy}px;
-      width:${4+Math.random()*6}px;
-      height:${4+Math.random()*6}px;
-      background:${colors[i%colors.length]};
-      transform:translate(-50%,-50%);
-      --tx:${tx};--ty:${ty};
-      animation-duration:${0.4+Math.random()*0.2}s;
+      left:${cx-size/2}px;
+      top:${cy-size/2}px;
+      width:${size}px;
+      height:${size}px;
+      background:${color};
+      animation:${uid} ${dur}s ease-out forwards;
     `;
-    clip.appendChild(el);
-    setTimeout(()=>el.remove(),700);
+    game.appendChild(el);
+    setTimeout(()=>{el.remove();styleEl.remove();},1800);
   }
 }
 
@@ -1462,7 +1490,7 @@ function endGame(){
   document.getElementById('endscreen').classList.add('show');
   // ── 送出 SESSION_END 紀錄（完整遊玩時間）──
   if(SHEETS_URL) sendData({
-    Timestamp:        new Date().toISOString(),
+    Timestamp:        new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}),
     UserName:         USER,
     SessionID:        SESSION,
     QuestionID:       'SESSION_END',
