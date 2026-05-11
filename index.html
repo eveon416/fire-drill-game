@@ -7,20 +7,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#08080f;
-  --wall:#252535;--wall2:#1c1c2a;--wall-hi:rgba(255,255,255,0.06);
-  --floor-a:#c8a860;--floor-b:#bc9c54;
-  --door:#8b6020;
-  --panel:#12121c;
+  --bg:#0d0d1a;--card:#14141f;--card2:#1c1c2e;--border:#2a2a42;
   --text:#f0e8d8;--text2:#9a8870;--text3:rgba(240,232,216,0.28);
-  --ok:#22c55e;--wrong:#ef4444;
-  --hp-full:#ef4444;--hp-empty:#2a1a1a;
-  --player:#00d4ff;
-  --bL1:#fbbf24;--bL2:#60a5fa;--bL3:#34d399;--bL4:#fb923c;--bL5:#f472b6;
+  --ok:#22c55e;--wrong:#ef4444;--accent:#ff8800;--accent2:#ff4400;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Noto Sans TC',sans-serif;color:var(--text)}
-body{display:flex;flex-direction:column;align-items:center}
+body{display:flex;flex-direction:column;align-items:center;justify-content:center}
 
 /* ══ 登入 ══ */
 #login{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;padding:28px 24px;transition:opacity .35s,transform .35s}
@@ -43,208 +36,130 @@ body{display:flex;flex-direction:column;align-items:center}
 .lbtn:disabled{opacity:.3;cursor:default}
 .lhint{font-size:11px;color:var(--text3);text-align:center;line-height:1.8}
 
-/* ══ 遊戲 ══ */
-#game{width:100%;max-width:440px;height:100dvh;display:flex;flex-direction:column;padding:8px 8px 4px;gap:6px;opacity:0;transition:opacity .4s .1s;position:relative}
-#game.in{opacity:1}
+/* ══ 說明頁 ══ */
+#tutorial{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:150;padding:28px 24px}
+#tutorial.show{display:flex}
+#tutorial.out{opacity:0;transform:scale(1.04);pointer-events:none;transition:opacity .35s,transform .35s}
+.tut-card{width:100%;max-width:340px;background:#14141e;border:1.5px solid #2e2e44;border-radius:22px;padding:36px 28px 32px;display:flex;flex-direction:column;gap:22px;box-shadow:0 20px 60px rgba(0,0,0,.7)}
+.tut-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,180,60,.9);text-align:center}
+.tut-items{display:flex;flex-direction:column;gap:16px}
+.tut-item{display:flex;align-items:center;gap:14px}
+.tut-icon{font-size:32px;flex-shrink:0;width:44px;text-align:center}
+.tut-text{font-size:14px;color:var(--text);line-height:1.6;font-weight:500}
+.tut-text small{display:block;font-size:11px;color:var(--text2);margin-top:2px;font-weight:400}
+.tut-btn{width:100%;padding:16px;background:linear-gradient(135deg,#ff4400,#ff9900);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.06em;box-shadow:0 4px 24px rgba(255,68,0,.45);transition:opacity .15s,transform .1s}
+.tut-btn:hover{opacity:.9}.tut-btn:active{transform:scale(.97)}
 
-/* HUD 頂列 */
-#hud{display:flex;align-items:center;gap:8px;flex-shrink:0}
+/* ══ 主遊戲 ══ */
+#game{width:100%;max-width:440px;height:100dvh;display:flex;flex-direction:column;padding:8px 8px 4px;gap:0;opacity:0;transition:opacity .4s .1s}
+#game.in{opacity:1}
+#top-third{flex:1;min-height:0;display:flex;flex-direction:column;gap:3px;padding-bottom:5px}
+
+/* HUD */
+#hud{display:flex;align-items:center;gap:6px;flex-shrink:0}
 #hud-left{flex:1;min-width:0}
 #hud-name{font-size:13px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #hud-sub{font-size:9px;color:var(--text3);margin-top:1px;letter-spacing:.04em}
-.hst{background:#12121c;border:1px solid #2a2a3e;border-radius:10px;padding:5px 11px;text-align:center;flex-shrink:0}
+.hst{background:#12121c;border:1px solid #2a2a3e;border-radius:10px;padding:5px 10px;text-align:center;flex-shrink:0}
 .hst-l{font-size:9px;color:var(--text3);letter-spacing:.04em;text-transform:uppercase}
-.hst-v{font-family:'Orbitron',monospace;font-size:15px;font-weight:900;color:var(--text);margin-top:1px}
+.hst-v{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:var(--text);margin-top:1px}
 #tv{color:#ff8800}
 #ts.urgent #tv{color:#ef4444;animation:ub .5s step-end infinite}
 @keyframes ub{50%{opacity:.25}}
 
-/* HP 列 */
+/* HP */
 #hp-row{display:flex;align-items:center;gap:8px;flex-shrink:0;padding:0 2px}
 #hp-label{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:#ef4444;letter-spacing:.06em;flex-shrink:0}
-#hp-hearts{display:flex;gap:4px;flex:1}
-.heart{font-size:18px;transition:transform .15s}
-.heart.lost{opacity:.2;transform:scale(.8)}
-#hp-count{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text2);flex-shrink:0}
+#hp-hearts{display:flex;gap:3px;flex:1;flex-wrap:wrap}
+.heart{font-size:15px;transition:transform .15s,opacity .15s}
+.heart.lost{opacity:.18;transform:scale(.8)}
+#hp-count{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);flex-shrink:0}
 
-/* 房間名稱 */
-#room-banner{flex-shrink:0;text-align:center;font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,180,60,.9);min-height:20px}
+/* 關卡條 */
+#level-row{display:flex;align-items:center;gap:8px;flex-shrink:0;padding:0 2px}
+#level-label{font-family:'Orbitron',monospace;font-size:9px;color:var(--text3);letter-spacing:.06em;flex-shrink:0}
+#level-bar-bg{flex:1;height:8px;background:#1a1a2a;border-radius:4px;overflow:hidden;border:1px solid #2a2a3e}
+#level-bar{height:100%;width:0%;background:linear-gradient(90deg,#ff4400,#ff9900);border-radius:4px;transition:width .4s cubic-bezier(.16,1,.3,1)}
+#level-num{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:#ff8800;flex-shrink:0;min-width:36px;text-align:right}
 
-/* Canvas 區域 */
-#cv-clip{flex:1;min-height:0;border:2px solid #2a2a3e;border-radius:14px;overflow:hidden;position:relative;background:#08080f}
-#cv-slider{position:absolute;transition:none}
-canvas{display:block}
+/* 戰鬥Canvas — 撐滿top-third剩餘空間 */
+#battle-wrap{flex:1;min-height:0;border-radius:14px;overflow:hidden;position:relative;border:2px solid #2a2a3e}
+#battle-canvas{display:block;width:100%;height:100%}
 
-/* 控制提示 */
-#ctrl-hint{flex-shrink:0;text-align:center;font-size:10px;color:var(--text3);padding-bottom:2px}
-
-/* ══ 說明頁 ══ */
-#tutorial{
-  position:fixed;inset:0;background:var(--bg);
-  display:none;flex-direction:column;align-items:center;justify-content:center;
-  z-index:150;padding:28px 24px;
-  transition:opacity .35s,transform .35s;
-}
-#tutorial.show{display:flex}
-#tutorial.out{opacity:0;transform:scale(1.04);pointer-events:none}
-.tut-card{
-  width:100%;max-width:340px;
-  background:#14141e;border:1.5px solid #2e2e44;border-radius:22px;
-  padding:36px 28px 32px;display:flex;flex-direction:column;gap:26px;
-  box-shadow:0 20px 60px rgba(0,0,0,.7);
-}
-.tut-title{
-  font-family:'Orbitron',monospace;font-size:13px;font-weight:700;
-  letter-spacing:.12em;text-transform:uppercase;
-  color:rgba(255,180,60,.9);text-align:center;
-}
-.tut-items{display:flex;flex-direction:column;gap:20px}
-.tut-item{display:flex;align-items:center;gap:16px}
-.tut-icon{
-  font-size:38px;flex-shrink:0;width:52px;text-align:center;
-}
-.tut-icon.fire{animation:tfire .55s ease-in-out infinite alternate}
-.tut-icon.float{animation:tfloat 1.8s ease-in-out infinite}
-.tut-icon.float2{animation:tfloat 1.8s ease-in-out infinite;animation-delay:.4s}
-.tut-icon.float3{animation:tfloat 1.8s ease-in-out infinite;animation-delay:.8s}
-@keyframes tfire{
-  0%{transform:scale(1) rotate(-4deg);filter:brightness(1)}
-  100%{transform:scale(1.2) rotate(4deg);filter:brightness(1.25) drop-shadow(0 0 8px orange)}
-}
-@keyframes tfloat{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-6px)}
-}
-.tut-text{font-size:15px;color:var(--text);line-height:1.6;font-weight:500}
-.tut-text small{display:block;font-size:12px;color:var(--text2);margin-top:3px;font-weight:400}
-.tut-btn{
-  width:100%;padding:16px;
-  background:linear-gradient(135deg,#ff4400,#ff9900);
-  border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;
-  font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.06em;
-  box-shadow:0 4px 24px rgba(255,68,0,.45);transition:opacity .15s,transform .1s;
-}
-.tut-btn:hover{opacity:.9}.tut-btn:active{transform:scale(.97)}
-
-/* 死亡覆蓋 */
-#death-overlay{
-  position:fixed;inset:0;z-index:150;
-  background:rgba(200,0,0,0);
-  display:none;flex-direction:column;align-items:center;justify-content:center;
-  transition:background .3s;
-  pointer-events:none;
-}
-#death-overlay.show{display:flex;background:rgba(180,0,0,0.7)}
-#death-msg{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:#fff;letter-spacing:.1em;text-shadow:0 0 30px #ff0000;animation:dmpulse 1s ease-in-out infinite}
-@keyframes dmpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.05)}}
-#death-countdown{font-family:'Orbitron',monospace;font-size:48px;font-weight:900;color:#ff4444;margin-top:16px;text-shadow:0 0 40px #ff0000}
-#death-sub{font-size:14px;color:rgba(255,200,200,.8);margin-top:8px;letter-spacing:.06em}
-
-/* ══ 題目抽屜 ══ */
-#qpanel{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(105%);width:100%;max-width:440px;background:#12121e;border:1.5px solid #2e2e46;border-top:2.5px solid #ff8800;border-radius:22px 22px 0 0;padding:12px 16px 32px;z-index:100;transition:transform .3s cubic-bezier(.16,1,.3,1);max-height:80dvh;overflow-y:auto}
-#qpanel.open{transform:translateX(-50%) translateY(0)}
-.qh{width:40px;height:4px;background:#2e2e46;border-radius:2px;margin:0 auto 14px}
-#qmeta{display:flex;align-items:center;gap:7px;margin-bottom:11px;flex-wrap:wrap}
-.qb{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:5px;border:1.5px solid}
-#qnum{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3)}
-#qtmr{margin-left:auto;font-family:'Orbitron',monospace;font-size:13px;font-weight:700;color:var(--text2)}
-#qtext{font-size:15px;line-height:1.8;color:var(--text);margin-bottom:14px;font-weight:500}
-#qopts{display:flex;flex-direction:column;gap:9px}
-.opt{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:13px 15px;font-size:14px;color:var(--text);cursor:pointer;text-align:left;line-height:1.5;font-family:'Noto Sans TC',sans-serif;display:flex;align-items:flex-start;gap:11px;transition:background .1s,border-color .1s}
-.opt:active{background:rgba(255,255,255,.1)}
+/* 題目區 — 佔整個game的2/3 */
+#q-area{flex:2;min-height:0;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding:6px 0 4px;border-top:1px solid #2a2a3e}
+#qmeta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;flex-shrink:0}
+#qtmr{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:var(--text2)}
+#boss-tag{display:none;font-family:'Orbitron',monospace;font-size:10px;font-weight:900;color:#fbbf24;letter-spacing:.08em;padding:3px 10px;border:1.5px solid #fbbf24;border-radius:6px;animation:bosstag .8s ease-in-out infinite}
+#boss-hp-row{display:none;align-items:center;gap:8px;flex-shrink:0}
+#boss-hp-label{font-family:'Orbitron',monospace;font-size:9px;color:#fbbf24;letter-spacing:.06em;flex-shrink:0}
+#boss-hp-bar-bg{flex:1;height:10px;background:#1a1a0a;border-radius:5px;overflow:hidden;border:1px solid #fbbf2444}
+#boss-hp-bar{height:100%;width:100%;background:linear-gradient(90deg,#ff4400,#fbbf24);border-radius:5px;transition:width .5s cubic-bezier(.16,1,.3,1)}
+@keyframes bosstag{0%,100%{opacity:1;text-shadow:0 0 8px #fbbf24}50%{opacity:.6;text-shadow:none}}
+#qtext{font-size:15px;line-height:1.8;color:var(--text);font-weight:500;flex-shrink:0}
+#qopts{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.opt{background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--text);cursor:pointer;text-align:left;line-height:1.5;font-family:'Noto Sans TC',sans-serif;display:flex;align-items:flex-start;gap:10px;transition:background .12s,border-color .12s,transform .1s}
+.opt:active{transform:scale(.98)}
 .ol{font-family:'Orbitron',monospace;font-size:11px;font-weight:900;color:rgba(255,255,255,.3);flex-shrink:0;margin-top:1px}
 .opt.ok{background:rgba(34,197,94,.18);border-color:var(--ok)}.opt.ok .ol{color:var(--ok)}
 .opt.no{background:rgba(239,68,68,.16);border-color:var(--wrong)}.opt.no .ol{color:var(--wrong)}
 .opt:disabled{cursor:default}
-#qexp{display:none;margin-top:12px;padding:14px 16px;border-radius:10px;font-size:16px;font-weight:500;line-height:1.75;color:#fff}
+#qexp{display:none;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:500;line-height:1.7;color:#fff;flex-shrink:0}
 #qexp.correct{background:#16a34a;border-left:4px solid #4ade80}
 #qexp.wrong{background:#dc2626;border-left:4px solid #fca5a5}
-#qcont{display:none;width:100%;margin-top:13px;padding:14px;background:linear-gradient(135deg,#ff4400,#ff9900);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.05em;box-shadow:0 4px 20px rgba(255,68,0,.4)}
+#qcont{display:none;width:100%;padding:13px;background:linear-gradient(135deg,#ff4400,#ff9900);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.05em;box-shadow:0 4px 20px rgba(255,68,0,.4);transition:opacity .15s,transform .1s;flex-shrink:0}
+#qcont:active{transform:scale(.97)}
 
-/* ══ 浮動+1文字 ══ */
-.float-plus{
-  position:absolute;pointer-events:none;z-index:20;
-  font-family:'Orbitron',monospace;font-size:22px;font-weight:900;
-  color:#fbbf24;text-shadow:0 0 10px rgba(251,191,36,.8);
-  animation:floatup .9s ease-out forwards;
-}
-@keyframes floatup{
-  0%{opacity:1;transform:translateY(0) scale(1)}
-  60%{opacity:1;transform:translateY(-40px) scale(1.2)}
-  100%{opacity:0;transform:translateY(-70px) scale(.8)}
-}
+/* 升階通知 */
+#levelup-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);background:linear-gradient(135deg,#1a1a00,#2a2800);border:2px solid #fbbf24;border-radius:20px;padding:24px 32px;text-align:center;z-index:180;display:none;opacity:0;transition:opacity .3s,transform .3s;box-shadow:0 0 40px rgba(251,191,36,.4);max-width:300px;width:90%}
+#levelup-banner.show{display:block;opacity:1;transform:translate(-50%,-50%) scale(1)}
+#levelup-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:#fbbf24;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
+#levelup-hero{font-size:56px;margin:8px 0}
+#levelup-text{font-size:14px;color:var(--text);line-height:1.6}
 
-/* ══ 爆炸粒子 ══ */
-.particle{
-  position:absolute;pointer-events:none;z-index:999;
-  border-radius:50%;
-}
-
-/* ══ 連擊數 ══ */
-#combo-display{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  pointer-events:none;z-index:15;
-  font-family:'Orbitron',monospace;font-size:28px;font-weight:900;
-  color:#fbbf24;text-shadow:0 0 20px rgba(251,191,36,.9);
-  text-align:center;
-  opacity:0;transition:opacity .2s;
-}
+/* 連擊 */
+#combo-display{position:fixed;top:42%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:15;font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:#fbbf24;text-shadow:0 0 20px rgba(251,191,36,.9);text-align:center;opacity:0;transition:opacity .2s}
 #combo-display.show{opacity:1;animation:combopop .3s ease-out}
 @keyframes combopop{0%{transform:translate(-50%,-50%) scale(.5)}60%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
 
-/* ══ 每輪結束視窗 ══ */
-#round-end{
-  position:fixed;inset:0;background:rgba(8,8,15,.92);
-  display:none;flex-direction:column;align-items:center;justify-content:center;
-  z-index:250;padding:24px;
-}
+/* 粒子 */
+.particle{position:fixed;pointer-events:none;z-index:999;border-radius:50%}
+.float-plus{position:fixed;pointer-events:none;z-index:20;font-family:'Orbitron',monospace;font-size:26px;font-weight:900;color:#fbbf24;text-shadow:0 0 12px rgba(251,191,36,.9);animation:floatup 1s ease-out forwards}
+@keyframes floatup{0%{opacity:1;transform:translateY(0) scale(1)}60%{opacity:1;transform:translateY(-50px) scale(1.25)}100%{opacity:0;transform:translateY(-90px) scale(.7)}}
+
+/* 死亡 */
+#death-overlay{position:fixed;inset:0;z-index:150;background:rgba(180,0,0,0);display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;transition:background .3s}
+#death-overlay.show{display:flex;background:rgba(160,0,0,0.75)}
+#death-msg{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:#fff;letter-spacing:.1em;text-shadow:0 0 30px #ff0000;animation:dmpulse 1s ease-in-out infinite}
+@keyframes dmpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.05)}}
+#death-countdown{font-family:'Orbitron',monospace;font-size:56px;font-weight:900;color:#ff4444;margin-top:16px;text-shadow:0 0 40px #ff0000}
+#death-sub{font-size:14px;color:rgba(255,200,200,.8);margin-top:8px;letter-spacing:.06em}
+
+/* 每輪結束 */
+#round-end{position:fixed;inset:0;background:rgba(8,8,15,.92);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:250;padding:24px}
 #round-end.show{display:flex}
-.re-card{
-  width:100%;max-width:340px;
-  background:#14141e;border:2px solid #fbbf24;border-radius:22px;
-  padding:32px 24px;display:flex;flex-direction:column;gap:18px;text-align:center;
-  box-shadow:0 0 40px rgba(251,191,36,.2);
-}
-.re-icon{font-size:48px}
+.re-card{width:100%;max-width:340px;background:#14141e;border:2px solid #fbbf24;border-radius:22px;padding:32px 24px;display:flex;flex-direction:column;gap:18px;text-align:center;box-shadow:0 0 40px rgba(251,191,36,.2)}
+.re-icon{font-size:52px}
 .re-title{font-family:'Orbitron',monospace;font-size:14px;font-weight:700;color:#fbbf24;letter-spacing:.1em}
 .re-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .re-stat{background:#08080f;border-radius:10px;padding:12px 8px}
 .re-stat-l{font-size:9px;color:rgba(240,232,216,.3);text-transform:uppercase;letter-spacing:.05em}
-.re-stat-v{font-family:'Orbitron',monospace;font-size:20px;font-weight:900;color:#f0e8d8;margin-top:4px}
+.re-stat-v{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#f0e8d8;margin-top:4px}
 .re-btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:15px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.05em;transition:opacity .15s,transform .1s}
 .re-btn:active{transform:scale(.97)}
 .re-btn.primary{background:linear-gradient(135deg,#ff4400,#ff9900);color:#fff;box-shadow:0 4px 20px rgba(255,68,0,.4)}
 .re-btn.secondary{background:#1e1e2c;color:rgba(240,232,216,.6);border:1.5px solid #2e2e46}
 
-/* ══ 鼓勵訊息 ══ */
-#encourage{
-  position:fixed;top:50%;left:50%;
-  transform:translate(-50%,-50%) scale(.8);
-  background:#14141e;border:2px solid #22c55e;border-radius:18px;
-  padding:20px 28px;text-align:center;z-index:200;
-  display:none;opacity:0;
-  transition:opacity .3s,transform .3s;
-  box-shadow:0 0 30px rgba(34,197,94,.25);
-  max-width:300px;width:90%;
-}
+/* 鼓勵 */
+#encourage{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);background:#14141e;border:2px solid #22c55e;border-radius:18px;padding:20px 28px;text-align:center;z-index:200;display:none;opacity:0;transition:opacity .3s,transform .3s;box-shadow:0 0 30px rgba(34,197,94,.25);max-width:300px;width:90%}
 #encourage.show{display:block;opacity:1;transform:translate(-50%,-50%) scale(1)}
 #encourage-text{font-size:15px;font-weight:500;color:#f0e8d8;line-height:1.6}
 
-/* ══ 玩家跑步動畫 ══ */
-@keyframes player-run{
-  0%{transform:translate(-50%,-50%) scaleX(1) rotate(-5deg)}
-  25%{transform:translate(-50%,-60%) scaleX(1) rotate(0deg)}
-  50%{transform:translate(-50%,-50%) scaleX(1) rotate(5deg)}
-  75%{transform:translate(-50%,-60%) scaleX(1) rotate(0deg)}
-  100%{transform:translate(-50%,-50%) scaleX(1) rotate(-5deg)}
-}
-
-/* ══ 結束 ══ */
-#endscreen{position:fixed;inset:0;background:rgba(8,8,15,.96);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:300;padding:24px}
+/* 結束 */
+#endscreen{position:fixed;inset:0;background:rgba(8,8,15,.96);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:300;padding:24px;overflow-y:auto}
 #endscreen.show{display:flex}
 .ecard{width:100%;max-width:340px;background:#12121e;border:1.5px solid #2e2e46;border-radius:22px;padding:28px 22px;display:flex;flex-direction:column;gap:16px;text-align:center}
-.eicon{font-size:48px}
+.eicon{font-size:52px}
 .etitle{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:.12em;color:var(--text2);text-transform:uppercase}
 .ename{font-size:20px;font-weight:700;color:var(--text);margin-top:4px}
 .egrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -262,76 +177,87 @@ canvas{display:block}
   <div class="fp-bg" id="fpbg"></div>
   <div class="lcard">
     <div class="lemblem">🔥</div>
-    <div><div class="ltitle">防災演練學習系統</div><div class="lsub">花蓮縣衛生局 × 公民開發者計畫<br>20分鐘無限循環練習</div></div>
+    <div><div class="ltitle">防災演練學習系統</div><div class="lsub">花蓮縣衛生局 × 公民開發者計畫<br>20分鐘防災冒險旅程</div></div>
     <div class="ldiv"></div>
     <div><label class="llabel" for="ni">請輸入序號</label><input id="ni" class="linput" type="text" placeholder="例：001" maxlength="20" autocomplete="off"></div>
-    <button class="lbtn" id="sb" disabled onclick="startGame()">開始學習 →</button>
-    <div class="lhint">進入後開始計時 20 分鐘<br>探索各科室，踩上火焰答題<br>答錯扣血，歸零3秒後復活回大禮堂</div>
+    <button class="lbtn" id="sb" disabled onclick="startGame()">開始冒險 →</button>
+    <div class="lhint">答題打敗怪物，累積防災知識<br>每10關挑戰Boss，需答對3題！<br>答錯扣血，血量歸零3秒後復活</div>
   </div>
 </div>
 
-<!-- ══ 說明頁 ══ -->
+<!-- 說明頁 -->
 <div id="tutorial">
   <div class="tut-card">
-    <div class="tut-title">📋 遊戲說明</div>
+    <div class="tut-title">⚔️ 冒險說明</div>
     <div class="tut-items">
-      <div class="tut-item">
-        <div class="tut-icon fire">🔥</div>
-        <div class="tut-text">
-          走到火焰上會觸發防災題目
-          <small>答對火焰熄滅，20秒後重新出現</small>
-        </div>
-      </div>
-      <div class="tut-item">
-        <div class="tut-icon float">➡️</div>
-        <div class="tut-text">
-          走到門口的箭頭可以換房間
-          <small>建築物共有 9 個科室可以探索</small>
-        </div>
-      </div>
-      <div class="tut-item">
-        <div class="tut-icon float2">❤️</div>
-        <div class="tut-text">
-          答錯扣血，血量歸零會復活
-          <small>復活後回到大禮堂，血量全滿</small>
-        </div>
-      </div>
-      <div class="tut-item">
-        <div class="tut-icon float3">⏱️</div>
-        <div class="tut-text">
-          請在 20 分鐘內探索建築物
-          <small>踩上火焰進行防災知識學習</small>
-        </div>
-      </div>
+      <div class="tut-item"><div class="tut-icon">🧑‍💼</div><div class="tut-text">主角一直往前跑，遇到怪物停下來<small>答對打敗怪物，繼續前進！</small></div></div>
+      <div class="tut-item"><div class="tut-icon">👹</div><div class="tut-text">答錯：怪物衝過來攻擊主角<small>一般怪捨身攻擊後消失，扣你1滴血</small></div></div>
+      <div class="tut-item"><div class="tut-icon">👑</div><div class="tut-text">每10關出現Boss，需答對3題！<small>Boss答錯會衝過來攻擊後退回原位</small></div></div>
+      <div class="tut-item"><div class="tut-icon">⬆️</div><div class="tut-text">每10關主角會升階變強！<small>從一般員工進化到消防達人</small></div></div>
     </div>
-    <button class="tut-btn" onclick="confirmTutorial()">我準備好了，開始！🚀</button>
+    <button class="tut-btn" onclick="confirmTutorial()">出發冒險！🚀</button>
   </div>
 </div>
 
-<!-- 遊戲 -->
+<!-- 主遊戲 -->
 <div id="game">
-  <div id="hud">
-    <div id="hud-left">
-      <div id="hud-name">—</div>
-      <div id="hud-sub">花蓮縣衛生局防災演練</div>
+  <div id="top-third">
+    <div id="hud">
+      <div id="hud-left"><div id="hud-name">—</div><div id="hud-sub">花蓮縣衛生局防災演練</div></div>
+      <div class="hst" id="ts"><div class="hst-l">時間</div><div class="hst-v" id="tv">20:00</div></div>
+      <div class="hst"><div class="hst-l">正確率</div><div class="hst-v" id="rv">—</div></div>
+      <div class="hst"><div class="hst-l">已答</div><div class="hst-v" id="ansv">0</div></div>
     </div>
-    <div class="hst" id="ts"><div class="hst-l">剩餘時間</div><div class="hst-v" id="tv">20:00</div></div>
-    <div class="hst"><div class="hst-l">正確率</div><div class="hst-v" id="rv">—</div></div>
-    <div class="hst"><div class="hst-l">已答題</div><div class="hst-v" id="ansv">0</div></div>
+    <div id="hp-row">
+      <div id="hp-label">HP</div>
+      <div id="hp-hearts"></div>
+      <div id="hp-count">10/10</div>
+    </div>
+    <div id="level-row">
+      <div id="level-label">STAGE</div>
+      <div id="level-bar-bg"><div id="level-bar"></div></div>
+      <div id="level-num">1</div>
+    </div>
+    <!-- 戰鬥區 -->
+    <div id="battle-wrap">
+      <canvas id="battle-canvas"></canvas>
+    </div>
   </div>
-  <div id="hp-row">
-    <div id="hp-label">HP</div>
-    <div id="hp-hearts"></div>
-    <div id="hp-count">10/10</div>
+  <!-- 題目區 -->
+  <div id="q-area">
+    <div id="qmeta">
+      <div id="boss-tag">👑 BOSS</div>
+      <div id="qtmr" style="margin-left:auto">00s</div>
+    </div>
+    <div id="boss-hp-row">
+      <div id="boss-hp-label">BOSS HP</div>
+      <div id="boss-hp-bar-bg"><div id="boss-hp-bar"></div></div>
+    </div>
+    <div id="qtext">準備冒險…</div>
+    <div id="qopts"></div>
+    <div id="qexp"></div>
+    <button id="qcont">繼續冒險 →</button>
   </div>
-  <div id="room-banner">—</div>
-  <div id="cv-clip"><div id="cv-slider"><canvas id="gc"></canvas></div>
-  <div id="combo-display"></div></div>
-
 </div>
 
-<!-- 題目 -->
-<!-- ══ 每輪結束 ══ -->
+<!-- 升階通知 -->
+<div id="levelup-banner">
+  <div id="levelup-title">⬆️ LEVEL UP！</div>
+  <div id="levelup-hero"></div>
+  <div id="levelup-text"></div>
+</div>
+
+<!-- 連擊 -->
+<div id="combo-display"></div>
+
+<!-- 死亡 -->
+<div id="death-overlay">
+  <div id="death-msg">💀 陣亡</div>
+  <div id="death-countdown">3</div>
+  <div id="death-sub">3秒後滿血繼續…</div>
+</div>
+
+<!-- 每輪結束 -->
 <div id="round-end">
   <div class="re-card">
     <div class="re-icon">🎉</div>
@@ -342,45 +268,26 @@ canvas{display:block}
       <div class="re-stat"><div class="re-stat-l">累計答題</div><div class="re-stat-v" id="re-total">0</div></div>
       <div class="re-stat"><div class="re-stat-l">剩餘時間</div><div class="re-stat-v" id="re-time" style="color:#ff8800">—</div></div>
     </div>
-    <button class="re-btn primary" id="re-continue">繼續練習 🔥</button>
+    <button class="re-btn primary" id="re-continue">繼續冒險 🔥</button>
     <button class="re-btn secondary" id="re-leave">結束學習</button>
   </div>
 </div>
 
-<!-- ══ 鼓勵訊息 ══ -->
+<!-- 鼓勵 -->
 <div id="encourage"><div id="encourage-text"></div></div>
-
-<div id="qpanel">
-  <div class="qh"></div>
-  <div id="qmeta">
-    <div id="qnum"></div>
-    <div id="qtmr">00s</div>
-  </div>
-  <div id="qtext"></div>
-  <div id="qopts"></div>
-  <div id="qexp"></div>
-  <button id="qcont">繼續探索 →</button>
-</div>
-
-<!-- 死亡 -->
-<div id="death-overlay">
-  <div id="death-msg">💀 陣亡</div>
-  <div id="death-countdown">3</div>
-  <div id="death-sub">3秒後復活於大禮堂...</div>
-</div>
 
 <!-- 結束 -->
 <div id="endscreen">
   <div class="ecard">
     <div class="eicon">🏆</div>
-    <div><div class="etitle">學習完成 · 20分鐘結束</div><div class="ename" id="ename"></div></div>
+    <div><div class="etitle">冒險完成 · 20分鐘結束</div><div class="ename" id="ename"></div></div>
     <div class="egrid">
       <div class="est"><div class="est-l">作答次數</div><div class="est-v" id="etotal">0</div></div>
       <div class="est"><div class="est-l">答對次數</div><div class="est-v hi" id="eok">0</div></div>
       <div class="est"><div class="est-l">正確率</div><div class="est-v hi" id="erate">—</div></div>
       <div class="est"><div class="est-l">涵蓋題數</div><div class="est-v" id="ecover">0/40</div></div>
       <div class="est"><div class="est-l">死亡次數</div><div class="est-v" id="edeaths">0</div></div>
-      <div class="est"><div class="est-l">探索房間</div><div class="est-v" id="erooms">0/9</div></div>
+      <div class="est"><div class="est-l">最高連擊</div><div class="est-v" id="emaxcombo">0</div></div>
     </div>
     <div class="emsg" id="emsg"></div>
   </div>
@@ -390,172 +297,739 @@ canvas{display:block}
 // ══════════════════════════════
 // 設定
 // ══════════════════════════════
-const SHEETS_URL  = 'https://script.google.com/macros/s/AKfycbzDJIhdJZQYtOZylwnzA0vkZzuRNvWnXGySH1x8UrkfhjE0_WuVVQ7SHpnC1o_qCUQV/exec';
-const RESPAWN_MS  = 20000;
-const GAME_SECS   = 1200;
-const ROOM_SIZE   = 5;
-const MAX_HP      = 10;
-const DEATH_SECS  = 3;
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzDJIhdJZQYtOZylwnzA0vkZzuRNvWnXGySH1x8UrkfhjE0_WuVVQ7SHpnC1o_qCUQV/exec';
+const GAME_SECS  = 1200;
+const MAX_HP     = 10;
+const DEATH_SECS = 3;
+const BOSS_HP    = 3;      // Boss需答對3題
+const BOSS_EVERY = 10;     // 每10關一個Boss
+const LS_KEY     = 'fire_drill_v14_save';
 
 // ══════════════════════════════
-// 9個房間
+// 主角升階定義
 // ══════════════════════════════
-const ROOM_DEFS = [
-  {rc:[0,0],label:'局長室',   doors:{up:false,right:true, down:true, left:false}},
-  {rc:[1,0],label:'企劃科',   doors:{up:false,right:true, down:true, left:true }},
-  {rc:[2,0],label:'電腦機房', doors:{up:false,right:false,down:true, left:true }},
-  {rc:[0,1],label:'行政科',   doors:{up:true, right:true, down:true, left:false}},
-  {rc:[1,1],label:'大禮堂',   doors:{up:true, right:true, down:true, left:true }},
-  {rc:[2,1],label:'醫政科',   doors:{up:true, right:false,down:true, left:true }},
-  {rc:[0,2],label:'檢驗科',   doors:{up:true, right:true, down:false,left:false}},
-  {rc:[1,2],label:'疫苗室',   doors:{up:true, right:true, down:false,left:true }},
-  {rc:[2,2],label:'疾管科',   doors:{up:true, right:false,down:false,left:true }},
+const HERO_STAGES = [
+  {minStage:1,  emoji:'🧑‍💼', name:'一般員工',   color:'#60a5fa'},
+  {minStage:11, emoji:'👷',   name:'初級防災員', color:'#fbbf24'},
+  {minStage:21, emoji:'🦺',   name:'防災專員',   color:'#34d399'},
+  {minStage:31, emoji:'🧑‍🚒', name:'消防員',     color:'#fb923c'},
+  {minStage:41, emoji:'🚒',   name:'防災達人',   color:'#f472b6'},
 ];
 
-function getRoom(c,r){return ROOM_DEFS.find(d=>d.rc[0]===c&&d.rc[1]===r)||null;}
+function getHeroStage(stageNum){
+  let h=HERO_STAGES[0];
+  for(const s of HERO_STAGES) if(stageNum>=s.minStage) h=s;
+  return h;
+}
+
+// ══════════════════════════════
+// 怪物定義
+// ══════════════════════════════
+const MONSTERS = [
+  {type:'fire',   emoji:'🔥', name:'火怪',   color:'#ff4400', size:1.0},
+  {type:'elec',   emoji:'⚡', name:'電怪',   color:'#fbbf24', size:1.0},
+  {type:'smoke',  emoji:'💨', name:'煙怪',   color:'#94a3b8', size:1.0},
+  {type:'poison', emoji:'☢️', name:'毒怪',   color:'#a3e635', size:1.0},
+  {type:'water',  emoji:'🌊', name:'水怪',   color:'#38bdf8', size:1.0},
+];
+const BOSS_MONSTERS = [
+  {type:'boss1', emoji:'👹', name:'火焰魔王', color:'#ef4444', size:1.6},
+  {type:'boss2', emoji:'👺', name:'電擊魔王', color:'#fbbf24', size:1.6},
+  {type:'boss3', emoji:'🐲', name:'巨龍魔王', color:'#22c55e', size:1.8},
+  {type:'boss4', emoji:'💀', name:'終極魔王', color:'#a855f7', size:2.0},
+];
 
 // ══════════════════════════════
 // 題庫（40題）
 // ══════════════════════════════
 const QS=[
-  {id:1,bloom:'L1',cat:'前測',text:'本局大樓內共設置幾具「室內消防栓」？',opts:['18','12','6','9'],ans:0},
-  {id:2,bloom:'L1',cat:'題庫',text:'本局火警受信總機設置於何處？',opts:['1樓檢驗科辦公室','2樓行政科辦公室','3樓局長室','3樓電腦機房'],ans:1},
-  {id:3,bloom:'L1',cat:'前測',text:'本局1樓辦公區域內，共配置幾支手提式乾粉滅火器？',opts:['29','24','21','33'],ans:0},
-  {id:4,bloom:'L1',cat:'後測',text:'本局大樓內共設置幾具「緩降機」？',opts:['8','2','6','4'],ans:3},
-  {id:5,bloom:'L3',cat:'共通',text:'如果你在局長室門口，距離最近的滅火器位於何處？',opts:['簡報室門口','三樓電梯口','第一會議室門口','大禮堂'],ans:1},
-  {id:6,bloom:'L3',cat:'後測',text:'若你在第二會議室開會時發生火災，距離最近的手動報警機位於何處？',opts:['三樓樓梯口','長照4辦公室','企劃科','行政科'],ans:0},
-  {id:7,bloom:'L1',cat:'前測',text:'若發生大規模地震並導致停電，本局的「緊急發電機」位於何處？',opts:['3樓局長辦公室','2樓行政科辦公室','1樓疫苗室旁','本局沒有緊急發電機'],ans:2},
-  {id:8,bloom:'L1',cat:'題庫',text:'本局「自動體外心臟電擊去顫器（AED）」設置於何處？',opts:['醫政科','花蓮市衛生所','行政科','疾管科'],ans:1},
-  {id:9,bloom:'L1',cat:'題庫',text:'台灣地區火災發生原因中，占比最高者為何？',opts:['電氣火災','縱火','吸菸','油氣易燃物'],ans:0},
-  {id:10,bloom:'L1',cat:'題庫',text:'固體之間的熱能傳遞稱為何者？',opts:['熱傳導','熱對流','熱輻射','黑體'],ans:0},
-  {id:11,bloom:'L1',cat:'後測',text:'下列何者不是自衛消防編組訓練的種類？',opts:['電腦訓練','通報訓練','滅火訓練','避難訓練'],ans:0},
-  {id:12,bloom:'L2',cat:'後測',text:'下列何者不是初期滅火應變的實施準則？',opts:['火勢尚未延燒前，得以滅火器、水桶等從事滅火','二氧化碳滅火設備動作時，應保持放射區域空氣流通，避免二氧化碳蓄積影響人員健康','在未產生閃燃（flashover）前，可藉室內消防栓抑制火勢','滅火班長等指揮人員判斷，在安全管理上尚無危險者，得以實施初期滅火'],ans:1},
-  {id:13,bloom:'L1',cat:'題庫',text:'下列何者不是「自衛消防編組原則」？',opts:['即早發現即早通報','免用滅火原理','人命救援優先','防止延燒擴大'],ans:1},
-  {id:14,bloom:'L2',cat:'題庫',text:'下列何者不是機關內部通報要領？',opts:['發現火災時，應迅速按押火警發信機，以利場所人員知悉','防災中心接獲火災訊息後，不用告知其他樓層','廣播人員廣播時應保持鎮定，並重複廣播2次以上','2樓以上發生火災時，初期廣播以火災發生以上樓層為主'],ans:1},
-  {id:15,bloom:'L2',cat:'後測',text:'下列何者不是正確的「初期滅火」作法？',opts:['將滅火器直接丟入火源中','初期滅火班人員可分工，一人滅火、一人尋找滅火器，以集中連續使用','滅火班可適時利用室內消防栓接近火點進行滅火','使用滅火器撲滅火勢後，確認無觸電之虞時，可再加以澆水降溫'],ans:0},
-  {id:16,bloom:'L1',cat:'題庫',text:'下列何者不屬於防火防災教育訓練的目的？',opts:['普及火災預防思想','提高防止災害之知識','提升辦公效率','提升災害發生時之處置判斷及行動能力'],ans:2},
-  {id:17,bloom:'L1',cat:'題庫',text:'下列何者不屬於防火防災教育訓練的內容？',opts:['火災預防上應遵守之事項','人際關係之相處','安全作業有關之基本事項','震災對策有關之事項'],ans:1},
-  {id:18,bloom:'L2',cat:'前測',text:'下列何者不屬於避難訓練的內容？',opts:['通報119之要領','熟悉避難設施、設備之位置及操作方法','依據訓練假想，運用廣播設備迅速引導避難','對無力自行避難者，採適當方法運送至安全場所'],ans:0},
-  {id:19,bloom:'L3',cat:'前測',text:'乾粉滅火器不應用於撲滅下列何種火災？',opts:['報紙堆起火','炒菜時油鍋起火','通電中的配電盤起火','鈉等可燃性金屬物質起火'],ans:3},
-  {id:20,bloom:'L1',cat:'題庫',text:'下列何者不屬於建築物的防火避難設施？',opts:['出入口','停車空間','陽台','樓梯'],ans:1},
-  {id:21,bloom:'L2',cat:'前測',text:'下列何者不屬於建築物的防火設施？',opts:['防火區劃','防火構造','昇降機','內部裝修限制'],ans:2},
-  {id:22,bloom:'L1',cat:'題庫',text:'遭遇火警時，下列何種逃生方法錯誤？',opts:['搭電梯','走安全梯','使用緩降機','使用滑臺'],ans:0},
-  {id:23,bloom:'L2',cat:'後測',text:'火警警鈴或緊急廣播設備動作時，自衛消防編組應優先採取何種行動？',opts:['報告主管','先確認是否真的發生火警','廣播疏散','靜觀其變'],ans:1},
-  {id:24,bloom:'L1',cat:'後測',text:'防火門的主要目的為何？',opts:['逃生用','裝飾用','阻隔火煙','防小偷'],ans:2},
-  {id:25,bloom:'L2',cat:'前測',text:'火災發生時，較適合由哪一編組人員管制電梯運轉？',opts:['滅火班','安全防護班','通報班','自衛消防隊長'],ans:1},
-  {id:26,bloom:'L5',cat:'後測',text:'火警探測器經常誤動作時，較適當的處理方式為何？',opts:['將受信總機地區警鈴關閉','請合格的消防專業技術人員檢修','將受信總機移報開關關閉','放著不管'],ans:1},
-  {id:27,bloom:'L4',cat:'後測',text:'依法規定，下列何者不是實施防火管理的場所？',opts:['國際觀光旅館','三溫暖','診所','酒家'],ans:2},
-  {id:28,bloom:'L2',cat:'題庫',text:'一個場所的火災預防任務，由下列何者共同參與最能提升成效？',opts:['管理權人','防火管理人','管理委員會','全體人員'],ans:3},
-  {id:29,bloom:'L1',cat:'共通',text:'通電中的電氣設備或電線發生火災，屬於哪一類火災？',opts:['A類火災','B類火災','C類火災','D類火災'],ans:2},
-  {id:30,bloom:'L2',cat:'共通',text:'通電中電線著火時，下列處理方式何者錯誤？',opts:['切斷電源','通知電力公司人員','通知消防人員','以水滅火'],ans:3},
-  {id:31,bloom:'L5',cat:'前測',text:'若民間團體自稱受消防機關委託，至貴單位進行防火宣導並推銷滅火器，較適當的處理方式為何？',opts:['體諒其辛勞，購買數具滅火器以示慰勞','告知已請轄區消防局協助辦理防火教育宣導，且消防機關並無委託民間團體辦理所述課程','協助向同仁推銷','大量購買所推銷的滅火器並分送親友'],ans:1},
-  {id:32,bloom:'L1',cat:'前測',text:'依法令或契約，對場所具有實際支配管理權者稱為何者？',opts:['法人','防火管理人','大樓管理員','管理權人'],ans:3},
-  {id:33,bloom:'L4',cat:'前測',text:'燃燒四面體原理比燃燒三角形原理多出哪一項要素？',opts:['空氣（氧氣）','可燃物','熱能','連鎖反應'],ans:3},
-  {id:34,bloom:'L1',cat:'後測',text:'一定規模以上之建築物，消防防護計畫應由何者制定？',opts:['管理權人','防火管理人','消防設備師','消防設備士'],ans:1},
-  {id:35,bloom:'L4',cat:'前測',text:'下列何者因主管法規另有規定，得不適用消防法之規範？',opts:['一定規模以上供公眾使用建築物','地下建築物','地面樓層達11層以上且管理權分屬之集合住宅','古蹟'],ans:3},
-  {id:36,bloom:'L1',cat:'前測',text:'自衛消防編組若必須設置救護班，表示員工人數至少為多少？',opts:['10人以上','20人以上','30人以上','50人以上'],ans:3},
-  {id:37,bloom:'L1',cat:'題庫',text:'依「各類場所消防安全設備設置標準」，下列何者不屬於消防搶救上之必要設施？',opts:['消防專用蓄水池','救助袋','緊急電源插座','無線電通信輔助設備'],ans:1},
-  {id:38,bloom:'L1',cat:'後測',text:'紙類、木材及塑膠類等一般可燃物火災，屬於哪一類火災？',opts:['A類火災','B類火災','C類火災','D類火災'],ans:0},
-  {id:39,bloom:'L4',cat:'後測',text:'在正常可使用狀態下，下列何者於相同時間內可疏散最多人？',opts:['安全梯','緩降機','救助袋','避難梯'],ans:0},
-  {id:40,bloom:'L1',cat:'題庫',text:'國內建築物火災的主要發生原因為何？',opts:['電氣設備','人為縱火','爐火烹調','菸蒂'],ans:0},
+  {id:1, bloom:'L1',cat:'前測',text:'衛生局大樓內共設置幾具「室內消防栓」？',opts:['18具','12具','6具','9具'],ans:0},
+  {id:3, bloom:'L1',cat:'前測',text:'衛生局1樓辦公區域內，共配置了幾支手提式乾粉滅火器？',opts:['29支','24支','21支','33支'],ans:0},
+  {id:7, bloom:'L1',cat:'前測',text:'地震停電時，本局「緊急發電機」位於何處？',opts:['3樓局長辦公室','2樓行政科','1樓疫苗室旁','本局沒有緊急發電機'],ans:2},
+  {id:13,bloom:'L1',cat:'前測',text:'自衛消防編組須設救護班，表示員工人數為？',opts:['10人以上','20人以上','30人以上','50人以上'],ans:3},
+  {id:19,bloom:'L2',cat:'前測',text:'下列何者為錯誤的避難訓練內容？',opts:['通報119之要領','熟悉避難設施位置及操作方法','運用廣播設備引導避難','對無力避難者運送至安全場所'],ans:0},
+  {id:20,bloom:'L2',cat:'前測',text:'下列何者不屬於建築物防火設施？',opts:['防火區劃','防火構造','昇降機','內部裝修限制'],ans:2},
+  {id:22,bloom:'L2',cat:'前測',text:'火災時，由何編組人員管制電梯較為合適？',opts:['滅火班','安全防護班','通報班','自衛消防隊長'],ans:1},
+  {id:26,bloom:'L3',cat:'前測',text:'乾粉滅火器不應用於撲滅下列何種火災？',opts:['報紙堆起火','炒菜油鍋起火','通電配電盤起火','鈉等金屬物質起火'],ans:3},
+  {id:33,bloom:'L4',cat:'前測',text:'下列何者為錯誤的「延長界限時間」條件？',opts:['未設自動撒水設備','初期滅火使用室內消防栓','寢具使用防焰物品','形成居室不燃化區劃'],ans:0},
+  {id:34,bloom:'L4',cat:'前測',text:'燃燒四面體比三角形多一要素，此要素為？',opts:['空氣（氧氣）','可燃物','熱能','連鎖反應'],ans:3},
+  {id:37,bloom:'L4',cat:'前測',text:'下列何場所得不適用消防法？',opts:['一定規模供公眾使用建築物','地下建築物','地面11層以上集合住宅','古蹟'],ans:3},
+  {id:38,bloom:'L5',cat:'前測',text:'民間團體稱受消防機關委託推銷滅火器，何種作法最佳？',opts:['買幾具慰勞','告知消防機關未委託民間辦理，並已自行安排宣導','協助推銷','大量購買分送'],ans:1},
+  {id:4, bloom:'L1',cat:'後測',text:'衛生局大樓內共設置幾具「緩降機」？',opts:['8具','2具','6具','4具'],ans:3},
+  {id:6, bloom:'L1',cat:'後測',text:'防火門的主要目的是？',opts:['逃生用','裝飾用','阻隔火煙','防小偷'],ans:2},
+  {id:11,bloom:'L1',cat:'後測',text:'自衛消防編組訓練種類，下列何者錯誤？',opts:['電腦訓練','通報訓練','滅火訓練','避難訓練'],ans:0},
+  {id:12,bloom:'L1',cat:'後測',text:'紙類、木材等一般可燃物之火災為？',opts:['A類火災','B類火災','C類火災','D類火災'],ans:0},
+  {id:16,bloom:'L2',cat:'後測',text:'下列何者為錯誤的初期滅火應變準則？',opts:['火勢未延燒前可用滅火器從事滅火','二氧化碳設備動作時應保持空氣流通','未閃燃前可由指揮人員判斷是否實施初期滅火','以上均正確'],ans:1},
+  {id:24,bloom:'L2',cat:'後測',text:'下列「初期滅火」何者錯誤？',opts:['應將滅火器直接丟入火源中','可分工一人滅火一人找尋滅火器集中使用','可利用室內消防栓接近火點滅火','確定無觸電之虞應再澆水降溫'],ans:0},
+  {id:25,bloom:'L2',cat:'後測',text:'火警警鈴動作時，自衛消防編組宜先做什麼？',opts:['報告主管','先確認是否真的發生火警','廣播疏散','靜觀其變'],ans:1},
+  {id:27,bloom:'L3',cat:'後測',text:'在第二會議室發生火災，最近的手動報警機在哪裡？',opts:['三樓樓梯口','長照4辦公室','企劃科','行政科'],ans:0},
+  {id:28,bloom:'L4',cat:'後測',text:'下列何者依法不須實施防火管理？',opts:['國際觀光旅館','三溫暖','診所','酒家'],ans:2},
+  {id:35,bloom:'L4',cat:'後測',text:'消防安全設備定期檢修，下列敘述何者正確？',opts:['歇業亦應辦理檢修申報','整棟無使用報請主管機關同意後得免定期辦理','非高層建築僅設非系統式設備可由管理權人自行辦理','以上均是'],ans:3},
+  {id:40,bloom:'L5',cat:'後測',text:'火警探測器時常誤動作，何種解決方式較佳？',opts:['將地區警鈴關閉','請合格消防專業技術人員檢修','將移報開關關閉','放著不管'],ans:1},
+  {id:41,bloom:'L4',cat:'後測',text:'相同時間內可疏散最多人的避難設施是？',opts:['安全梯','緩降機','救助袋','避難梯'],ans:0},
+  {id:5, bloom:'L3',cat:'共通',text:'在局長室門口，最近的一支滅火器位於哪裡？',opts:['簡報室門口','三樓電梯口','第一會議室門口','大禮堂'],ans:1},
+  {id:30,bloom:'L1',cat:'共通',text:'通電中電氣設備火災又稱為？',opts:['A類火災','B類火災','C類火災','D類火災'],ans:2},
+  {id:31,bloom:'L2',cat:'共通',text:'通電中電線著火處理，下列何者錯誤？',opts:['切斷電源','通知電力公司','通知消防人員','以水滅火'],ans:3},
+  {id:2, bloom:'L1',cat:'題庫',text:'衛生局火警受信總機設置於何處？',opts:['1樓檢驗科','2樓行政科','3樓局長室','3樓電腦機房'],ans:1},
+  {id:8, bloom:'L1',cat:'題庫',text:'本局AED設置在什麼位置？',opts:['醫政科','花蓮市衛生所','行政科','疾管科'],ans:1},
+  {id:9, bloom:'L1',cat:'題庫',text:'台灣發生火災原因居首位者為？',opts:['電氣火災','縱火','吸菸','油氣易燃物'],ans:0},
+  {id:10,bloom:'L1',cat:'題庫',text:'固體間之能量傳遞稱之？',opts:['熱傳導','熱對流','熱輻射','黑體'],ans:0},
+  {id:14,bloom:'L1',cat:'題庫',text:'「自衛消防編組原則」下列何者錯誤？',opts:['即早發現即早通報','免用滅火原理','人命救援優先','防止延燒擴大'],ans:1},
+  {id:15,bloom:'L2',cat:'題庫',text:'下列何者為錯誤的機關內部通報要領？',opts:['發現火災迅速按押火警發信機','防災中心接獲訊息不用告知其他樓層','廣播時應鎮定重複2次以上','2樓以上火災初期廣播以火災發生以上樓層為主'],ans:1},
+  {id:17,bloom:'L1',cat:'題庫',text:'防火防災教育訓練之目的，下列何者錯誤？',opts:['普及火災預防思想','提高防止災害知識','提升辦公效率','提升災害發生時之處置能力'],ans:2},
+  {id:18,bloom:'L1',cat:'題庫',text:'防火防災教育訓練之內容，下列何者錯誤？',opts:['火災預防應遵守之事項','人際關係之相處','安全作業有關之基本事項','震災對策有關之事項'],ans:1},
+  {id:21,bloom:'L1',cat:'題庫',text:'下列何者不屬於防火避難設施？',opts:['出入口','停車空間','陽台','樓梯'],ans:1},
+  {id:23,bloom:'L1',cat:'題庫',text:'遭遇火警的逃生方法，下列何者錯誤？',opts:['搭電梯','走安全梯','使用緩降機','使用滑台'],ans:0},
+  {id:29,bloom:'L2',cat:'題庫',text:'火災預防任務由何人參與可收最佳成效？',opts:['管理權人','防火管理人','管理委員會','全體人員'],ans:3},
+  {id:39,bloom:'L1',cat:'題庫',text:'消防搶救上之必要設施，不包括下列何者？',opts:['消防專用蓄水池','救助袋','緊急電源插座','無線電通信輔助設備'],ans:1},
+  {id:42,bloom:'L1',cat:'題庫',text:'國內建築物火災的發生主因為？',opts:['電氣設備','人為縱火','爐火烹調','菸蒂'],ans:0},
 ];
 
-const BC={L1:'#fbbf24',L2:'#60a5fa',L3:'#34d399',L4:'#fb923c',L5:'#f472b6'};
+const BC={'L1':'#fbbf24','L2':'#60a5fa','L3':'#34d399','L4':'#fb923c','L5':'#f472b6'};
 const CC={'前測':'#a78bfa','後測':'#34d399','共通':'#f472b6','題庫':'#9ca3af'};
 
 // ══════════════════════════════
-// 家具定義（每個房間）
+// Canvas 繪圖引擎
 // ══════════════════════════════
-const FURNITURE = {
-  '局長室':   [{x:1,y:1,t:'desk-big'},{x:3,y:3,t:'sofa'},{x:3,y:1,t:'plant'}],
-  '企劃科':   [{x:1,y:1,t:'desk'},{x:3,y:1,t:'desk'},{x:1,y:3,t:'desk'},{x:3,y:3,t:'whiteboard'}],
-  '電腦機房': [{x:1,y:1,t:'server'},{x:3,y:1,t:'server'},{x:1,y:3,t:'server'},{x:3,y:3,t:'server'}],
-  '行政科':   [{x:1,y:1,t:'desk'},{x:3,y:1,t:'desk'},{x:2,y:3,t:'cabinet'}],
-  '大禮堂':   [{x:1,y:1,t:'chair'},{x:3,y:1,t:'chair'},{x:1,y:3,t:'chair'},{x:3,y:3,t:'chair'},{x:2,y:2,t:'podium'}],
-  '醫政科':   [{x:1,y:1,t:'desk'},{x:3,y:1,t:'desk'},{x:2,y:3,t:'cabinet'}],
-  '檢驗科':   [{x:1,y:1,t:'lab'},{x:3,y:1,t:'lab'},{x:2,y:3,t:'fridge'}],
-  '疫苗室':   [{x:1,y:1,t:'fridge'},{x:3,y:1,t:'fridge'},{x:1,y:3,t:'lab'},{x:3,y:3,t:'lab'}],
-  '疾管科':   [{x:1,y:1,t:'desk'},{x:3,y:1,t:'server'},{x:2,y:3,t:'cabinet'}],
+let cv, ctx, cw, ch;
+const BG_LAYERS = [
+  // 遠景建築剪影（速度最慢）
+  {speed:0.3, shapes:[], y:0, drawn:false},
+  // 中景地板（中速）
+  {speed:0.8, x:0},
+  // 近景裝飾（最快）
+  {speed:1.4, shapes:[], drawn:false},
+];
+
+// 視差背景 offset
+let bgOff0=0, bgOff1=0, bgOff2=0;
+
+// 主角狀態
+const HERO = {
+  x:0, y:0, w:0, h:0,    // 動態計算
+  state:'run',            // run | attack | hit | dead
+  frame:0,                // 動畫幀
+  hitTimer:0,
+  attackTimer:0,
+  scaleX:1,
 };
+
+// 怪物狀態
+const MON = {
+  x:0, y:0, w:0, h:0,
+  def:null,               // 怪物定義
+  state:'idle',           // idle | approach | hit | dead | charge | retreat
+  frame:0,
+  chargeX:0,              // 衝刺目標X
+  originalX:0,            // 原始X（Boss用）
+  timer:0,
+  alpha:1,
+  scaleEffect:1,
+  visible:false,
+};
+
+let animId=null;
+let lastTime=0;
+
+// ══ 繪製背景 ══
+function drawBackground(t){
+  // 天空漸層
+  const sky=ctx.createLinearGradient(0,0,0,ch*0.7);
+  sky.addColorStop(0,'#0d0b2a');
+  sky.addColorStop(0.5,'#1a1535');
+  sky.addColorStop(1,'#12111e');
+  ctx.fillStyle=sky;
+  ctx.fillRect(0,0,cw,ch);
+
+  // 星星
+  ctx.fillStyle='rgba(255,255,255,0.6)';
+  const stars=[[10,8],[30,15],[55,5],[80,20],[105,10],[130,18],[155,7],[180,14],[210,9],[240,17],[270,6],[300,12],[330,19],[360,8],[390,16],[420,11]];
+  stars.forEach(([sx,sy])=>{
+    const px=((sx-bgOff0*0.1)%cw+cw)%cw;
+    ctx.beginPath();ctx.arc(px,sy,1,0,Math.PI*2);ctx.fill();
+  });
+
+  // 遠景建築剪影
+  const buildW=60, buildGap=20;
+  const totalBuildW=buildW+buildGap;
+  ctx.fillStyle='#1e1b3a';
+  for(let i=-1;i<Math.ceil(cw/totalBuildW)+2;i++){
+    const bx=((i*totalBuildW-bgOff0%totalBuildW)+totalBuildW)%cw + (i-1)*totalBuildW - bgOff0%totalBuildW;
+    const adjusted=(((i*totalBuildW)-bgOff0)%((Math.ceil(cw/totalBuildW)+2)*totalBuildW)+(Math.ceil(cw/totalBuildW)+2)*totalBuildW)%(cw+totalBuildW*2)-totalBuildW;
+    const bh=30+((i*7+3)%4)*15;
+    ctx.fillRect(adjusted, ch*0.35-bh, buildW, bh);
+    // 窗戶
+    ctx.fillStyle='rgba(255,220,80,0.15)';
+    for(let wy=0;wy<Math.floor(bh/12);wy++){
+      for(let wx=0;wx<3;wx++){
+        if((i+wy+wx)%3!==0) continue;
+        ctx.fillRect(adjusted+8+wx*16, ch*0.35-bh+6+wy*12, 8, 7);
+      }
+    }
+    ctx.fillStyle='#1e1b3a';
+  }
+
+  // 中景 地面
+  const groundY=ch*0.72;
+  // 地面漸層
+  const grd=ctx.createLinearGradient(0,groundY,0,ch);
+  grd.addColorStop(0,'#2a1f0e');
+  grd.addColorStop(1,'#1a1208');
+  ctx.fillStyle=grd;
+  ctx.fillRect(0,groundY,cw,ch-groundY);
+
+  // 地面頂邊高光
+  ctx.fillStyle='#4a3520';
+  ctx.fillRect(0,groundY,cw,3);
+
+  // 地板磚縫（捲動）
+  ctx.strokeStyle='rgba(255,255,255,0.04)';
+  ctx.lineWidth=1;
+  const tileW=40;
+  for(let i=0;i<Math.ceil(cw/tileW)+2;i++){
+    const tx=(i*tileW - bgOff1%tileW + tileW)%cw;
+    ctx.beginPath();ctx.moveTo(tx,groundY);ctx.lineTo(tx,ch);ctx.stroke();
+  }
+
+  // 近景柵欄
+  ctx.fillStyle='#3a2a10';
+  const fenceGap=48;
+  for(let i=0;i<Math.ceil(cw/fenceGap)+2;i++){
+    const fx=(i*fenceGap - bgOff2%fenceGap + fenceGap)%(cw+fenceGap*2) - fenceGap;
+    // 柵欄柱
+    ctx.fillRect(fx, groundY-16, 6, 24);
+    ctx.fillStyle='#4a3618';
+    ctx.fillRect(fx+1, groundY-16, 2, 24);
+    ctx.fillStyle='#3a2a10';
+  }
+  // 橫桿
+  ctx.fillStyle='#4a3618';
+  ctx.fillRect(0,groundY-8,cw,4);
+  ctx.fillStyle='#2e1e08';
+  ctx.fillRect(0,groundY-8,cw,2);
+}
+
+// ══ 繪製Q版圓潤主角 ══
+function drawHero(now){
+  const hero=getHeroStage(stageNum);
+  const T=ch;
+  const groundY=ch*0.72;
+  const baseY=groundY-HERO.h;
+  let drawX=HERO.x, drawY=baseY;
+
+  // 跑步彈跳
+  let bounceY=0, leanAngle=0, squishX=1, squishY=1;
+  if(HERO.state==='run'){
+    const runCycle=(now/120)%(Math.PI*2);
+    bounceY=Math.abs(Math.sin(runCycle))*-8;
+    leanAngle=Math.sin(now/100)*0.08;
+    squishX=1+Math.sin(runCycle*2)*0.04;
+    squishY=1-Math.sin(runCycle*2)*0.04;
+  } else if(HERO.state==='hit'){
+    bounceY=Math.sin(HERO.hitTimer*0.3)*-4;
+    drawX=HERO.x-Math.sin(HERO.hitTimer*0.5)*6;
+    squishX=0.85; squishY=1.15;
+  } else if(HERO.state==='attack'){
+    drawX=HERO.x+Math.sin(HERO.attackTimer*0.4)*12;
+    leanAngle=0.2;
+  }
+
+  ctx.save();
+  ctx.translate(drawX+HERO.w/2, drawY+bounceY+HERO.h/2);
+  ctx.rotate(leanAngle);
+  ctx.scale(HERO.scaleX*squishX, squishY);
+
+  const W=HERO.w, H=HERO.h;
+  const hw=W/2, hh=H/2;
+
+  // 影子
+  ctx.save();ctx.translate(0,hh+8);ctx.scale(1,0.3);
+  ctx.globalAlpha=0.25+bounceY*-0.02;
+  ctx.fillStyle='#000';
+  ctx.beginPath();ctx.ellipse(0,0,hw*0.9,hw*0.4,0,0,Math.PI*2);ctx.fill();
+  ctx.globalAlpha=1;ctx.restore();
+
+  // 腳（跑步動畫）
+  if(HERO.state==='run'){
+    const legAngle=Math.sin(now/120)*0.5;
+    ctx.fillStyle=hero.color==='#60a5fa'?'#1e3a5f':'#2a1a0a';
+    // 左腳
+    ctx.save();ctx.translate(-hw*0.25,hh*0.6);ctx.rotate(legAngle);
+    ctx.fillStyle=hero.color;
+    ctx.beginPath();ctx.roundRect(-5,0,10,H*0.28,3);ctx.fill();
+    // 腳掌
+    ctx.fillStyle='#333';
+    ctx.beginPath();ctx.ellipse(legAngle>0?4:-4,H*0.28,7,4,0,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+    // 右腳
+    ctx.save();ctx.translate(hw*0.25,hh*0.6);ctx.rotate(-legAngle);
+    ctx.fillStyle=hero.color;
+    ctx.beginPath();ctx.roundRect(-5,0,10,H*0.28,3);ctx.fill();
+    ctx.fillStyle='#333';
+    ctx.beginPath();ctx.ellipse(-legAngle>0?4:-4,H*0.28,7,4,0,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+  }
+
+  // 身體（圓潤橢圓）
+  const bodyGrad=ctx.createRadialGradient(-hw*0.15,-hh*0.1,2,0,0,hw*1.1);
+  bodyGrad.addColorStop(0,lighten(hero.color,40));
+  bodyGrad.addColorStop(0.6,hero.color);
+  bodyGrad.addColorStop(1,darken(hero.color,30));
+  ctx.fillStyle=bodyGrad;
+  ctx.beginPath();
+  ctx.ellipse(0, hh*0.1, hw*0.8, hh*0.75, 0, 0, Math.PI*2);
+  ctx.fill();
+
+  // 頭（大圓頭）
+  const headGrad=ctx.createRadialGradient(-hw*0.2,-hh*0.55,2,0,-hh*0.4,hw*0.85);
+  headGrad.addColorStop(0,lighten(hero.color,50));
+  headGrad.addColorStop(0.5,lighten(hero.color,20));
+  headGrad.addColorStop(1,hero.color);
+  ctx.fillStyle=headGrad;
+  ctx.beginPath();
+  ctx.arc(0,-hh*0.4,hw*0.82,0,Math.PI*2);
+  ctx.fill();
+
+  // 頭髮/安全帽
+  drawHeroHat(ctx, hero, hw, hh, now);
+
+  // 眼睛
+  const eyeY=-hh*0.45;
+  if(HERO.state==='hit'){
+    // 受傷眼（×眼）
+    ctx.strokeStyle='#1a1a2a';ctx.lineWidth=2.5;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(-hw*0.3,eyeY-4);ctx.lineTo(-hw*0.1,eyeY+4);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(-hw*0.1,eyeY-4);ctx.lineTo(-hw*0.3,eyeY+4);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(hw*0.1,eyeY-4);ctx.lineTo(hw*0.3,eyeY+4);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(hw*0.3,eyeY-4);ctx.lineTo(hw*0.1,eyeY+4);ctx.stroke();
+  } else {
+    // 正常眼（大瞳孔Q版）
+    ctx.fillStyle='#1a1a2a';
+    ctx.beginPath();ctx.ellipse(-hw*0.25,eyeY,6,7,0,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.ellipse(hw*0.25,eyeY,6,7,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#fff';
+    ctx.beginPath();ctx.arc(-hw*0.22,eyeY-2,2.5,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(hw*0.28,eyeY-2,2.5,0,Math.PI*2);ctx.fill();
+    // 眼神高光
+    ctx.fillStyle='rgba(255,255,255,0.8)';
+    ctx.beginPath();ctx.arc(-hw*0.21,eyeY-3,1.2,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(hw*0.29,eyeY-3,1.2,0,Math.PI*2);ctx.fill();
+  }
+
+  // 嘴巴
+  ctx.strokeStyle='#1a1a2a';ctx.lineWidth=2;ctx.lineCap='round';
+  if(HERO.state==='attack'){
+    ctx.beginPath();ctx.arc(0,eyeY+10,6,0.1,Math.PI-0.1);ctx.stroke();
+  } else if(HERO.state==='hit'){
+    ctx.beginPath();ctx.moveTo(-5,eyeY+12);ctx.lineTo(5,eyeY+12);ctx.stroke();
+  } else {
+    ctx.beginPath();ctx.arc(0,eyeY+10,5,0.15,Math.PI-0.15);ctx.stroke();
+  }
+
+  // 手臂
+  const armAngle=HERO.state==='run'?Math.sin(now/120)*0.5:0;
+  ctx.fillStyle=hero.color;
+  ctx.save();ctx.translate(-hw*0.8,hh*0.0);ctx.rotate(-0.3+armAngle);
+  ctx.beginPath();ctx.roundRect(-4,-4,8,H*0.25,4);ctx.fill();ctx.restore();
+  ctx.save();ctx.translate(hw*0.8,hh*0.0);ctx.rotate(0.3-armAngle);
+  ctx.beginPath();ctx.roundRect(-4,-4,8,H*0.25,4);ctx.fill();ctx.restore();
+
+  // 腮紅
+  ctx.globalAlpha=0.35;
+  ctx.fillStyle='#ff8888';
+  ctx.beginPath();ctx.ellipse(-hw*0.45,eyeY+6,7,4,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(hw*0.45,eyeY+6,7,4,0,0,Math.PI*2);ctx.fill();
+  ctx.globalAlpha=1;
+
+  // ══ Boss擊倒特效疊加（越打越強）══
+  drawHeroBossAura(ctx, hw, hh, now, bossesDefeated);
+
+  ctx.restore();
+}
+
+// ══ Boss擊倒特效疊加 ══
+function drawHeroBossAura(ctx, hw, hh, now, bossCount){
+  if(bossCount<=0) return;
+  if(bossCount>=1){
+    const starN=6;
+    for(let i=0;i<starN;i++){
+      const a=(i/starN)*Math.PI*2 + now/600;
+      const r=hw*1.4;
+      const sx=Math.cos(a)*r, sy=Math.sin(a)*r;
+      const pulse=0.6+Math.sin(now/200+i)*0.4;
+      ctx.globalAlpha=pulse*0.85;
+      ctx.fillStyle='#fbbf24';
+      ctx.font=`${Math.floor(hw*0.5)}px serif`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('✦',sx,sy);
+    }
+    ctx.globalAlpha=1;
+  }
+  if(bossCount>=2){
+    const pulseR=hw*(1.6+Math.sin(now/250)*0.15);
+    const alpha=0.25+Math.sin(now/250)*0.12;
+    ctx.globalAlpha=alpha;
+    ctx.strokeStyle='#60a5fa';ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(0,0,pulseR,0,Math.PI*2);ctx.stroke();
+    const pulseR2=hw*(1.9+Math.sin(now/250+1)*0.12);
+    ctx.globalAlpha=alpha*0.6;
+    ctx.strokeStyle='#a78bfa';ctx.lineWidth=2;
+    ctx.beginPath();ctx.arc(0,0,pulseR2,0,Math.PI*2);ctx.stroke();
+    ctx.globalAlpha=1;
+  }
+  if(bossCount>=3){
+    const flameN=5;
+    for(let i=0;i<flameN;i++){
+      const baseAngle=(i/flameN)*Math.PI*2;
+      const wobble=Math.sin(now/150+i*1.3)*0.25;
+      const fx=Math.cos(baseAngle+wobble)*hw*0.6;
+      const fy=-hh*0.9 - Math.abs(Math.sin(now/180+i))*hw*0.4;
+      const fscale=0.5+Math.sin(now/130+i)*0.2;
+      ctx.save();ctx.translate(fx,fy);ctx.scale(fscale,fscale);
+      ctx.globalAlpha=0.85;
+      ctx.font=`${Math.floor(hw*0.7)}px serif`;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText('🔥',0,0);ctx.restore();
+    }
+    ctx.globalAlpha=1;
+  }
+  if(bossCount>=4){
+    const boltN=4;
+    for(let i=0;i<boltN;i++){
+      const a=(i/boltN)*Math.PI*2 + now/400;
+      if(Math.random()>0.65) continue;
+      ctx.globalAlpha=0.7+Math.random()*0.3;
+      ctx.strokeStyle=i%2===0?'#fbbf24':'#a78bfa';
+      ctx.lineWidth=2;
+      ctx.beginPath();
+      let lx=Math.cos(a)*hw*0.8, ly=Math.sin(a)*hw*0.8;
+      ctx.moveTo(lx,ly);
+      for(let s=0;s<3;s++){
+        lx+=Math.cos(a)*hw*0.3+(Math.random()-0.5)*12;
+        ly+=Math.sin(a)*hw*0.3+(Math.random()-0.5)*12;
+        ctx.lineTo(lx,ly);
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha=1;
+  }
+}
+
+function drawHeroHat(ctx, hero, hw, hh, now){
+  const eyeY=-hh*0.4;
+  if(hero.minStage===1){
+    // 辦公室頭髮
+    ctx.fillStyle='#3a2a10';
+    ctx.beginPath();ctx.arc(0,eyeY-hw*0.45,hw*0.75,Math.PI,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(-hw*0.6,eyeY-hw*0.15,hw*0.35,Math.PI,0);ctx.fill();
+    ctx.beginPath();ctx.arc(hw*0.6,eyeY-hw*0.15,hw*0.35,Math.PI,0);ctx.fill();
+  } else if(hero.minStage===11){
+    // 工地安全帽（黃色）
+    ctx.fillStyle='#fbbf24';
+    ctx.beginPath();ctx.ellipse(0,eyeY-hw*0.6,hw*0.9,hh*0.55,0,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillRect(-hw*0.95,eyeY-hw*0.55,hw*1.9,hh*0.2);
+    ctx.fillStyle='#f59e0b';
+    ctx.fillRect(-hw*0.95,eyeY-hw*0.57,hw*1.9,4);
+  } else if(hero.minStage===21){
+    // 防災背心頭（橘色反光條）
+    ctx.fillStyle='#1e293b';
+    ctx.beginPath();ctx.arc(0,eyeY-hw*0.4,hw*0.78,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#f97316';
+    ctx.fillRect(-hw*0.78,eyeY-hw*0.48,hw*1.56,5);
+  } else if(hero.minStage===31){
+    // 消防頭盔（紅色）
+    ctx.fillStyle='#dc2626';
+    ctx.beginPath();ctx.ellipse(0,eyeY-hw*0.65,hw*0.88,hh*0.6,0,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillRect(-hw*0.9,eyeY-hw*0.6,hw*1.8,hh*0.18);
+    ctx.fillStyle='#fca5a5';
+    ctx.fillRect(-hw*0.9,eyeY-hw*0.62,hw*1.8,3);
+    // 徽章
+    ctx.fillStyle='#fbbf24';
+    ctx.beginPath();ctx.arc(0,eyeY-hw*0.55,5,0,Math.PI*2);ctx.fill();
+  } else {
+    // 最終：消防車帽（深紅+金徽）
+    ctx.fillStyle='#7f1d1d';
+    ctx.beginPath();ctx.ellipse(0,eyeY-hw*0.65,hw*0.9,hh*0.62,0,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillRect(-hw*0.92,eyeY-hw*0.6,hw*1.84,hh*0.2);
+    ctx.fillStyle='#fbbf24';
+    ctx.fillRect(-hw*0.92,eyeY-hw*0.62,hw*1.84,4);
+    ctx.beginPath();ctx.arc(0,eyeY-hw*0.52,7,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#fff';
+    ctx.font=`bold ${Math.floor(hw*0.5)}px serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('★',0,eyeY-hw*0.52);
+  }
+}
+
+// ══ 繪製怪物 ══
+function drawMonster(now){
+  if(!MON.visible||!MON.def)return;
+  const groundY=ch*0.72;
+  const isBoss=MON.def.size>1.2;
+  const scale=MON.def.size * MON.scaleEffect;
+  const baseSize=ch*0.25 * scale;
+  const drawX=MON.x;
+  const drawY=groundY-baseSize;
+
+  ctx.save();
+  ctx.globalAlpha=MON.alpha;
+  ctx.translate(drawX+baseSize/2, drawY+baseSize/2);
+
+  // 影子
+  ctx.save();ctx.translate(0,baseSize/2+4);ctx.scale(1,0.3);
+  ctx.globalAlpha=MON.alpha*0.3;
+  ctx.fillStyle='#000';
+  ctx.beginPath();ctx.ellipse(0,0,baseSize*0.5,baseSize*0.2,0,0,Math.PI*2);ctx.fill();
+  ctx.globalAlpha=MON.alpha;ctx.restore();
+
+  const bsz=baseSize;
+  const col=MON.def.color;
+
+  if(MON.state==='dead'){
+    // 死亡爆炸
+    const prog=1-(MON.timer/20);
+    ctx.globalAlpha=MON.alpha*(1-prog);
+    ctx.fillStyle=col;
+    ctx.beginPath();
+    for(let i=0;i<8;i++){
+      const a=i/8*Math.PI*2;
+      const r=bsz*0.6*(1+prog*1.5);
+      ctx.lineTo(Math.cos(a)*r*(0.7+Math.random()*0.3),Math.sin(a)*r*(0.7+Math.random()*0.3));
+    }
+    ctx.closePath();ctx.fill();
+    ctx.globalAlpha=MON.alpha;
+  } else {
+    // 身體
+    const wobble=MON.state==='idle'?Math.sin(now/300+1)*3:0;
+    const monGrad=ctx.createRadialGradient(-bsz*0.2,-bsz*0.2,2,0,0,bsz*0.7);
+    monGrad.addColorStop(0,lighten(col,40));
+    monGrad.addColorStop(0.5,col);
+    monGrad.addColorStop(1,darken(col,40));
+    ctx.fillStyle=monGrad;
+
+    if(isBoss){
+      // Boss：不規則邪惡形狀
+      ctx.save();ctx.rotate(wobble*0.02);
+      ctx.beginPath();
+      ctx.arc(0,0,bsz*0.48,0,Math.PI*2);ctx.fill();
+      // 刺
+      ctx.fillStyle=darken(col,20);
+      for(let i=0;i<8;i++){
+        const a=i/8*Math.PI*2+(now/1000);
+        ctx.save();ctx.rotate(a);
+        ctx.beginPath();ctx.moveTo(bsz*0.45,0);ctx.lineTo(bsz*0.65,-8);ctx.lineTo(bsz*0.65,8);ctx.closePath();ctx.fill();
+        ctx.restore();
+      }
+      ctx.restore();
+    } else {
+      // 一般怪：Q版圓滾滾
+      ctx.beginPath();ctx.arc(0,wobble,bsz*0.44,0,Math.PI*2);ctx.fill();
+      // 腳
+      ctx.fillStyle=darken(col,25);
+      const legWob=MON.state==='idle'?Math.sin(now/200)*5:0;
+      ctx.beginPath();ctx.ellipse(-bsz*0.2,bsz*0.38+wobble,bsz*0.14,bsz*0.1,0,0,Math.PI*2);ctx.fill();
+      ctx.beginPath();ctx.ellipse(bsz*0.2,bsz*0.38+wobble-legWob,bsz*0.14,bsz*0.1,0,0,Math.PI*2);ctx.fill();
+    }
+
+    // emoji表情（大）
+    ctx.font=`${Math.floor(bsz*0.7)}px serif`;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    const emojiY=isBoss?0:-wobble*0.3;
+    ctx.fillText(MON.def.emoji,0,emojiY);
+
+    // Boss光圈
+    if(isBoss){
+      ctx.strokeStyle=lighten(col,30);
+      ctx.lineWidth=3;
+      ctx.globalAlpha=MON.alpha*(0.4+Math.sin(now/300)*0.2);
+      ctx.beginPath();ctx.arc(0,0,bsz*0.58+Math.sin(now/200)*4,0,Math.PI*2);ctx.stroke();
+      ctx.globalAlpha=MON.alpha;
+    }
+
+    // 受擊閃白
+    if(MON.state==='hit'&&MON.timer>10){
+      ctx.fillStyle='rgba(255,255,255,0.6)';
+      ctx.beginPath();ctx.arc(0,0,bsz*0.5,0,Math.PI*2);ctx.fill();
+    }
+  }
+
+  ctx.restore();
+}
+
+// ══ 主動畫迴圈 ══
+function battleLoop(ts){
+  if(over){return;}
+  const dt=Math.min(ts-lastTime,50);
+  lastTime=ts;
+
+  // 捲動背景
+  if(!waitingAnswer&&HERO.state==='run'&&!MON.visible){
+    bgOff0+=0.3; bgOff1+=0.8; bgOff2+=1.4;
+  } else if(waitingAnswer){
+    // 停止捲動
+  }
+
+  ctx.clearRect(0,0,cw,ch);
+  drawBackground(ts);
+  drawHero(ts);
+  drawMonster(ts);
+  drawParticles(ts);
+
+  // 主角動畫計時
+  if(HERO.state==='hit'){
+    HERO.hitTimer++;
+    if(HERO.hitTimer>25){HERO.state='run';HERO.hitTimer=0;}
+  }
+  if(HERO.state==='attack'){
+    HERO.attackTimer++;
+    if(HERO.attackTimer>20){HERO.state='run';HERO.attackTimer=0;}
+  }
+
+  // 怪物動畫
+  if(MON.visible&&MON.def){
+    if(MON.state==='approach'){
+      // 怪物走向主角
+      const targetX=HERO.x+HERO.w*0.5;
+      const monCenter=MON.x+MON.def.size*ch*0.25/2;
+      if(monCenter>targetX+HERO.w*1.5){
+        MON.x-=2.5;
+      } else {
+        MON.state='idle';
+        waitingAnswer=true;
+        showQuestion();
+      }
+    } else if(MON.state==='charge'){
+      MON.x-=(MON.x-MON.chargeX)*0.18+2;
+      if(Math.abs(MON.x-MON.chargeX)<5){
+        MON.state='dead';MON.timer=20;
+        HERO.state='hit';HERO.hitTimer=0;
+        triggerHitEffect();
+        // 顯示繼續按鈕
+        if(!isDead){
+          const cb=document.getElementById('qcont');
+          cb.style.display='block';
+          cb.textContent='繼續冒險 →';
+          cb.onclick=()=>{
+            if(isDead||over)return;
+            // 等怪物死亡動畫結束後自動spawn，這裡只關閉按鈕
+            cb.style.display='none';
+          };
+        }
+      }
+    } else if(MON.state==='boss_charge'){
+      // Boss衝刺（答錯後退回原位）
+      MON.x-=(MON.x-MON.chargeX)*0.18+2;
+      if(Math.abs(MON.x-MON.chargeX)<5){
+        MON.state='boss_retreat';
+        HERO.state='hit';HERO.hitTimer=0;
+        triggerHitEffect();
+      }
+    } else if(MON.state==='boss_retreat'){
+      // Boss退回原位
+      MON.x+=(MON.originalX-MON.x)*0.1+1;
+      if(Math.abs(MON.x-MON.originalX)<3){
+        MON.x=MON.originalX;
+        MON.state='idle';
+        locked=false;
+        // 顯示繼續按鈕，玩家按了才出下一題
+        const cb=document.getElementById('qcont');
+        cb.style.display='block';
+        cb.textContent=`⚔️ 繼續挑戰 Boss（還需 ${bossHp} 擊）→`;
+        cb.onclick=()=>{
+          if(isDead||over)return;
+          cb.style.display='none';
+          if(!isDead) showNextBossQuestion();
+        };
+      }
+    } else if(MON.state==='dead'){
+      MON.timer--;
+      MON.alpha=Math.max(0,MON.timer/20);
+      MON.scaleEffect=1+(1-MON.timer/20)*0.5;
+      if(MON.timer<=0){
+        MON.visible=false;
+        // 怪物消滅後繼續
+        onMonsterDefeated();
+      }
+    } else if(MON.state==='die_away'){
+      // 普通怪答錯：捨身攻擊後消失
+      MON.timer--;
+      MON.alpha=Math.max(0,MON.timer/15);
+      if(MON.timer<=0){
+        MON.visible=false;
+        onMonsterDefeated_wrong();
+      }
+    }
+  }
+
+  animId=requestAnimationFrame(battleLoop);
+}
+
+// Canvas 粒子系統
+const PARTICLES=[];
+function triggerHitEffect(){
+  const bx=document.getElementById('battle-wrap').getBoundingClientRect();
+  const px=HERO.x+HERO.w/2;
+  const py=ch*0.5;
+  spawnCanvasParticles(px,py,['#ef4444','#ff8800','#fbbf24'],12);
+}
+function spawnCanvasParticles(x,y,colors,n){
+  for(let i=0;i<n;i++){
+    const angle=Math.random()*Math.PI*2;
+    const speed=2+Math.random()*4;
+    PARTICLES.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed-2,life:1,color:colors[i%colors.length],size:3+Math.random()*5});
+  }
+}
+function drawParticles(){
+  for(let i=PARTICLES.length-1;i>=0;i--){
+    const p=PARTICLES[i];
+    p.x+=p.vx;p.y+=p.vy;p.vy+=0.15;p.life-=0.04;
+    if(p.life<=0){PARTICLES.splice(i,1);continue;}
+    ctx.globalAlpha=p.life;
+    ctx.fillStyle=p.color;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.size*p.life,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;
+  }
+}
+
+// ══════════════════════════════
+// 輔助：顏色操作
+// ══════════════════════════════
+function lighten(hex,amount){
+  const r=Math.min(255,parseInt(hex.slice(1,3),16)+amount);
+  const g=Math.min(255,parseInt(hex.slice(3,5),16)+amount);
+  const b=Math.min(255,parseInt(hex.slice(5,7),16)+amount);
+  return `rgb(${r},${g},${b})`;
+}
+function darken(hex,amount){
+  const r=Math.max(0,parseInt(hex.slice(1,3),16)-amount);
+  const g=Math.max(0,parseInt(hex.slice(3,5),16)-amount);
+  const b=Math.max(0,parseInt(hex.slice(5,7),16)-amount);
+  return `rgb(${r},${g},${b})`;
+}
 
 // ══════════════════════════════
 // 遊戲狀態
 // ══════════════════════════════
 let USER='', SESSION='S'+Date.now().toString(36).toUpperCase();
-let cv, ctx, TILE_PX;
-let curRC=[1,1];
-let px=2, py=2;
 let hp=MAX_HP, deaths=0, isDead=false, deathTimer=null;
-let roomFlames={}, qPool=[...QS], qPoolIdx=0;
-let visitedRooms=new Set(['1,1']);
-let activeQ=null, activeFl=null;
+let qPool=[...QS], qPoolIdx=0, currentQ=null;
 let qStart=0, qSec=0, qTmrInt=null, locked=false;
 let totalAns=0, totalOk=0, seenIds=new Set();
+let totalAnsCount=0, questionAttempts={};
+let combo=0, maxCombo=0, roundOk=0, roundFail=0, roundCount=0;
 let remain=GAME_SECS, gameTmrInt=null, over=false;
-let transitioning=false;
-let questionAttempts={}; // 追蹤每題累計嘗試次數
-let combo=0;           // 連擊數
-let roundOk=0;         // 本輪答對數
-let roundFail=0;       // 本輪答錯數
-let totalAnsCount=0;   // 累計總答題次數（含多輪）
-let encourageShown={5:false,10:false,15:false}; // 鼓勵訊息是否已顯示
-let roundCount=0;      // 目前第幾輪（從0開始）
-const ENCOURAGE_MSGS={
-  5:'已進行 5 分鐘！繼續探索，還有很多火焰等著你！🔥',
-  10:'已進行 10 分鐘，過半了！你的防災知識正在提升中，加油！💪',
-  15:'最後 5 分鐘！衝刺吧，看看能答對幾題！🏆'
-};
+let encourageShown={5:false,10:false,15:false};
+const ENCOURAGE_MSGS={5:'已進行 5 分鐘！繼續冒險，越戰越勇！🔥',10:'已進行 10 分鐘，過半了！防災技能大提升！💪',15:'最後 5 分鐘！全力衝刺！🏆'};
 
-// ══ localStorage 鍵名 ══
-const LS_KEY = 'fire_drill_save';
+let stageNum=1;          // 當前關卡數（累計）
+let bossesDefeated=0;    // 累計打倒Boss數，控制特效疊加
+let bossHp=BOSS_HP;      // 當前Boss剩餘HP
+let isBossStage=false;   // 是否在打Boss
+let waitingAnswer=false;  // 等待玩家答題
+let prevHeroStage=null;  // 上一個升階
 
 // ══════════════════════════════
-// localStorage 存檔 / 讀檔
-// ══════════════════════════════
-function saveGame(){
-  const state={
-    USER,SESSION,
-    curRC,px,py,
-    hp,deaths,
-    remain,
-    totalAns,totalOk,totalAnsCount,
-    combo,roundOk,roundFail,roundCount,
-    seenIds:Array.from(seenIds),
-    visitedRooms:Array.from(visitedRooms),
-    questionAttempts,
-    roomFlames:Object.fromEntries(
-      Object.entries(roomFlames).map(([k,v])=>[k,v.map(f=>({
-        lx:f.lx,ly:f.ly,dead:f.dead,
-        respawnAt:f.respawnAt,phase:f.phase,
-        qid:f.q?f.q.id:null
-      }))])
-    ),
-    savedAt:Date.now()
-  };
-  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
-}
-
-function clearSave(){
-  try{ localStorage.removeItem(LS_KEY); }catch(e){}
-}
-
-function loadSave(){
-  try{
-    const raw=localStorage.getItem(LS_KEY);
-    if(!raw) return null;
-    const s=JSON.parse(raw);
-    // 超過25分鐘的存檔作廢
-    if(Date.now()-s.savedAt > 25*60*1000){ clearSave(); return null; }
-    return s;
-  }catch(e){ return null; }
-}
-
-function hasSave(){
-  return !!loadSave();
-}
-
-// ══════════════════════════════
-// 登入
+// 登入粒子
 // ══════════════════════════════
 (()=>{
   const bg=document.getElementById('fpbg');
@@ -567,733 +1041,202 @@ function hasSave(){
   const ni=document.getElementById('ni'),sb=document.getElementById('sb');
   ni.addEventListener('input',()=>{sb.disabled=ni.value.trim().length<1});
   ni.addEventListener('keydown',e=>{if(e.key==='Enter'&&ni.value.trim())startGame()});
-
-  // 偵測是否有未完成的存檔，自動恢復
   const save=loadSave();
-  if(save){
-    // 直接跳過登入頁，恢復遊戲
-    document.getElementById('login').style.display='none';
-    document.getElementById('game').classList.add('in');
-    restoreGame(save);
-  }
+  if(save){document.getElementById('login').style.display='none';document.getElementById('game').classList.add('in');restoreGame(save);}
 })();
 
 function startGame(){
-  USER=document.getElementById('ni').value.trim();
-  if(!USER)return;
+  USER=document.getElementById('ni').value.trim();if(!USER)return;
   document.getElementById('hud-name').textContent=USER;
   document.getElementById('login').classList.add('out');
-  setTimeout(()=>{
-    document.getElementById('login').style.display='none';
-    document.getElementById('tutorial').classList.add('show');
-  },380);
+  setTimeout(()=>{document.getElementById('login').style.display='none';document.getElementById('tutorial').classList.add('show');},380);
 }
-
 function confirmTutorial(){
-  const tut=document.getElementById('tutorial');
-  tut.classList.add('out');
-  setTimeout(()=>{
-    tut.classList.remove('show');
-    tut.style.display='none';
-    document.getElementById('game').classList.add('in');
-    initGame(); // 計時從這裡才開始
-  },350);
+  const tut=document.getElementById('tutorial');tut.classList.add('out');
+  setTimeout(()=>{tut.classList.remove('show');tut.style.display='none';document.getElementById('game').classList.add('in');initGame();},350);
 }
 
 // ══════════════════════════════
 // 初始化
 // ══════════════════════════════
 function initGame(){
-  cv=document.getElementById('gc');
-  ctx=cv.getContext('2d');
-  calcTile();
-  window.addEventListener('resize',calcTile);
+  initCanvas();
   shufflePool();
-  ROOM_DEFS.forEach(rd=>initRoomFlames(rd.rc[0],rd.rc[1]));
-  renderHP();
-  updateBanner();
-  updateAnsHUD();
+  renderHP();updateAnsHUD();updateLevelBar();
+  prevHeroStage=getHeroStage(1);
   gameTmrInt=setInterval(tickGame,1000);
   setInterval(saveGame,5000);
-  requestAnimationFrame(loop);
+  lastTime=performance.now();
+  animId=requestAnimationFrame(battleLoop);
+  spawnMonster();
 }
 
-function restoreGame(save){
-  USER=save.USER||''; SESSION=save.SESSION||('S'+Date.now().toString(36).toUpperCase());
-  curRC=save.curRC||[1,1]; px=save.px||2; py=save.py||2;
-  hp=save.hp||MAX_HP; deaths=save.deaths||0;
-  remain=save.remain||GAME_SECS;
-  totalAns=save.totalAns||0; totalOk=save.totalOk||0;
-  totalAnsCount=save.totalAnsCount||0;
-  combo=save.combo||0;
-  roundOk=save.roundOk||0; roundFail=save.roundFail||0;
-  roundCount=save.roundCount||0;
-  seenIds=new Set(save.seenIds||[]);
-  visitedRooms=new Set(save.visitedRooms||['1,1']);
-  questionAttempts=save.questionAttempts||{};
-  const qMap=Object.fromEntries(QS.map(q=>[q.id,q]));
-  if(save.roomFlames){
-    Object.entries(save.roomFlames).forEach(([k,fls])=>{
-      roomFlames[k]=fls.map(f=>({
-        lx:f.lx,ly:f.ly,
-        q:f.qid?(qMap[f.qid]||nextQ()):nextQ(),
-        dead:f.dead||false,
-        respawnAt:f.respawnAt||0,
-        phase:f.phase||Math.random()*Math.PI*2
-      }));
-    });
-  }
-  document.getElementById('hud-name').textContent=USER;
-  cv=document.getElementById('gc');
+function initCanvas(){
+  cv=document.getElementById('battle-canvas');
+  const wrap=document.getElementById('battle-wrap');
+  cw=wrap.clientWidth; ch=wrap.clientHeight;
+  cv.width=cw; cv.height=ch;
   ctx=cv.getContext('2d');
-  calcTile();
-  window.addEventListener('resize',calcTile);
-  renderHP();
-  updateBanner();
-  updateAnsHUD();
-  gameTmrInt=setInterval(tickGame,1000);
-  setInterval(saveGame,5000);
-  setTimeout(buildFlameEmojis,50);
-  requestAnimationFrame(loop);
+  // 主角位置
+  const groundY=ch*0.72;
+  HERO.w=ch*0.22; HERO.h=ch*0.32;
+  HERO.x=cw*0.15;
+  HERO.y=groundY-HERO.h;
 }
 
-function calcTile(){
-  const clip=document.getElementById('cv-clip');
-  const cw=clip.clientWidth, ch=clip.clientHeight;
-  // 5格正好填滿，取最小以保持正方形
-  TILE_PX=Math.floor(Math.min(cw,ch)/ROOM_SIZE);
-  const mapPx=TILE_PX*ROOM_SIZE;
-  cv.width=mapPx; cv.height=mapPx;
-  const sl=document.getElementById('cv-slider');
-  sl.style.width=mapPx+'px'; sl.style.height=mapPx+'px';
-  sl.style.left=Math.floor((cw-mapPx)/2)+'px';
-  sl.style.top=Math.floor((ch-mapPx)/2)+'px';
+function spawnMonster(){
+  if(over||isDead)return;
+  isBossStage=(stageNum%BOSS_EVERY===0);
+  const monList=isBossStage?BOSS_MONSTERS:MONSTERS;
+  const idx=Math.floor(stageNum/BOSS_EVERY)%monList.length;
+  MON.def=isBossStage?monList[Math.min(idx,monList.length-1)]:monList[Math.floor(Math.random()*monList.length)];
+  const monSize=MON.def.size*ch*0.25;
+  MON.x=cw+monSize; MON.y=0;
+  MON.w=monSize; MON.h=monSize;
+  MON.originalX=cw*0.72;
+  MON.state='approach';
+  MON.alpha=1; MON.scaleEffect=1; MON.timer=0;
+  MON.visible=true;
+  waitingAnswer=false;
+  if(isBossStage) bossHp=BOSS_HP;
+  // 更新Boss HP UI
+  document.getElementById('boss-tag').style.display=isBossStage?'inline-block':'none';
+  document.getElementById('boss-hp-row').style.display=isBossStage?'flex':'none';
+  updateBossHPBar();
+}
+
+function updateBossHPBar(){
+  if(!isBossStage)return;
+  const pct=(bossHp/BOSS_HP)*100;
+  document.getElementById('boss-hp-bar').style.width=pct+'%';
 }
 
 // ══════════════════════════════
-// HP
+// 怪物消滅後邏輯
 // ══════════════════════════════
-function renderHP(){
-  const c=document.getElementById('hp-hearts');
-  c.innerHTML='';
-  for(let i=0;i<MAX_HP;i++){
-    const h=document.createElement('span');
-    h.className='heart'+(i>=hp?' lost':'');
-    h.textContent='❤';
-    h.style.color=i<hp?'#ef4444':'rgba(239,68,68,.2)';
-    c.appendChild(h);
+function onMonsterDefeated(){
+  // 答對打倒（含Boss最後一擊）
+  waitingAnswer=false;
+  document.getElementById('qpanel_open')&&document.getElementById('qpanel_open').classList.remove('open');
+  spawnCanvasParticles(MON.originalX,ch*0.5,['#fbbf24','#ff8800','#22c55e'],20);
+  setTimeout(()=>{
+    // 檢查升階
+    checkLevelUp();
+    // 關卡推進
+    stageNum++;
+    updateLevelBar();
+    // 延遲後出現下一隻怪
+    setTimeout(spawnMonster, 800);
+  },400);
+}
+
+function onMonsterDefeated_wrong(){
+  // 普通怪捨身攻擊後消失
+  waitingAnswer=false;
+  stageNum++;
+  updateLevelBar();
+  setTimeout(spawnMonster,800);
+}
+
+function checkLevelUp(){
+  const cur=getHeroStage(stageNum+1);
+  if(cur.minStage!==prevHeroStage.minStage){
+    prevHeroStage=cur;
+    showLevelUp(cur);
   }
-  document.getElementById('hp-count').textContent=hp+'/'+MAX_HP;
+}
+function showLevelUp(stage){
+  if(over)return;
+  document.getElementById('levelup-hero').textContent=stage.emoji;
+  document.getElementById('levelup-text').textContent='你已成為「'+stage.name+'」！\n防災知識持續提升中！';
+  const b=document.getElementById('levelup-banner');
+  b.classList.add('show');
+  setTimeout(()=>b.classList.remove('show'),2800);
 }
 
-function loseHP(){
-  if(isDead)return;
-  hp=Math.max(0,hp-1);
-  renderHP();
-  // 閃紅畫面
-  flashRed();
-  if(hp<=0) triggerDeath();
-}
-
-function flashRed(){
-  const cl=document.getElementById('cv-clip');
-  cl.style.boxShadow='0 0 0 4px #ef4444';
-  setTimeout(()=>{cl.style.boxShadow='';},300);
-}
-
-function triggerDeath(){
-  isDead=true; deaths++;
-  // 強制關閉所有進行中狀態
-  document.getElementById('qpanel').classList.remove('open');
-  activeQ=null; activeFl=null; locked=false;
-  transitioning=false;
-  if(qTmrInt){clearInterval(qTmrInt);qTmrInt=null;}
-  const ov=document.getElementById('death-overlay');
-  ov.classList.add('show');
-  let cnt=DEATH_SECS;
-  document.getElementById('death-countdown').textContent=cnt;
-  if(deathTimer){clearInterval(deathTimer);deathTimer=null;}
-  deathTimer=setInterval(()=>{
-    cnt--;
-    document.getElementById('death-countdown').textContent=Math.max(0,cnt);
-    if(cnt<=0){
-      clearInterval(deathTimer);
-      deathTimer=null;
-      respawn();
-    }
-  },1000);
-}
-
-function respawn(){
-  hp=MAX_HP;
-  isDead=false;
-  locked=false;
-  transitioning=false;
-  activeQ=null;
-  activeFl=null;
-  document.getElementById('death-overlay').classList.remove('show');
-  renderHP();
-  // 清除舊的火焰emoji
-  // 回到大禮堂中心（不呼叫calcTile，避免破壞canvas context）
-  // questionAttempts 不重置，整個 session 累計
-  curRC=[1,1]; px=2; py=2;
-  visitedRooms.add('1,1');
-  updateBanner();
-  // 重設slider位置到正中央
-  const clip=document.getElementById('cv-clip');
-  const sl=document.getElementById('cv-slider');
-  const mapPx=TILE_PX*ROOM_SIZE;
-  sl.style.transition='none';
-  sl.style.left=Math.floor((clip.clientWidth-mapPx)/2)+'px';
-  sl.style.top=Math.floor((clip.clientHeight-mapPx)/2)+'px';
+function updateLevelBar(){
+  document.getElementById('level-num').textContent=stageNum;
+  const inCycle=(stageNum-1)%BOSS_EVERY;
+  const pct=(inCycle/BOSS_EVERY)*100;
+  document.getElementById('level-bar').style.width=pct+'%';
 }
 
 // ══════════════════════════════
-// 火焰
+// 題目系統
 // ══════════════════════════════
 function shufflePool(){qPool=[...QS].sort(()=>Math.random()-.5);qPoolIdx=0;}
 function nextQ(){if(qPoolIdx>=qPool.length)shufflePool();return qPool[qPoolIdx++];}
 
-function rcKey(c,r){return `${c},${r}`;}
-
-function initRoomFlames(c,r){
-  const key=rcKey(c,r);
-  if(roomFlames[key])return;
-  const spots=[{x:1,y:1},{x:3,y:1},{x:1,y:3},{x:3,y:3}];
-  // 每個房間放2個火焰（隨機選2個位置）
-  const chosen=spots.sort(()=>Math.random()-.5).slice(0,2);
-  roomFlames[key]=chosen.map(s=>({lx:s.x,ly:s.y,q:nextQ(),dead:false,respawnAt:0,phase:Math.random()*Math.PI*2}));
-}
-
-function getRoomFlames(c,r){
-  const key=rcKey(c,r);
-  if(!roomFlames[key])initRoomFlames(c,r);
-  return roomFlames[key];
-}
-
-function checkRespawn(){
-  const now=Date.now();
-  getRoomFlames(...curRC).forEach(f=>{
-    if(f.dead&&f.respawnAt&&now>=f.respawnAt){
-      f.dead=false;f.q=nextQ();f.phase=Math.random()*Math.PI*2;f.respawnAt=0;
-    }
-  });
-}
-
-// ══════════════════════════════
-// 格子類型
-// ══════════════════════════════
-function getTileType(lx,ly,rd){
-  const d=rd.doors; const L=ROOM_SIZE-1;
-  if((lx===0||lx===L)&&(ly===0||ly===L)) return 'wall';
-  if(ly===0){ return (d.up&&lx===2)?'door-up':'wall'; }
-  if(ly===L){ return (d.down&&lx===2)?'door-down':'wall'; }
-  if(lx===0){ return (d.left&&ly===2)?'door-left':'wall'; }
-  if(lx===L){ return (d.right&&ly===2)?'door-right':'wall'; }
-  return 'floor';
-}
-function isWalkable(lx,ly,rd){ return getTileType(lx,ly,rd)!=='wall'; }
-
-// ══════════════════════════════
-// 繪圖
-// ══════════════════════════════
-function drawRoom(now){
-  const T=TILE_PX;
-  const rd=ROOM_DEFS.find(r=>r.rc[0]===curRC[0]&&r.rc[1]===curRC[1]);
-  if(!rd)return;
-
-  ctx.fillStyle='#08080f';
-  ctx.fillRect(0,0,cv.width,cv.height);
-
-  // 地板和牆壁
-  for(let ly=0;ly<ROOM_SIZE;ly++){
-    for(let lx=0;lx<ROOM_SIZE;lx++){
-      const type=getTileType(lx,ly,rd);
-      const x=lx*T, y=ly*T;
-      if(type==='wall'){
-        drawWall(x,y,T,lx,ly);
-      } else if(type==='floor'){
-        drawFloor(x,y,T,lx,ly);
-      } else {
-        drawDoor(x,y,T,type);
-      }
-    }
-  }
-
-  // 家具
-  drawFurnitureForRoom(rd,T);
-
-  // 火焰
-  getRoomFlames(...curRC).forEach(f=>{
-    if(!f.dead) drawFlame(f.lx*T+T/2,f.ly*T+T/2,f.phase,now,T);
-  });
-
-  // 玩家
-  drawPlayer(px*T+T/2,py*T+T/2,now,T);
-}
-
-function drawWall(x,y,T,lx,ly){
-  // 主體
-  ctx.fillStyle='#252535';
-  ctx.fillRect(x,y,T,T);
-  // 磚縫橫線
-  ctx.fillStyle='#1a1a28';
-  ctx.fillRect(x,y+Math.floor(T*.5),T,2);
-  // 磚縫縱線（交錯）
-  const offset=(ly%2===0)?0:Math.floor(T*.5);
-  ctx.fillRect(x+((lx*T+offset)%T<2?0:Math.floor(T*.5)),y,2,Math.floor(T*.5));
-  ctx.fillRect(x+((lx*T+offset)%T<2?0:Math.floor(T*.5)),y+Math.floor(T*.5),2,Math.floor(T*.5));
-  // 頂部高光（立體感）
-  ctx.fillStyle='rgba(255,255,255,0.07)';
-  ctx.fillRect(x,y,T,3);
-  ctx.fillRect(x,y,3,T);
-  // 底部暗影
-  ctx.fillStyle='rgba(0,0,0,0.3)';
-  ctx.fillRect(x,y+T-2,T,2);
-}
-
-function drawFloor(x,y,T,lx,ly){
-  const shade=(lx+ly)%2===0?'#c8a860':'#bc9c54';
-  ctx.fillStyle=shade;
-  ctx.fillRect(x,y,T,T);
-  // 木紋線條
-  ctx.strokeStyle='rgba(0,0,0,0.15)';
-  ctx.lineWidth=1;
-  ctx.beginPath();ctx.moveTo(x,y+Math.floor(T*.33));ctx.lineTo(x+T,y+Math.floor(T*.33));ctx.stroke();
-  ctx.beginPath();ctx.moveTo(x,y+Math.floor(T*.66));ctx.lineTo(x+T,y+Math.floor(T*.66));ctx.stroke();
-  // 木紋光澤
-  ctx.fillStyle='rgba(255,255,255,0.07)';
-  ctx.fillRect(x,y,T,2);
-  // 地板邊框
-  ctx.strokeStyle='rgba(0,0,0,0.12)';
-  ctx.lineWidth=.5;
-  ctx.strokeRect(x+.5,y+.5,T-1,T-1);
-}
-
-function drawDoor(x,y,T,type){
-  // 門口底色（棕黃）
-  ctx.fillStyle='#6b4c10';
-  ctx.fillRect(x,y,T,T);
-  // 門框內側
-  ctx.fillStyle='#8a6218';
-  const isVert=(type==='door-up'||type==='door-down');
-  if(isVert){
-    ctx.fillRect(x+Math.floor(T*.15),y,Math.floor(T*.7),T);
-    // 門板光澤
-    ctx.fillStyle='rgba(255,200,80,0.2)';
-    ctx.fillRect(x+Math.floor(T*.2),y+2,Math.floor(T*.6),T-4);
-  } else {
-    ctx.fillRect(x,y+Math.floor(T*.15),T,Math.floor(T*.7));
-    ctx.fillStyle='rgba(255,200,80,0.2)';
-    ctx.fillRect(x+2,y+Math.floor(T*.2),T-4,Math.floor(T*.6));
-  }
-  // 箭頭（更大更明顯）
-  ctx.fillStyle='rgba(255,220,80,0.9)';
-  ctx.font=`bold ${Math.floor(T*.45)}px monospace`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  const arrows={'door-up':'↑','door-down':'↓','door-left':'←','door-right':'→'};
-  ctx.fillText(arrows[type],x+T/2,y+T/2);
-}
-
-// ══════════════════════════════
-// 家具繪製
-// ══════════════════════════════
-function drawFurnitureForRoom(rd,T){
-  const items=FURNITURE[rd.label]||[];
-  const fls=getRoomFlames(rd.rc[0],rd.rc[1]);
-  const flPos=new Set(fls.map(f=>`${f.lx},${f.ly}`));
-
-  items.forEach(it=>{
-    if(flPos.has(`${it.x},${it.y}`)) return;
-    if(it.x===px&&it.y===py) return;
-    const cx=it.x*T+T/2, cy=it.y*T+T/2;
-    drawFurnitureItem(cx,cy,T,it.t);
-  });
-}
-
-function drawFurnitureItem(cx,cy,T,type){
-  const s=T*.75; // 家具尺寸（佔tile的75%）
-  const h=s/2;
-
-  ctx.save();
-  ctx.translate(cx,cy);
-
-  if(type==='desk'||type==='desk-big'){
-    const w2=type==='desk-big'?s*.9:s*.8;
-    const h2=type==='desk-big'?s*.5:s*.45;
-    // 桌面
-    ctx.fillStyle='#7a5520';
-    ctx.fillRect(-w2/2,-h2/2,w2,h2);
-    // 桌面高光
-    ctx.fillStyle='#9a6e30';
-    ctx.fillRect(-w2/2+2,-h2/2+2,w2-4,h2*.4);
-    // 桌腳
-    ctx.fillStyle='#5a3c14';
-    ctx.fillRect(-w2/2,-h2/2+h2-4,8,8);
-    ctx.fillRect(w2/2-8,-h2/2+h2-4,8,8);
-    if(type==='desk-big'){
-      // 電腦螢幕
-      ctx.fillStyle='#1a1a2a';
-      ctx.fillRect(-s*.2,-h2/2-s*.2,s*.4,s*.25);
-      ctx.fillStyle='rgba(56,189,248,0.5)';
-      ctx.fillRect(-s*.18,-h2/2-s*.18,s*.36,s*.2);
-    }
-
-  } else if(type==='chair'){
-    // 椅座
-    ctx.fillStyle='#2a3a6a';
-    ctx.fillRect(-s*.3,-s*.2,s*.6,s*.4);
-    // 椅背
-    ctx.fillStyle='#3a4a8a';
-    ctx.fillRect(-s*.28,-s*.45,s*.56,s*.28);
-    // 高光
-    ctx.fillStyle='rgba(255,255,255,0.12)';
-    ctx.fillRect(-s*.25,-s*.43,s*.5,s*.1);
-
-  } else if(type==='server'){
-    // 機櫃本體
-    ctx.fillStyle='#1a1a2e';
-    ctx.fillRect(-s*.3,-s*.45,s*.6,s*.9);
-    // 機櫃邊框
-    ctx.strokeStyle='#2a2a4e';
-    ctx.lineWidth=2;
-    ctx.strokeRect(-s*.3,-s*.45,s*.6,s*.9);
-    // LED燈列
-    for(let i=0;i<5;i++){
-      ctx.fillStyle=i%2===0?'#00ff88':'#0088ff';
-      ctx.globalAlpha=.7+Math.sin(Date.now()/300+i)*.3;
-      ctx.fillRect(-s*.22,-s*.35+i*s*.16,s*.08,s*.06);
-      ctx.globalAlpha=1;
-    }
-    // 通風孔
-    ctx.fillStyle='#0a0a1e';
-    for(let i=0;i<3;i++) ctx.fillRect(-s*.1,-s*.3+i*s*.25,s*.2,s*.08);
-
-  } else if(type==='sofa'){
-    // 沙發
-    ctx.fillStyle='#4a2a6a';
-    ctx.fillRect(-s*.4,-s*.2,s*.8,s*.4);
-    ctx.fillRect(-s*.4,-s*.42,s*.8,s*.25);
-    ctx.fillStyle='#6a3a9a';
-    ctx.fillRect(-s*.38,-s*.2,s*.76,s*.35);
-    ctx.fillStyle='rgba(255,255,255,0.1)';
-    ctx.fillRect(-s*.36,-s*.18,s*.3,s*.1);
-
-  } else if(type==='whiteboard'){
-    ctx.fillStyle='#ddeeff';
-    ctx.fillRect(-s*.4,-s*.35,s*.8,s*.55);
-    ctx.strokeStyle='#aabbcc';
-    ctx.lineWidth=2;
-    ctx.strokeRect(-s*.4,-s*.35,s*.8,s*.55);
-    ctx.fillStyle='#3388cc';
-    ctx.fillRect(-s*.3,-s*.25,s*.6,s*.04);
-    ctx.fillRect(-s*.3,-s*.15,s*.4,s*.04);
-    ctx.fillRect(-s*.3,-s*.05,s*.5,s*.04);
-
-  } else if(type==='cabinet'){
-    ctx.fillStyle='#5a4a30';
-    ctx.fillRect(-s*.35,-s*.4,s*.7,s*.8);
-    ctx.fillStyle='#6a5a3a';
-    ctx.fillRect(-s*.33,-s*.38,s*.66,.4*s);
-    ctx.fillRect(-s*.33,s*.03,s*.66,.35*s);
-    ctx.fillStyle='#c8a060';
-    ctx.fillRect(-s*.05,-s*.02,s*.1,s*.06);
-    ctx.fillRect(-s*.05,s*.2,s*.1,s*.06);
-
-  } else if(type==='plant'){
-    ctx.fillStyle='#3a2010';
-    ctx.fillRect(-s*.1,s*.1,s*.2,s*.3);
-    ctx.fillStyle='#2a6a20';
-    ctx.beginPath();ctx.arc(0,-s*.05,s*.28,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='#3a8a28';
-    ctx.beginPath();ctx.arc(-s*.1,-s*.15,s*.18,0,Math.PI*2);ctx.fill();
-    ctx.beginPath();ctx.arc(s*.1,-s*.18,s*.16,0,Math.PI*2);ctx.fill();
-
-  } else if(type==='lab'){
-    // 實驗台
-    ctx.fillStyle='#888888';
-    ctx.fillRect(-s*.35,-s*.25,s*.7,s*.5);
-    ctx.fillStyle='#aaaaaa';
-    ctx.fillRect(-s*.33,-s*.23,s*.66,s*.25);
-    // 試管
-    for(let i=0;i<3;i++){
-      ctx.fillStyle=['#ff6666','#66ff66','#6666ff'][i];
-      ctx.fillRect(-s*.2+i*s*.16,-s*.35,s*.06,s*.2);
-      ctx.fillStyle='rgba(255,255,255,0.3)';
-      ctx.fillRect(-s*.2+i*s*.16,-s*.35,s*.02,s*.1);
-    }
-
-  } else if(type==='fridge'){
-    // 冷藏箱
-    ctx.fillStyle='#4a6a8a';
-    ctx.fillRect(-s*.3,-s*.42,s*.6,s*.84);
-    ctx.fillStyle='#5a7a9a';
-    ctx.fillRect(-s*.28,-s*.4,s*.56,.82*s);
-    // 把手
-    ctx.fillStyle='#8aaa cc';
-    ctx.fillRect(s*.18,-s*.15,s*.08,s*.3);
-    // 溫度顯示
-    ctx.fillStyle='#00ff88';
-    ctx.font=`bold ${Math.floor(T*.14)}px 'Share Tech Mono',monospace`;
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('4°C',0,-s*.28);
-
-  } else if(type==='podium'){
-    // 講台
-    ctx.fillStyle='#6a4a20';
-    ctx.fillRect(-s*.35,-s*.3,s*.7,s*.6);
-    ctx.fillStyle='#8a6030';
-    ctx.fillRect(-s*.33,-s*.28,s*.66,s*.35);
-    ctx.fillStyle='rgba(255,255,255,0.08)';
-    ctx.fillRect(-s*.3,-s*.25,s*.3,s*.1);
-    // 麥克風
-    ctx.fillStyle='#aaaaaa';
-    ctx.fillRect(-s*.03,-s*.5,s*.06,s*.25);
-    ctx.fillStyle='#cccccc';
-    ctx.beginPath();ctx.arc(0,-s*.5,s*.08,0,Math.PI*2);ctx.fill();
-  }
-
-  ctx.restore();
-}
-
-// ══════════════════════════════
-// 火焰動畫（更活潑版）
-// ══════════════════════════════
-function drawFlame(cx,cy,phase,now,T){
-  const t = now / 500 + phase;
-  const scale = 1 + Math.sin(t * 4) * 0.12;
-  const wobble = Math.sin(t * 3.5) * 0.15;
-  const size = Math.floor(T * 1.1 * scale);
-
-  ctx.save();
-  ctx.translate(cx, cy - T * 0.1);
-  ctx.rotate(wobble);
-  ctx.font = size + 'px serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  // 先畫深色底層墊高對比
-  ctx.globalAlpha = 1;
-  ctx.shadowColor = '#ff3300';
-  ctx.shadowBlur = T * 1.5;
-  ctx.fillText('🔥', 0, 0);
-  ctx.shadowColor = '#ff6600';
-  ctx.shadowBlur = T * 0.6;
-  ctx.fillText('🔥', 0, 0);
-  // 最後再畫一次本體確保emoji本身不透明
-  ctx.shadowBlur = 0;
-  ctx.fillText('🔥', 0, 0);
-  ctx.restore();
-}
-
-
-function drawPlayer(cx,cy,now,T){
-  const pulse=Math.sin(now/240)*3;
-
-  // 影子
-  ctx.globalAlpha=.3;
-  ctx.fillStyle='#000';
-  ctx.beginPath();ctx.ellipse(cx,cy+T*.4,T*.3,T*.1,0,0,Math.PI*2);ctx.fill();
-  ctx.globalAlpha=1;
-
-  // 外光圈（死亡時變紅）
-  ctx.globalAlpha=isDead?.3:.2+Math.sin(now/240)*.08;
-  ctx.fillStyle=isDead?'#ef4444':'#00d4ff';
-  ctx.beginPath();ctx.arc(cx,cy,T*.52+pulse*.03,0,Math.PI*2);ctx.fill();
-  ctx.globalAlpha=1;
-
-  // 身體
-  ctx.fillStyle=isDead?'#5a1a1a':'#005f7a';
-  ctx.beginPath();ctx.arc(cx,cy,T*.37,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle=isDead?'#ef4444':'#00d4ff';
-  ctx.beginPath();ctx.arc(cx,cy,T*.3,0,Math.PI*2);ctx.fill();
-
-  // 高光
-  ctx.globalAlpha=.5;
-  ctx.fillStyle='#fff';
-  ctx.beginPath();ctx.ellipse(cx-T*.09,cy-T*.1,T*.11,T*.07,-.5,0,Math.PI*2);ctx.fill();
-  ctx.globalAlpha=1;
-
-  // 圖示：🏃跑步動畫（用sin模擬上下彈跳）
-  const runBounce=Math.sin(now/120)*2;
-  const runLean=Math.sin(now/120)*0.15;
-  ctx.save();
-  ctx.translate(cx, cy+runBounce);
-  ctx.rotate(isDead?0:runLean);
-  ctx.font=`${Math.floor(T*.52)}px serif`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(isDead?'💀':'🏃',0,0);
-  ctx.restore();
-}
-
-// ══════════════════════════════
-// 🔥 Emoji 火焰覆蓋層
-// ══════════════════════════════
-function buildFlameEmojis(){ /* 已改用 Canvas 直接繪製 */ }
-
-function renderFlameEmojis(){ /* 已改用 Canvas 直接繪製，由 drawRoom 呼叫 */ }
-
-// ══════════════════════════════
-// 主迴圈
-// ══════════════════════════════
-function loop(){
-  if(over)return;
-  drawRoom(performance.now());
-  checkRespawn();
-  requestAnimationFrame(loop);
-}
-
-// ══════════════════════════════
-// 移動
-// ══════════════════════════════
-function tryMove(dx,dy){
-  if(transitioning||activeQ||over||isDead)return;
-  const nx=px+dx, ny=py+dy;
-  const rd=ROOM_DEFS.find(r=>r.rc[0]===curRC[0]&&r.rc[1]===curRC[1]);
-  if(!rd)return;
-  const ttype=getTileType(nx,ny,rd);
-  if(ttype.startsWith('door')){ handleDoor(ttype,rd); return; }
-  if(nx>=0&&nx<ROOM_SIZE&&ny>=0&&ny<ROOM_SIZE&&isWalkable(nx,ny,rd)){
-    px=nx; py=ny;
-    checkFlameCollision();
-  }
-}
-
-function handleDoor(doorType,rd){
-  const [c,r]=curRC;
-  let nc=c,nr=r,ex=px,ey=py;
-  if(doorType==='door-up'   ){nr=r-1;ex=2;ey=ROOM_SIZE-2;}
-  if(doorType==='door-down' ){nr=r+1;ex=2;ey=1;}
-  if(doorType==='door-left' ){nc=c-1;ex=ROOM_SIZE-2;ey=2;}
-  if(doorType==='door-right'){nc=c+1;ex=1;ey=2;}
-  if(!getRoom(nc,nr))return;
-  slideToRoom(nc,nr,ex,ey,doorType);
-}
-
-// ══════════════════════════════
-// 滑入特效
-// ══════════════════════════════
-function slideToRoom(nc,nr,ex,ey,doorType){
-  transitioning=true;
-  const slider=document.getElementById('cv-slider');
-  const clip=document.getElementById('cv-clip');
-  const mapPx=TILE_PX*ROOM_SIZE;
-  const cw=clip.clientWidth, ch=clip.clientHeight;
-  const bL=Math.floor((cw-mapPx)/2);
-  const bT=Math.floor((ch-mapPx)/2);
-
-  let offX=0, offY=0;
-  if(doorType==='door-up')   offY= mapPx;
-  if(doorType==='door-down') offY=-mapPx;
-  if(doorType==='door-left') offX= mapPx;
-  if(doorType==='door-right')offX=-mapPx;
-
-  // 更新狀態
-  curRC=[nc,nr]; px=ex; py=ey;
-  visitedRooms.add(rcKey(nc,nr));
-  updateBanner();
-
-  // 從對面滑入
-  slider.style.transition='none';
-  slider.style.left=(bL-offX)+'px';
-  slider.style.top=(bT-offY)+'px';
-
-  drawRoom(performance.now());
-
-  requestAnimationFrame(()=>{
-    slider.style.transition='left .32s cubic-bezier(.4,0,.2,1), top .32s cubic-bezier(.4,0,.2,1)';
-    slider.style.left=bL+'px';
-    slider.style.top=bT+'px';
-    setTimeout(()=>{
-      slider.style.transition='none';
-      transitioning=false;
-    },350);
-  });
-}
-
-// ══════════════════════════════
-// 火焰碰撞
-// ══════════════════════════════
-function checkFlameCollision(){
-  if(activeQ||locked||isDead)return;
-  const hit=getRoomFlames(...curRC).find(f=>!f.dead&&f.lx===px&&f.ly===py);
-  if(!hit)return;
-  activeQ=hit.q; activeFl=hit;
-  seenIds.add(activeQ.id);
-  // 累計本題嘗試次數
-  questionAttempts[activeQ.id]=(questionAttempts[activeQ.id]||0)+1;
-  qStart=Date.now();
-  showQ();
-}
-
-// ══════════════════════════════
-// 題目
-// ══════════════════════════════
-function showQ(){
-  document.getElementById('qpanel').classList.add('open');
-  document.getElementById('qnum').textContent=`題目 #${activeQ.id}`;
-  document.getElementById('qtext').textContent=activeQ.text;
+function showQuestion(){
+  currentQ=nextQ();
+  seenIds.add(currentQ.id);
+  questionAttempts[currentQ.id]=(questionAttempts[currentQ.id]||0)+1;
+  qStart=Date.now();qSec=0;
+  if(qTmrInt)clearInterval(qTmrInt);
+  document.getElementById('qtmr').textContent='00s';
+  qTmrInt=setInterval(()=>{qSec++;document.getElementById('qtmr').textContent=String(qSec).padStart(2,'0')+'s';},1000);
+  document.getElementById('qtext').textContent=currentQ.text;
   const expEl=document.getElementById('qexp');expEl.style.display='none';expEl.className='';
   document.getElementById('qcont').style.display='none';
-  qSec=0;document.getElementById('qtmr').textContent='00s';
-  if(qTmrInt)clearInterval(qTmrInt);
-  qTmrInt=setInterval(()=>{qSec++;document.getElementById('qtmr').textContent=String(qSec).padStart(2,'0')+'s';},1000);
-  const og=document.getElementById('qopts');og.innerHTML='';locked=false;
-  activeQ.opts.forEach((o,i)=>{
+  locked=false;
+  const og=document.getElementById('qopts');og.innerHTML='';
+  currentQ.opts.forEach((o,i)=>{
     const b=document.createElement('button');b.className='opt';
     b.innerHTML=`<span class="ol">${['A','B','C','D'][i]}</span>${o}`;
     b.onclick=()=>handleAns(i);og.appendChild(b);
   });
+  document.getElementById('q-area').scrollTop=0;
+}
+
+function showNextBossQuestion(){
+  currentQ=nextQ();
+  seenIds.add(currentQ.id);
+  questionAttempts[currentQ.id]=(questionAttempts[currentQ.id]||0)+1;
+  qStart=Date.now();qSec=0;
+  if(qTmrInt)clearInterval(qTmrInt);
+  document.getElementById('qtmr').textContent='00s';
+  qTmrInt=setInterval(()=>{qSec++;document.getElementById('qtmr').textContent=String(qSec).padStart(2,'0')+'s';},1000);
+  document.getElementById('qtext').textContent=currentQ.text;
+  const expEl=document.getElementById('qexp');expEl.style.display='none';expEl.className='';
+  document.getElementById('qcont').style.display='none';
+  locked=false;
+  const og=document.getElementById('qopts');og.innerHTML='';
+  currentQ.opts.forEach((o,i)=>{
+    const b=document.createElement('button');b.className='opt';
+    b.innerHTML=`<span class="ol">${['A','B','C','D'][i]}</span>${o}`;
+    b.onclick=()=>handleAns(i);og.appendChild(b);
+  });
+  document.getElementById('q-area').scrollTop=0;
 }
 
 function handleAns(chosen){
-  if(locked)return;locked=true;
+  if(locked||over||isDead)return;locked=true;
   clearInterval(qTmrInt);
   const ms=Date.now()-qStart;
-  // 先把 activeQ/activeFl 存成區域變數
-  // 避免 loseHP()->triggerDeath() 把 activeQ 設為 null 後程式 crash
-  const q=activeQ;
-  const fl=activeFl;
+  const q=currentQ;
   const isOk=chosen===q.ans;
   const hpBefore=hp;
-  if(isOk)totalOk++;
-  else loseHP();
-  totalAns++;
-  totalAnsCount++;
-  if(isOk){ combo++; roundOk++; }
-  else{ combo=0; roundFail++; }
-  updateRate();
-  updateAnsHUD();
-  // updateCombo 移到「繼續探索」按下後才觸發
-  // 送出數據（死亡時也要送）— 完整15個欄位
+
+  if(!isOk) loseHP();
+  if(isOk){totalOk++;combo++;if(combo>maxCombo)maxCombo=combo;roundOk++;}
+  else{combo=0;roundFail++;}
+  totalAns++;totalAnsCount++;
+  updateRate();updateAnsHUD();
+
   const attemptNum=questionAttempts[q.id]||1;
   const firstAttemptCorrect=(attemptNum===1&&isOk);
-  const roomName=(ROOM_DEFS.find(r=>r.rc[0]===curRC[0]&&r.rc[1]===curRC[1])||{}).label||'';
   if(SHEETS_URL)sendData({
-    // 1. 基礎識別
-    Timestamp:        new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}),
-    UserName:         USER,
-    SessionID:        SESSION,
-    // 2. 研究核心
-    QuestionID:       q.id,
-    BloomLevel:       q.bloom,
-    QuestionCategory: q.cat,
-    ResponseTime_ms:  ms,
-    IsCorrect:        isOk,
-    ChosenOption:     ['A','B','C','D'][chosen],
-    FirstAttemptCorrect: firstAttemptCorrect,
-    AttemptNum:       attemptNum,
-    // 3. 遊戲行為
-    RoomName:         roomName,
-    HPAtAnswer:       hpBefore,
-    DeathCount:       deaths,
-    TotalPlayTime:    GAME_SECS-remain,
+    Timestamp:new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}),
+    UserName:USER,SessionID:SESSION,
+    QuestionID:q.id,BloomLevel:q.bloom,QuestionCategory:q.cat,
+    ResponseTime_ms:ms,IsCorrect:isOk,ChosenOption:['A','B','C','D'][chosen],
+    FirstAttemptCorrect:firstAttemptCorrect,AttemptNum:attemptNum,
+    RoomName:'stage_'+stageNum,HPAtAnswer:hpBefore,DeathCount:deaths,TotalPlayTime:GAME_SECS-remain,
   });
-  // 火焰熄滅
-  fl.dead=true;
-  fl.respawnAt=Date.now()+RESPAWN_MS;
-  // 特效與每輪結束偵測都移到「繼續探索」按鈕按下後觸發
-  // 若死亡已觸發，讓死亡畫面接管，不再更新題目UI
-  if(isDead) return;
+
+  if(isDead)return;
+
+  // 標記選項（答對答錯都顯示）
   document.querySelectorAll('.opt').forEach((b,i)=>{
     if(i===q.ans)b.classList.add('ok');
     else if(i===chosen&&!isOk)b.classList.add('no');
@@ -1301,182 +1244,192 @@ function handleAns(chosen){
   });
   const ex=document.getElementById('qexp');
   ex.className=isOk?'correct':'wrong';
-  ex.textContent=(isOk?'✓ 正確！':'✗ 答錯了，扣一滴血！')+' 正確答案：'+['A','B','C','D'][q.ans]+'。'+q.opts[q.ans];
+  ex.textContent=(isOk?'✓ 正確！':'✗ 答錯了！')+' 正確答案：'+['A','B','C','D'][q.ans]+'。'+q.opts[q.ans];
   ex.style.display='block';
-  document.getElementById('qcont').style.display='block';
-  // 存下此次答題的資訊，按「繼續探索」時才觸發特效
+
   const _isOk=isOk;
-  const _flLx=fl.lx, _flLy=fl.ly;
-  const _totalAnsCount=totalAnsCount; // 存下當時的答題數，避免死亡後重複觸發
-  document.getElementById('qcont').onclick=()=>{
-    // 若玩家已死亡（題目面板被強制關閉後殘留的onclick），直接忽略
-    if(isDead||over) return;
-    document.getElementById('qpanel').classList.remove('open');
-    activeQ=null;activeFl=null;locked=false;
-    // 等抽屜縮完（350ms）後才顯示連擊數和爆炸特效
-    setTimeout(()=>{
-      if(_isOk){
-        spawnPlusOne(_flLx, _flLy);
-        spawnExplosion(_flLx, _flLy);
-        updateCombo();
+  const _totalAnsCount=totalAnsCount;
+  const contBtn=document.getElementById('qcont');
+
+  if(isOk){
+    if(isBossStage){
+      bossHp--;updateBossHPBar();
+      if(bossHp<=0){
+        // Boss擊倒
+        HERO.state='attack';HERO.attackTimer=0;
+        MON.state='dead';MON.timer=20;
+        spawnCanvasParticles(MON.x+MON.w/2,ch*0.4,['#fbbf24','#ff4400','#f472b6'],24);
+        spawnFloatPlus();setTimeout(()=>updateCombo(),100);
+        contBtn.style.display='block';
+        contBtn.textContent='💥 Boss擊倒！繼續冒險 →';
+        contBtn.onclick=()=>{
+          if(isDead||over)return;
+          bossesDefeated++;
+          if(_totalAnsCount>0&&_totalAnsCount%40===0&&!over){setTimeout(()=>showRoundEnd(),250);}
+          // onMonsterDefeated 由動畫迴圈觸發
+        };
       } else {
-        updateCombo(); // 答錯也要更新（歸零顯示）
+        // Boss還有HP
+        HERO.state='attack';HERO.attackTimer=0;
+        spawnCanvasParticles(MON.x+MON.w/2,ch*0.4,['#fbbf24','#ff8800'],10);
+        spawnFloatPlus();setTimeout(()=>updateCombo(),100);
+        contBtn.style.display='block';
+        contBtn.textContent=`⚔️ 繼續攻擊 Boss（還需 ${bossHp} 擊）→`;
+        contBtn.onclick=()=>{
+          if(isDead||over)return;
+          if(_totalAnsCount>0&&_totalAnsCount%40===0&&!over){setTimeout(()=>showRoundEnd(),250);return;}
+          // Boss退回後出題（這裡直接出題，不等退回）
+          showNextBossQuestion();
+        };
       }
-    }, 350);
-    // 每輪40題結束偵測（用存下的答題數比對，避免重複觸發）
-    if(_totalAnsCount>0 && _totalAnsCount%40===0 && !over){
-      setTimeout(()=>showRoundEnd(),400);
+    } else {
+      // 一般怪擊倒
+      HERO.state='attack';HERO.attackTimer=0;
+      MON.state='dead';MON.timer=20;
+      spawnCanvasParticles(MON.x+MON.w/2,ch*0.4,['#fbbf24','#ff8800','#22c55e'],16);
+      spawnFloatPlus();setTimeout(()=>updateCombo(),100);
+      contBtn.style.display='block';
+      contBtn.textContent='⚔️ 繼續冒險 →';
+      contBtn.onclick=()=>{
+        if(isDead||over)return;
+        if(_totalAnsCount>0&&_totalAnsCount%40===0&&!over){setTimeout(()=>showRoundEnd(),250);}
+        // onMonsterDefeated 由動畫迴圈觸發
+      };
     }
-  };
+  } else {
+    // 答錯
+    setTimeout(()=>updateCombo(),100);
+    if(isBossStage){
+      // Boss衝過來打你再退回，退回後才出下一題（由battleLoop的boss_retreat觸發showNextBossQuestion）
+      MON.chargeX=HERO.x-MON.w*0.5;
+      MON.state='boss_charge';
+      // 繼續按鈕先隱藏，等boss退回後由showNextBossQuestion呈現
+      contBtn.style.display='none';
+    } else {
+      // 一般怪捨身衝刺
+      MON.chargeX=HERO.x-MON.w*0.5;
+      MON.state='charge';
+      contBtn.style.display='none';
+      // 等動畫完成後由 onMonsterDefeated_wrong 自動推進
+    }
+  }
 }
 
-function updateRate(){
-  const r=totalAns>0?Math.round(totalOk/totalAns*100):null;
-  document.getElementById('rv').textContent=r!==null?r+'%':'—';
+function afterCorrect(savedCount){
+  if(isDead||over)return;
+  if(savedCount>0&&savedCount%40===0&&!over){setTimeout(()=>showRoundEnd(),250);}
+  else{/* 等待怪物死亡動畫完後 onMonsterDefeated 會自動spawn下一隻 */}
 }
 
-function updateAnsHUD(){
-  document.getElementById('ansv').textContent=totalAnsCount;
+// ══════════════════════════════
+// HP
+// ══════════════════════════════
+function renderHP(){
+  const c=document.getElementById('hp-hearts');c.innerHTML='';
+  for(let i=0;i<MAX_HP;i++){
+    const h=document.createElement('span');
+    h.className='heart'+(i>=hp?' lost':'');
+    h.textContent='❤';h.style.color=i<hp?'#ef4444':'rgba(239,68,68,.18)';
+    c.appendChild(h);
+  }
+  document.getElementById('hp-count').textContent=hp+'/'+MAX_HP;
+}
+function loseHP(){
+  if(isDead)return;
+  hp=Math.max(0,hp-1);renderHP();
+  // 畫面震動
+  const bw=document.getElementById('battle-wrap');
+  bw.style.animation='none';void bw.offsetWidth;
+  bw.style.animation='shake .3s ease-out';
+  if(hp<=0)triggerDeath();
+}
+const shakeStyle=document.createElement('style');
+shakeStyle.textContent='@keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-6px,2px)}40%{transform:translate(6px,-2px)}60%{transform:translate(-4px,2px)}80%{transform:translate(4px,-1px)}}';
+document.head.appendChild(shakeStyle);
+
+function triggerDeath(){
+  isDead=true;deaths++;locked=true;
+  const ov=document.getElementById('death-overlay');ov.classList.add('show');
+  let cnt=DEATH_SECS;
+  document.getElementById('death-countdown').textContent=cnt;
+  if(deathTimer){clearInterval(deathTimer);deathTimer=null;}
+  deathTimer=setInterval(()=>{
+    cnt--;document.getElementById('death-countdown').textContent=Math.max(0,cnt);
+    if(cnt<=0){clearInterval(deathTimer);deathTimer=null;respawn();}
+  },1000);
+}
+function respawn(){
+  hp=MAX_HP;isDead=false;locked=false;
+  document.getElementById('death-overlay').classList.remove('show');
+  renderHP();
+  // 重置怪物，繼續答題
+  MON.visible=false;
+  HERO.state='run';
+  spawnMonster();
 }
 
+// ══════════════════════════════
+// 特效
+// ══════════════════════════════
+function updateRate(){const r=totalAns>0?Math.round(totalOk/totalAns*100):null;document.getElementById('rv').textContent=r!==null?r+'%':'—';}
+function updateAnsHUD(){document.getElementById('ansv').textContent=totalAnsCount;}
 function updateCombo(){
   const el=document.getElementById('combo-display');
-  if(combo>=2){
-    el.textContent='🔥 連擊 ×'+combo;
-    el.classList.add('show');
-    clearTimeout(el._timer);
-    el._timer=setTimeout(()=>el.classList.remove('show'),2000);
-  } else {
-    el.classList.remove('show');
-  }
+  if(combo>=2){el.textContent='🔥 連擊 ×'+combo;el.classList.add('show');clearTimeout(el._timer);el._timer=setTimeout(()=>el.classList.remove('show'),2000);}
+  else el.classList.remove('show');
 }
-
-function spawnPlusOne(lx, ly){
-  const clip=document.getElementById('cv-clip');
-  const sl=document.getElementById('cv-slider');
-  const T=TILE_PX;
-  const slRect=sl.getBoundingClientRect();
-  const clipRect=clip.getBoundingClientRect();
-  const x=lx*T+T/2+(slRect.left-clipRect.left);
-  const y=ly*T+T/2+(slRect.top-clipRect.top);
+function spawnFloatPlus(){
+  const bw=document.getElementById('battle-wrap');
+  const r=bw.getBoundingClientRect();
   const el=document.createElement('div');
-  el.className='float-plus';
-  el.textContent='+1';
-  el.style.left=x+'px';
-  el.style.top=y+'px';
+  el.className='float-plus';el.textContent='+1';
+  el.style.left=(r.left+r.width*0.3)+'px';
+  el.style.top=(r.top+r.height*0.3)+'px';
   el.style.transform='translate(-50%,-50%)';
-  clip.appendChild(el);
-  setTimeout(()=>el.remove(),950);
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1050);
 }
+function showEncourage(msg){if(over)return;document.getElementById('encourage-text').textContent=msg;const el=document.getElementById('encourage');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
 
-function spawnExplosion(lx, ly){
-  const game=document.getElementById('game');
-  const sl=document.getElementById('cv-slider');
-  const T=TILE_PX;
-  const slRect=sl.getBoundingClientRect();
-  const gameRect=game.getBoundingClientRect();
-  const cx=lx*T+T/2+(slRect.left-gameRect.left);
-  const cy=ly*T+T/2+(slRect.top-gameRect.top);
-  const colors=['#fbbf24','#ff8800','#ff4400','#ffdd00','#ff6600'];
-  for(let i=0;i<12;i++){
-    const angle=(i/12)*Math.PI*2;
-    const dist=40+Math.random()*40;
-    const tx=Math.round(Math.cos(angle)*dist);
-    const ty=Math.round(Math.sin(angle)*dist);
-    const size=Math.round(5+Math.random()*7);
-    const dur=(1.0+Math.random()*0.4).toFixed(2);
-    const color=colors[i%colors.length];
-    const uid='p'+Date.now()+i;
-
-    // 動態注入這顆粒子專屬的 keyframes
-    const styleEl=document.createElement('style');
-    styleEl.textContent=`
-      @keyframes ${uid}{
-        0%  {opacity:1;transform:translate(0px,0px) scale(1)}
-        100%{opacity:0;transform:translate(${tx}px,${ty}px) scale(0)}
-      }
-    `;
-    document.head.appendChild(styleEl);
-
-    const el=document.createElement('div');
-    el.className='particle';
-    el.style.cssText=`
-      left:${cx-size/2}px;
-      top:${cy-size/2}px;
-      width:${size}px;
-      height:${size}px;
-      background:${color};
-      animation:${uid} ${dur}s ease-out forwards;
-    `;
-    game.appendChild(el);
-    setTimeout(()=>{el.remove();styleEl.remove();},1800);
-  }
-}
-
-function showEncourage(msg){
-  if(over)return;
-  const el=document.getElementById('encourage');
-  document.getElementById('encourage-text').textContent=msg;
-  el.classList.add('show');
-  setTimeout(()=>el.classList.remove('show'),3500);
-}
-
+// ══════════════════════════════
+// 每輪結束
+// ══════════════════════════════
 function showRoundEnd(){
-  if(over||isDead)return;
-  // 暫停答題（鎖住移動）
-  locked=true;
+  if(over||isDead)return;locked=true;
   const m=Math.floor(remain/60),s=remain%60;
   document.getElementById('re-ok').textContent=roundOk;
   document.getElementById('re-fail').textContent=roundFail;
   document.getElementById('re-total').textContent=totalAnsCount;
   document.getElementById('re-time').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   document.getElementById('round-end').classList.add('show');
-
   document.getElementById('re-continue').onclick=()=>{
     document.getElementById('round-end').classList.remove('show');
-    roundOk=0; roundFail=0; roundCount++;
-    locked=false;
-    // 重新洗牌題庫，開始新一輪
-    shufflePool();
+    roundOk=0;roundFail=0;roundCount++;locked=false;shufflePool();
+    if(!MON.visible)spawnMonster();
   };
-  document.getElementById('re-leave').onclick=()=>{
-    document.getElementById('round-end').classList.remove('show');
-    locked=false;
-    endGame();
-  };
+  document.getElementById('re-leave').onclick=()=>{document.getElementById('round-end').classList.remove('show');locked=false;endGame();};
 }
-function updateBanner(){
-  const rd=ROOM_DEFS.find(r=>r.rc[0]===curRC[0]&&r.rc[1]===curRC[1]);
-  document.getElementById('room-banner').textContent=rd?'📍 '+rd.label:'—';
-}
-function sendData(r){fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(r)}).catch(()=>{});}
 
 // ══════════════════════════════
 // 計時
 // ══════════════════════════════
 function tickGame(){
-  if(over)return;
-  remain--;
+  if(over)return;remain--;
   const m=Math.floor(remain/60),s=remain%60;
   document.getElementById('tv').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   if(remain<=60)document.getElementById('ts').classList.add('urgent');
   if(remain<=0){endGame();return;}
-  // 鼓勵訊息（5、10、15分鐘）
   const elapsed=Math.floor((GAME_SECS-remain)/60);
-  [5,10,15].forEach(t=>{
-    if(elapsed===t&&!encourageShown[t]){
-      encourageShown[t]=true;
-      showEncourage(ENCOURAGE_MSGS[t]);
-    }
-  });
+  [5,10,15].forEach(t=>{if(elapsed===t&&!encourageShown[t]){encourageShown[t]=true;showEncourage(ENCOURAGE_MSGS[t]);}});
 }
 
+// ══════════════════════════════
+// 結束
+// ══════════════════════════════
 function endGame(){
-  over=true;
-  clearInterval(gameTmrInt);
-  if(qTmrInt)clearInterval(qTmrInt);
-  document.getElementById('qpanel').classList.remove('open');
-  document.getElementById('death-overlay').classList.remove('show');
+  over=true;clearInterval(gameTmrInt);if(qTmrInt)clearInterval(qTmrInt);
+  if(animId)cancelAnimationFrame(animId);
+  clearSave();
   const rate=totalAns>0?Math.round(totalOk/totalAns*100):0;
   document.getElementById('ename').textContent=USER;
   document.getElementById('etotal').textContent=totalAns;
@@ -1484,53 +1437,40 @@ function endGame(){
   document.getElementById('erate').textContent=rate+'%';
   document.getElementById('ecover').textContent=seenIds.size+'/40';
   document.getElementById('edeaths').textContent=deaths;
-  document.getElementById('erooms').textContent=visitedRooms.size+'/9';
-  const msgs=['優秀！防災知識掌握度極高，繼續保持！','良好！部分題目可再加強，尤其分析與評鑑題。','尚可，建議課後複習消防法規及逃生應變知識。','加油！建議多閱讀衛生局消防防護計畫熟悉各項規定。'];
+  document.getElementById('emaxcombo').textContent=maxCombo;
+  const msgs=['優秀！防災知識掌握度極高！','良好！部分題目可再加強。','尚可，建議複習消防法規。','加油！建議熟讀防護計畫。'];
   document.getElementById('emsg').textContent=msgs[rate>=90?0:rate>=70?1:rate>=50?2:3];
   document.getElementById('endscreen').classList.add('show');
-  // ── 送出 SESSION_END 紀錄（完整遊玩時間）──
-  if(SHEETS_URL) sendData({
-    Timestamp:        new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}),
-    UserName:         USER,
-    SessionID:        SESSION,
-    QuestionID:       'SESSION_END',
-    BloomLevel:       '',
-    QuestionCategory: '',
-    ResponseTime_ms:  '',
-    IsCorrect:        '',
-    ChosenOption:     '',
-    FirstAttemptCorrect: '',
-    AttemptNum:       '',
-    RoomName:         '',
-    HPAtAnswer:       hp,
-    DeathCount:       deaths,
-    TotalPlayTime:    GAME_SECS - remain, // 實際遊玩秒數（玩滿=1200）
-  });
+  if(SHEETS_URL)sendData({Timestamp:new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}),UserName:USER,SessionID:SESSION,QuestionID:'SESSION_END',BloomLevel:'',QuestionCategory:'',ResponseTime_ms:'',IsCorrect:'',ChosenOption:'',FirstAttemptCorrect:'',AttemptNum:'',RoomName:'',HPAtAnswer:hp,DeathCount:deaths,TotalPlayTime:GAME_SECS-remain});
 }
+function sendData(r){fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(r)}).catch(()=>{});}
 
 // ══════════════════════════════
-// 鍵盤
+// localStorage
 // ══════════════════════════════
-document.addEventListener('keydown',e=>{
-  const m={ArrowUp:'u',w:'u',W:'u',ArrowDown:'d',s:'d',S:'d',ArrowLeft:'l',a:'l',A:'l',ArrowRight:'r',d:'r',D:'r'};
-  const dir=m[e.key];if(!dir)return;e.preventDefault();
-  if(dir==='u')tryMove(0,-1);if(dir==='d')tryMove(0,1);
-  if(dir==='l')tryMove(-1,0);if(dir==='r')tryMove(1,0);
-});
-
-// ══════════════════════════════
-// 觸控滑動
-// ══════════════════════════════
-let ts=null;
-document.getElementById('cv-clip').addEventListener('touchstart',e=>{ts={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
-document.getElementById('cv-clip').addEventListener('touchend',e=>{
-  if(!ts)return;
-  const dx=e.changedTouches[0].clientX-ts.x,dy=e.changedTouches[0].clientY-ts.y;
-  ts=null;
-  if(Math.abs(dx)<8&&Math.abs(dy)<8)return;
-  if(Math.abs(dx)>Math.abs(dy)){if(dx>0)tryMove(1,0);else tryMove(-1,0);}
-  else{if(dy>0)tryMove(0,1);else tryMove(0,-1);}
-},{passive:true});
+function saveGame(){
+  if(over)return;
+  try{localStorage.setItem(LS_KEY,JSON.stringify({USER,SESSION,hp,deaths,remain,totalAns,totalOk,totalAnsCount,combo,maxCombo,roundOk,roundFail,roundCount,stageNum,bossesDefeated,seenIds:Array.from(seenIds),questionAttempts,qPoolIdx,savedAt:Date.now()}));}catch(e){}
+}
+function clearSave(){try{localStorage.removeItem(LS_KEY);}catch(e){}}
+function loadSave(){try{const raw=localStorage.getItem(LS_KEY);if(!raw)return null;const s=JSON.parse(raw);if(Date.now()-s.savedAt>25*60*1000){clearSave();return null;}return s;}catch(e){return null;}}
+function restoreGame(save){
+  USER=save.USER||'';SESSION=save.SESSION||('S'+Date.now().toString(36).toUpperCase());
+  hp=save.hp||MAX_HP;deaths=save.deaths||0;remain=save.remain||GAME_SECS;
+  totalAns=save.totalAns||0;totalOk=save.totalOk||0;totalAnsCount=save.totalAnsCount||0;
+  combo=save.combo||0;maxCombo=save.maxCombo||0;roundOk=save.roundOk||0;roundFail=save.roundFail||0;roundCount=save.roundCount||0;
+  stageNum=save.stageNum||1;bossesDefeated=save.bossesDefeated||0;seenIds=new Set(save.seenIds||[]);questionAttempts=save.questionAttempts||{};qPoolIdx=save.qPoolIdx||0;
+  document.getElementById('hud-name').textContent=USER;
+  initCanvas();shufflePool();renderHP();updateAnsHUD();updateLevelBar();
+  const m=Math.floor(remain/60),s=remain%60;
+  document.getElementById('tv').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  prevHeroStage=getHeroStage(stageNum);
+  gameTmrInt=setInterval(tickGame,1000);
+  setInterval(saveGame,5000);
+  lastTime=performance.now();
+  animId=requestAnimationFrame(battleLoop);
+  spawnMonster();
+}
 </script>
 </body>
 </html>
