@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>防災演練學習系統｜花蓮縣衛生局</title>
+<title>?脩瞍毀摮貊?蝟餌絞嚚?桃腦銵?撅</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Orbitron:wght@700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -15,7 +15,7 @@
 html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Noto Sans TC',sans-serif;color:var(--text)}
 body{display:flex;flex-direction:column;align-items:center;justify-content:center}
 
-/* ══ 登入 ══ */
+/* ?? ?餃 ?? */
 #login{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;padding:24px;transition:opacity .35s,transform .35s}
 #login.out{opacity:0;transform:scale(1.04);pointer-events:none}
 .fp-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
@@ -36,7 +36,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .lbtn:disabled{opacity:.3;cursor:default}
 .lhint{font-size:11px;color:var(--text3);text-align:center;line-height:1.8}
 
-/* ══ 說明頁 ══ */
+/* ?? 隤芣????? */
 #tutorial{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:150;padding:24px}
 #tutorial.show{display:flex}
 #tutorial.out{opacity:0;transform:scale(1.04);pointer-events:none;transition:opacity .35s,transform .35s}
@@ -50,9 +50,9 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .tut-btn{width:100%;padding:15px;background:linear-gradient(135deg,#ff4400,#ff9900);border:none;border-radius:12px;color:#fff;font-size:16px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.06em;transition:opacity .15s,transform .1s}
 .tut-btn:hover{opacity:.9}.tut-btn:active{transform:scale(.97)}
 
-/* ══ 主遊戲 ══ */
+/* ?? 銝駁????? */
 #game{
-  display:none; /* 初始隱藏，JS控制 */
+  display:none; /* ???梯?嚗S?批 */
   width:100%;max-width:440px;height:100dvh;
   flex-direction:column;padding:8px;gap:4px;
 }
@@ -78,17 +78,17 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .heart.lost{opacity:.18;transform:scale(.8)}
 #hp-count{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);flex-shrink:0}
 
-/* 關卡條 */
+/* ?璇?*/
 #level-row{display:flex;align-items:center;gap:8px;flex-shrink:0}
 #level-label{font-family:'Orbitron',monospace;font-size:9px;color:var(--text3);flex-shrink:0}
 #level-bar-bg{flex:1;height:7px;background:#1a1a2a;border-radius:4px;overflow:hidden;border:1px solid #2a2a3e}
 #level-bar{height:100%;width:0%;background:linear-gradient(90deg,#ff4400,#ff9900);border-radius:4px;transition:width .4s}
 #level-num{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:#ff8800;flex-shrink:0;min-width:32px;text-align:right}
 
-/* ══ 戰鬥區：固定高度，不用flex ══ */
+/* ?? ?圈洛?嚗摰?摨佗?銝flex ?? */
 #battle-wrap{
   flex-shrink:0;
-  height:33vh;          /* 固定比例，不依賴flex計算 */
+  height:33vh;          /* ?箏?瘥?嚗?靘陷flex閮? */
   min-height:100px;
   max-height:220px;
   border-radius:14px;
@@ -100,11 +100,11 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 #battle-canvas{
   position:absolute;
   top:0;left:0;
-  width:100%;height:100%; /* CSS顯示大小 */
+  width:100%;height:100%; /* CSS憿舐內憭批? */
   display:block;
 }
 
-/* boss標籤 */
+/* boss璅惜 */
 #boss-tag{display:none;font-family:'Orbitron',monospace;font-size:10px;font-weight:900;color:#fbbf24;letter-spacing:.08em;padding:3px 10px;border:1.5px solid #fbbf24;border-radius:6px;animation:bosstag .8s ease-in-out infinite;flex-shrink:0}
 @keyframes bosstag{0%,100%{opacity:1;text-shadow:0 0 8px #fbbf24}50%{opacity:.6;text-shadow:none}}
 #boss-hp-row{display:none;align-items:center;gap:8px;flex-shrink:0}
@@ -112,7 +112,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 #boss-hp-bar-bg{flex:1;height:9px;background:#1a1a0a;border-radius:5px;overflow:hidden;border:1px solid #fbbf2444}
 #boss-hp-bar{height:100%;width:100%;background:linear-gradient(90deg,#ff4400,#fbbf24);border-radius:5px;transition:width .5s}
 
-/* ══ 題目區 ══ */
+/* ?? 憿? ?? */
 #q-area{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding:4px 0 2px;border-top:1px solid #2a2a3e}
 #qmeta{display:flex;align-items:center;gap:7px;flex-shrink:0}
 #boss-tag-inline{display:none}
@@ -131,7 +131,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 #qcont{display:none;width:100%;padding:13px;background:linear-gradient(135deg,#ff4400,#ff9900);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:.05em;transition:opacity .15s,transform .1s;flex-shrink:0}
 #qcont:active{transform:scale(.97)}
 
-/* ══ 浮動解析面板 ══ */
+/* ?? 瘚桀?閫???Ｘ ?? */
 #result-panel{
   position:fixed;
   bottom:0;left:50%;
@@ -161,26 +161,26 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 }
 #result-btn:active{transform:scale(.97)}
 
-/* ══ 升階通知 ══ */
+/* ?? ??? ?? */
 #levelup-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);background:linear-gradient(135deg,#1a1a00,#2a2800);border:2px solid #fbbf24;border-radius:20px;padding:22px 28px;text-align:center;z-index:180;display:none;opacity:0;transition:opacity .3s,transform .3s;box-shadow:0 0 40px rgba(251,191,36,.4);max-width:290px;width:90%}
 #levelup-banner.show{display:block;opacity:1;transform:translate(-50%,-50%) scale(1)}
 #levelup-title{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:#fbbf24;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
 #levelup-hero{font-size:52px;margin:8px 0}
 #levelup-text{font-size:13px;color:var(--text);line-height:1.6}
 
-/* ══ 連擊 ══ */
+/* ?? ??? ?? */
 #combo-display{position:fixed;top:42%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:15;font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:#fbbf24;text-shadow:0 0 20px rgba(251,191,36,.9);text-align:center;opacity:0;transition:opacity .2s}
 #combo-display.show{opacity:1;animation:combopop .3s ease-out}
 @keyframes combopop{0%{transform:translate(-50%,-50%) scale(.5)}60%{transform:translate(-50%,-50%) scale(1.2)}100%{transform:translate(-50%,-50%) scale(1)}}
 
-/* 浮動+1 */
+/* 瘚桀?+1 */
 .float-plus{position:fixed;pointer-events:none;z-index:20;font-family:'Orbitron',monospace;font-size:26px;font-weight:900;color:#fbbf24;text-shadow:0 0 12px rgba(251,191,36,.9);animation:floatup 1s ease-out forwards}
 @keyframes floatup{0%{opacity:1;transform:translateY(0) scale(1)}60%{opacity:1;transform:translateY(-50px) scale(1.25)}100%{opacity:0;transform:translateY(-90px) scale(.7)}}
 
-/* 粒子 */
+/* 蝎? */
 .particle{position:fixed;pointer-events:none;z-index:999;border-radius:50%}
 
-/* ══ 死亡 ══ */
+/* ?? 甇颱滿 ?? */
 #death-overlay{position:fixed;inset:0;z-index:150;background:rgba(180,0,0,0);display:none;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;transition:background .3s}
 #death-overlay.show{display:flex;background:rgba(160,0,0,0.75)}
 #death-msg{font-family:'Orbitron',monospace;font-size:28px;font-weight:900;color:#fff;letter-spacing:.1em;text-shadow:0 0 30px #ff0000;animation:dmpulse 1s ease-in-out infinite}
@@ -188,7 +188,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 #death-countdown{font-family:'Orbitron',monospace;font-size:56px;font-weight:900;color:#ff4444;margin-top:16px;text-shadow:0 0 40px #ff0000}
 #death-sub{font-size:14px;color:rgba(255,200,200,.8);margin-top:8px}
 
-/* ══ 每輪結束 ══ */
+/* ?? 瘥憚蝯? ?? */
 #round-end{position:fixed;inset:0;background:rgba(8,8,15,.92);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:250;padding:24px}
 #round-end.show{display:flex}
 .re-card{width:100%;max-width:340px;background:#14141e;border:2px solid #fbbf24;border-radius:22px;padding:28px 22px;display:flex;flex-direction:column;gap:16px;text-align:center;box-shadow:0 0 40px rgba(251,191,36,.2)}
@@ -203,12 +203,12 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .re-btn.primary{background:linear-gradient(135deg,#ff4400,#ff9900);color:#fff}
 .re-btn.secondary{background:#1e1e2c;color:rgba(240,232,216,.6);border:1.5px solid #2e2e46}
 
-/* ══ 鼓勵 ══ */
+/* ?? 曌 ?? */
 #encourage{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);background:#14141e;border:2px solid #22c55e;border-radius:18px;padding:20px 26px;text-align:center;z-index:200;display:none;opacity:0;transition:opacity .3s,transform .3s;box-shadow:0 0 30px rgba(34,197,94,.25);max-width:290px;width:90%}
 #encourage.show{display:block;opacity:1;transform:translate(-50%,-50%) scale(1)}
 #encourage-text{font-size:15px;font-weight:500;line-height:1.6}
 
-/* ══ 結束 ══ */
+/* ?? 蝯? ?? */
 #endscreen{position:fixed;inset:0;background:rgba(8,8,15,.96);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:300;padding:24px;overflow-y:auto}
 #endscreen.show{display:flex}
 .ecard{width:100%;max-width:340px;background:#12121e;border:1.5px solid #2e2e46;border-radius:22px;padding:26px 20px;display:flex;flex-direction:column;gap:14px;text-align:center}
@@ -222,46 +222,46 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .est-v.hi{color:var(--ok)}
 .emsg{font-size:13px;color:var(--text2);line-height:1.8}
 
-/* canvas震動 */
+/* canvas?? */
 @keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-6px,2px)}40%{transform:translate(6px,-2px)}60%{transform:translate(-4px,2px)}80%{transform:translate(4px,-1px)}}
 </style>
 </head>
 <body>
 
-<!-- 登入 -->
+<!-- ?餃 -->
 <div id="login">
   <div class="fp-bg" id="fpbg"></div>
   <div class="lcard">
-    <div class="lemblem">🔥</div>
-    <div><div class="ltitle">防災演練學習系統</div><div class="lsub">花蓮縣衛生局 × 公民開發者計畫</div></div>
+    <div class="lemblem">?</div>
+    <div><div class="ltitle">?脩瞍毀摮貊?蝟餌絞</div><div class="lsub">?梯蝮???? ? ?祆??????/div></div>
     <div class="ldiv"></div>
-    <div><label class="llabel" for="ni">請輸入序號</label><input id="ni" class="linput" type="text" placeholder="例：001" maxlength="20" autocomplete="off"></div>
-    <button class="lbtn" id="sb" disabled onclick="startGame()">開始冒險 →</button>
-    <div class="lhint">答題打敗怪物，累積防災知識<br>每10關挑戰Boss，需答對3題！</div>
+    <div><label class="llabel" for="ni">隢撓?亙???/label><input id="ni" class="linput" type="text" placeholder="靘?001" maxlength="20" autocomplete="off"></div>
+    <button class="lbtn" id="sb" disabled onclick="startGame()">??? ??/button>
+    <div class="lhint">蝑????芰嚗敞蝛?賜霅?br>瘥?0???蚪oss嚗?蝑?3憿?</div>
   </div>
 </div>
 
-<!-- 說明頁 -->
+<!-- 隤芣???-->
 <div id="tutorial">
   <div class="tut-card">
-    <div class="tut-title">⚔️ 冒險說明</div>
+    <div class="tut-title">?? ?隤芣?</div>
     <div class="tut-items">
-      <div class="tut-item"><div class="tut-icon">🧑‍💼</div><div class="tut-text">答題打敗右側怪物<small>答對噴水柱攻擊，答錯被火球擊中</small></div></div>
-      <div class="tut-item"><div class="tut-icon">👑</div><div class="tut-text">每10關出現Boss，需答對3題<small>Boss答錯扣血，Boss繼續站著</small></div></div>
-      <div class="tut-item"><div class="tut-icon">⬆️</div><div class="tut-text">每打倒一個Boss主角升階<small>帽子改變＋特效疊加，共8層</small></div></div>
-      <div class="tut-item"><div class="tut-icon">❤️</div><div class="tut-text">血量歸零3秒後滿血繼續</div></div>
+      <div class="tut-item"><div class="tut-icon">?????/div><div class="tut-text">蝑????喳?芰<small>蝑??湔偌?望??蝑鋡怎??銝?/small></div></div>
+      <div class="tut-item"><div class="tut-icon">??</div><div class="tut-text">瘥?0??遮oss嚗?蝑?3憿?small>Boss蝑???嚗oss蝜潛?蝡?</small></div></div>
+      <div class="tut-item"><div class="tut-icon">漎?</div><div class="tut-text">瘥????oss銝餉???<small>撣賢??寡?嚗??????撅?/small></div></div>
+      <div class="tut-item"><div class="tut-icon">?歹?</div><div class="tut-text">銵?飛??蝘?皛輯?蝜潛?</div></div>
     </div>
-    <button class="tut-btn" onclick="confirmTutorial()">出發冒險！🚀</button>
+    <button class="tut-btn" onclick="confirmTutorial()">?箇?嚗?</button>
   </div>
 </div>
 
-<!-- 主遊戲 -->
+<!-- 銝駁???-->
 <div id="game">
   <div id="hud">
-    <div id="hud-left"><div id="hud-name">—</div><div id="hud-sub">花蓮縣衛生局防災演練</div></div>
-    <div class="hst" id="ts"><div class="hst-l">時間</div><div class="hst-v" id="tv">20:00</div></div>
-    <div class="hst"><div class="hst-l">正確率</div><div class="hst-v" id="rv">—</div></div>
-    <div class="hst"><div class="hst-l">已答</div><div class="hst-v" id="ansv">0</div></div>
+    <div id="hud-left"><div id="hud-name">??/div><div id="hud-sub">?梯蝮?????脩瞍毀</div></div>
+    <div class="hst" id="ts"><div class="hst-l">??</div><div class="hst-v" id="tv">20:00</div></div>
+    <div class="hst"><div class="hst-l">甇?Ⅱ??/div><div class="hst-v" id="rv">??/div></div>
+    <div class="hst"><div class="hst-l">撌脩?</div><div class="hst-v" id="ansv">0</div></div>
   </div>
   <div id="hp-row">
     <div id="hp-label">HP</div>
@@ -282,189 +282,183 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
   </div>
   <div id="q-area">
     <div id="qmeta">
-      <div id="boss-tag">👑 BOSS</div>
+      <div id="boss-tag">?? BOSS</div>
       <div id="qtmr" style="margin-left:auto">00s</div>
     </div>
-    <div id="qtext">準備冒險…</div>
+    <div id="qtext">皞????/div>
     <div id="qopts"></div>
   </div>
 </div>
 
-<!-- 浮動解析面板 -->
+<!-- 瘚桀?閫???Ｘ -->
 <div id="result-panel">
   <div id="result-icon"></div>
   <div id="result-exp"></div>
-  <button id="result-btn">繼續冒險 →</button>
+  <button id="result-btn">蝜潛?? ??/button>
 </div>
 
-<!-- 升階 -->
+<!-- ?? -->
 <div id="levelup-banner">
-  <div id="levelup-title">⬆️ LEVEL UP！</div>
+  <div id="levelup-title">漎? LEVEL UP嚗?/div>
   <div id="levelup-hero"></div>
   <div id="levelup-text"></div>
 </div>
-<!-- 連擊 -->
+<!-- ??? -->
 <div id="combo-display"></div>
-<!-- 死亡 -->
+<!-- 甇颱滿 -->
 <div id="death-overlay">
-  <div id="death-msg">💀 陣亡</div>
+  <div id="death-msg">?? ??滿</div>
   <div id="death-countdown">3</div>
-  <div id="death-sub">3秒後滿血繼續…</div>
+  <div id="death-sub">3蝘?皛輯?蝜潛???/div>
 </div>
-<!-- 每輪結束 -->
+<!-- 瘥憚蝯? -->
 <div id="round-end">
   <div class="re-card">
-    <div class="re-icon">🎉</div>
-    <div class="re-title">完成一輪 40 題！</div>
+    <div class="re-icon">??</div>
+    <div class="re-title">摰?銝頛?40 憿?</div>
     <div class="re-stats">
-      <div class="re-stat"><div class="re-stat-l">本輪答對</div><div class="re-stat-v" id="re-ok" style="color:#22c55e">0</div></div>
-      <div class="re-stat"><div class="re-stat-l">本輪答錯</div><div class="re-stat-v" id="re-fail" style="color:#ef4444">0</div></div>
-      <div class="re-stat"><div class="re-stat-l">累計答題</div><div class="re-stat-v" id="re-total">0</div></div>
-      <div class="re-stat"><div class="re-stat-l">剩餘時間</div><div class="re-stat-v" id="re-time" style="color:#ff8800">—</div></div>
+      <div class="re-stat"><div class="re-stat-l">?祈憚蝑?</div><div class="re-stat-v" id="re-ok" style="color:#22c55e">0</div></div>
+      <div class="re-stat"><div class="re-stat-l">?祈憚蝑</div><div class="re-stat-v" id="re-fail" style="color:#ef4444">0</div></div>
+      <div class="re-stat"><div class="re-stat-l">蝝航?蝑?</div><div class="re-stat-v" id="re-total">0</div></div>
+      <div class="re-stat"><div class="re-stat-l">?拚???</div><div class="re-stat-v" id="re-time" style="color:#ff8800">??/div></div>
     </div>
-    <button class="re-btn primary" id="re-continue">繼續冒險 🔥</button>
-    <button class="re-btn secondary" id="re-leave">結束學習</button>
+    <button class="re-btn primary" id="re-continue">蝜潛?? ?</button>
+    <button class="re-btn secondary" id="re-leave">蝯?摮貊?</button>
   </div>
 </div>
-<!-- 鼓勵 -->
+<!-- 曌 -->
 <div id="encourage"><div id="encourage-text"></div></div>
-<!-- 結束 -->
+<!-- 蝯? -->
 <div id="endscreen">
   <div class="ecard">
-    <div class="eicon">🏆</div>
-    <div><div class="etitle">冒險完成 · 20分鐘結束</div><div class="ename" id="ename"></div></div>
+    <div class="eicon">??</div>
+    <div><div class="etitle">?摰? 繚 20??蝯?</div><div class="ename" id="ename"></div></div>
     <div class="egrid">
-      <div class="est"><div class="est-l">作答次數</div><div class="est-v" id="etotal">0</div></div>
-      <div class="est"><div class="est-l">答對次數</div><div class="est-v hi" id="eok">0</div></div>
-      <div class="est"><div class="est-l">正確率</div><div class="est-v hi" id="erate">—</div></div>
-      <div class="est"><div class="est-l">涵蓋題數</div><div class="est-v" id="ecover">0/40</div></div>
-      <div class="est"><div class="est-l">死亡次數</div><div class="est-v" id="edeaths">0</div></div>
-      <div class="est"><div class="est-l">最高連擊</div><div class="est-v" id="emaxcombo">0</div></div>
+      <div class="est"><div class="est-l">雿?甈⊥</div><div class="est-v" id="etotal">0</div></div>
+      <div class="est"><div class="est-l">蝑?甈⊥</div><div class="est-v hi" id="eok">0</div></div>
+      <div class="est"><div class="est-l">甇?Ⅱ??/div><div class="est-v hi" id="erate">??/div></div>
+      <div class="est"><div class="est-l">瘨菔?憿</div><div class="est-v" id="ecover">0/40</div></div>
+      <div class="est"><div class="est-l">甇颱滿甈⊥</div><div class="est-v" id="edeaths">0</div></div>
+      <div class="est"><div class="est-l">?擃??</div><div class="est-v" id="emaxcombo">0</div></div>
     </div>
     <div class="emsg" id="emsg"></div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════
-// 常數
-// ══════════════════════════════
+// ??????????????????????????????
+// 撣豢
+// ??????????????????????????????
 const SHEETS_URL='https://script.google.com/macros/s/AKfycbzDJIhdJZQYtOZylwnzA0vkZzuRNvWnXGySH1x8UrkfhjE0_WuVVQ7SHpnC1o_qCUQV/exec';
 const GAME_SECS=1200, MAX_HP=10, DEATH_SECS=3, BOSS_HP=3, BOSS_EVERY=10;
 const LS_KEY='fire_drill_v15_save';
 
-// ══════════════════════════════
-// 升階定義（按打倒Boss數）
-// ══════════════════════════════
+// ??????????????????????????????
+// ??摰儔嚗??oss?賂?
+// ??????????????????????????????
 const UPGRADES=[
-  {n:0,hat:'hair', aura:0,name:'一般員工',   notice:'防災冒險開始！'},
-  {n:1,hat:'yellow',aura:0,name:'初級防災員',notice:'🪖 黃色安全帽！升為初級防災員！'},
-  {n:2,hat:'yellow',aura:1,name:'初級防災員',notice:'✦ 金星光環解鎖！'},
-  {n:3,hat:'vest',  aura:1,name:'防災專員',  notice:'🦺 防災背心反光帽！升為防災專員！'},
-  {n:4,hat:'vest',  aura:2,name:'防災專員',  notice:'💫 藍紫雙光圈解鎖！'},
-  {n:5,hat:'fire',  aura:2,name:'消防員',    notice:'🪖 紅色消防頭盔！升為消防員！'},
-  {n:6,hat:'fire',  aura:3,name:'消防員',    notice:'🔥 火焰光環解鎖！'},
-  {n:7,hat:'elite', aura:3,name:'防災達人',  notice:'👑 深紅金徽帽！升為防災達人！'},
-  {n:8,hat:'elite', aura:4,name:'防災達人',  notice:'⚡ 閃電弧光解鎖！無可匹敵！'},
+  {n:0,hat:'hair', aura:0,name:'銝?砍撌?,   notice:'?脩???嚗?},
+  {n:1,hat:'yellow',aura:0,name:'???脩??,notice:'?? 暺摰撣踝?????脩?∴?'},
+  {n:2,hat:'yellow',aura:1,name:'???脩??,notice:'?????閫??嚗?},
+  {n:3,hat:'vest',  aura:1,name:'?脩撠',  notice:'?死 ?脩????撣踝???脩撠嚗?},
+  {n:4,hat:'vest',  aura:2,name:'?脩撠',  notice:'? ?換???圾??'},
+  {n:5,hat:'fire',  aura:2,name:'瘨??,    notice:'?? 蝝瘨?剔?嚗??箸??脣嚗?},
+  {n:6,hat:'fire',  aura:3,name:'瘨??,    notice:'? ?怎?閫??嚗?},
+  {n:7,hat:'elite', aura:3,name:'?脩?犖',  notice:'?? 瘛梁??噬撣踝???脩?犖嚗?},
+  {n:8,hat:'elite', aura:4,name:'?脩?犖',  notice:'???撘批?閫??嚗?臬?蛛?'},
 ];
 function getUpgrade(n){let u=UPGRADES[0];for(const s of UPGRADES)if(n>=s.n)u=s;return u;}
 
-// ══════════════════════════════
-// 怪物定義
-// ══════════════════════════════
+// ??????????????????????????????
+// ?芰摰儔
+// ??????????????????????????????
 const MONSTERS=[
-  {emoji:'🔥',name:'火怪',  color:'#ff4400',size:1.0},
-  {emoji:'⚡',name:'電怪',  color:'#fbbf24',size:1.0},
-  {emoji:'💨',name:'煙怪',  color:'#94a3b8',size:1.0},
-  {emoji:'🌊',name:'水怪',  color:'#38bdf8',size:1.0},
-  {emoji:'☢️',name:'毒怪',  color:'#a3e635',size:1.0},
+  {emoji:'?',name:'?急?,  color:'#ff4400',size:1.0},
+  {emoji:'??,name:'?餅?,  color:'#fbbf24',size:1.0},
+  {emoji:'?',name:'??,  color:'#94a3b8',size:1.0},
+  {emoji:'??',name:'瘞湔?,  color:'#38bdf8',size:1.0},
+  {emoji:'?ｇ?',name:'瘥?,  color:'#a3e635',size:1.0},
 ];
 const BOSSES=[
-  {emoji:'👹',name:'火焰魔王',color:'#ef4444',size:1.6},
-  {emoji:'👺',name:'電擊魔王',color:'#fbbf24',size:1.6},
-  {emoji:'🐲',name:'巨龍魔王',color:'#22c55e',size:1.8},
-  {emoji:'💀',name:'終極魔王',color:'#a855f7',size:2.0},
+  {emoji:'?',name:'?怎擳?',color:'#ef4444',size:1.6},
+  {emoji:'?',name:'?餅?擳?',color:'#fbbf24',size:1.6},
+  {emoji:'?',name:'撌券?擳?',color:'#22c55e',size:1.8},
+  {emoji:'??',name:'蝯扔擳?',color:'#a855f7',size:2.0},
 ];
 
-// ══════════════════════════════
-// 題庫（40題）
-// ══════════════════════════════
+// ??????????????????????????????
+// 憿澈嚗?0憿?
+// ??????????????????????????????
 const QS=[
-  {id: 1,bloom:'L1',cat:'前測',text:'本局大樓內共設置幾具「室內消防栓」？',opts:['18','12','6','9'],ans:0},
-  {id: 2,bloom:'L1',cat:'題庫',text:'本局火警受信總機設置於何處？',opts:['1樓檢驗科辦公室','2樓行政科辦公室','3樓局長室','3樓電腦機房'],ans:1},
-  {id: 3,bloom:'L1',cat:'前測',text:'本局1樓辦公區域內，共配置幾支手提式乾粉滅火器？',opts:['29','24','21','33'],ans:0},
-  {id: 4,bloom:'L1',cat:'後測',text:'本局大樓內共設置幾具「緩降機」？',opts:['8','2','6','4'],ans:3},
-  {id: 5,bloom:'L3',cat:'共通',text:'如果你在局長室門口，距離最近的滅火器位於何處？',opts:['簡報室門口','三樓電梯口','第一會議室門口','大禮堂'],ans:1},
-  {id: 6,bloom:'L3',cat:'後測',text:'若你在第二會議室開會時發生火災，距離最近的手動報警機位於何處？',opts:['三樓樓梯口','長照4辦公室','企劃科','行政科'],ans:0},
-  {id: 7,bloom:'L1',cat:'前測',text:'若發生大規模地震並導致停電，本局的「緊急發電機」位於何處？',opts:['3樓局長辦公室','2樓行政科辦公室','1樓疫苗室旁','本局沒有緊急發電機'],ans:2},
-  {id: 8,bloom:'L1',cat:'題庫',text:'本局「自動體外心臟電擊去顫器（AED）」設置於何處？',opts:['醫政科','花蓮市衛生所','行政科','疾管科'],ans:1},
-  {id: 9,bloom:'L1',cat:'題庫',text:'台灣地區火災發生原因中，占比最高者為何？',opts:['電氣火災','縱火','吸菸','油氣易燃物'],ans:0},
-  {id:10,bloom:'L1',cat:'題庫',text:'固體之間的熱能傳遞稱為何者？',opts:['熱傳導','熱對流','熱輻射','黑體'],ans:0},
-  {id:11,bloom:'L1',cat:'後測',text:'下列何者不是自衛消防編組訓練的種類？',opts:['電腦訓練','通報訓練','滅火訓練','避難訓練'],ans:0},
-  {id:12,bloom:'L2',cat:'後測',text:'下列何者不是初期滅火應變的實施準則？',opts:['火勢尚未延燒前，得以滅火器、水桶等從事滅火','二氧化碳滅火設備動作時，應保持放射區域空氣流通，避免二氧化碳蓄積影響人員健康','在未產生閃燃（flashover）前，可藉室內消防栓抑制火勢','滅火班長等指揮人員判斷，在安全管理上尚無危險者，得以實施初期滅火'],ans:1},
-  {id:13,bloom:'L1',cat:'題庫',text:'下列何者不是「自衛消防編組原則」？',opts:['即早發現即早通報','免用滅火原理','人命救援優先','防止延燒擴大'],ans:1},
-  {id:14,bloom:'L2',cat:'題庫',text:'下列何者不是機關內部通報要領？',opts:['發現火災時，應迅速按押火警發信機，以利場所人員知悉','防災中心接獲火災訊息後，不用告知其他樓層','廣播人員廣播時應保持鎮定，並重複廣播2次以上','2樓以上發生火災時，初期廣播以火災發生以上樓層為主'],ans:1},
-  {id:15,bloom:'L2',cat:'後測',text:'下列何者不是正確的「初期滅火」作法？',opts:['將滅火器直接丟入火源中','初期滅火班人員可分工，一人滅火、一人尋找滅火器，以集中連續使用','滅火班可適時利用室內消防栓接近火點進行滅火','使用滅火器撲滅火勢後，確認無觸電之虞時，可再加以澆水降溫'],ans:0},
-  {id:16,bloom:'L1',cat:'題庫',text:'下列何者不屬於防火防災教育訓練的目的？',opts:['普及火災預防思想','提高防止災害之知識','提升辦公效率','提升災害發生時之處置判斷及行動能力'],ans:2},
-  {id:17,bloom:'L1',cat:'題庫',text:'下列何者不屬於防火防災教育訓練的內容？',opts:['火災預防上應遵守之事項','人際關係之相處','安全作業有關之基本事項','震災對策有關之事項'],ans:1},
-  {id:18,bloom:'L2',cat:'前測',text:'下列何者不屬於避難訓練的內容？',opts:['通報119之要領','熟悉避難設施、設備之位置及操作方法','依據訓練假想，運用廣播設備迅速引導避難','對無力自行避難者，採適當方法運送至安全場所'],ans:0},
-  {id:19,bloom:'L3',cat:'前測',text:'乾粉滅火器不應用於撲滅下列何種火災？',opts:['報紙堆起火','炒菜時油鍋起火','通電中的配電盤起火','鈉等可燃性金屬物質起火'],ans:3},
-  {id:20,bloom:'L1',cat:'題庫',text:'下列何者不屬於建築物的防火避難設施？',opts:['出入口','停車空間','陽台','樓梯'],ans:1},
-  {id:21,bloom:'L2',cat:'前測',text:'下列何者不屬於建築物的防火設施？',opts:['防火區劃','防火構造','昇降機','內部裝修限制'],ans:2},
-  {id:22,bloom:'L1',cat:'題庫',text:'遭遇火警時，下列何種逃生方法錯誤？',opts:['搭電梯','走安全梯','使用緩降機','使用滑臺'],ans:0},
-  {id:23,bloom:'L2',cat:'後測',text:'火警警鈴或緊急廣播設備動作時，自衛消防編組應優先採取何種行動？',opts:['報告主管','先確認是否真的發生火警','廣播疏散','靜觀其變'],ans:1},
-  {id:24,bloom:'L1',cat:'後測',text:'防火門的主要目的為何？',opts:['逃生用','裝飾用','阻隔火煙','防小偷'],ans:2},
-  {id:25,bloom:'L2',cat:'前測',text:'火災發生時，較適合由哪一編組人員管制電梯運轉？',opts:['滅火班','安全防護班','通報班','自衛消防隊長'],ans:1},
-  {id:26,bloom:'L5',cat:'後測',text:'火警探測器經常誤動作時，較適當的處理方式為何？',opts:['將受信總機地區警鈴關閉','請合格的消防專業技術人員檢修','將受信總機移報開關關閉','放著不管'],ans:1},
-  {id:27,bloom:'L4',cat:'後測',text:'依法規定，下列何者不是實施防火管理的場所？',opts:['國際觀光旅館','三溫暖','診所','酒家'],ans:2},
-  {id:28,bloom:'L2',cat:'題庫',text:'一個場所的火災預防任務，由下列何者共同參與最能提升成效？',opts:['管理權人','防火管理人','管理委員會','全體人員'],ans:3},
-  {id:29,bloom:'L1',cat:'共通',text:'通電中的電氣設備或電線發生火災，屬於哪一類火災？',opts:['A類火災','B類火災','C類火災','D類火災'],ans:2},
-  {id:30,bloom:'L2',cat:'共通',text:'通電中電線著火時，下列處理方式何者錯誤？',opts:['切斷電源','通知電力公司人員','通知消防人員','以水滅火'],ans:3},
-  {id:31,bloom:'L5',cat:'前測',text:'若民間團體自稱受消防機關委託，至貴單位進行防火宣導並推銷滅火器，較適當的處理方式為何？',opts:['體諒其辛勞，購買數具滅火器以示慰勞','告知已請轄區消防局協助辦理防火教育宣導，且消防機關並無委託民間團體辦理所述課程','協助向同仁推銷','大量購買所推銷的滅火器並分送親友'],ans:1},
-  {id:32,bloom:'L1',cat:'前測',text:'依法令或契約，對場所具有實際支配管理權者稱為何者？',opts:['法人','防火管理人','大樓管理員','管理權人'],ans:3},
-  {id:33,bloom:'L4',cat:'前測',text:'燃燒四面體原理比燃燒三角形原理多出哪一項要素？',opts:['空氣（氧氣）','可燃物','熱能','連鎖反應'],ans:3},
-  {id:34,bloom:'L1',cat:'後測',text:'一定規模以上之建築物，消防防護計畫應由何者制定？',opts:['管理權人','防火管理人','消防設備師','消防設備士'],ans:1},
-  {id:35,bloom:'L4',cat:'前測',text:'下列何者因主管法規另有規定，得不適用消防法之規範？',opts:['一定規模以上供公眾使用建築物','地下建築物','地面樓層達11層以上且管理權分屬之集合住宅','古蹟'],ans:3},
-  {id:36,bloom:'L1',cat:'前測',text:'自衛消防編組若必須設置救護班，表示員工人數至少為多少？',opts:['10人以上','20人以上','30人以上','50人以上'],ans:3},
-  {id:37,bloom:'L1',cat:'題庫',text:'依「各類場所消防安全設備設置標準」，下列何者不屬於消防搶救上之必要設施？',opts:['消防專用蓄水池','救助袋','緊急電源插座','無線電通信輔助設備'],ans:1},
-  {id:38,bloom:'L1',cat:'後測',text:'紙類、木材及塑膠類等一般可燃物火災，屬於哪一類火災？',opts:['A類火災','B類火災','C類火災','D類火災'],ans:0},
-  {id:39,bloom:'L4',cat:'後測',text:'在正常可使用狀態下，下列何者於相同時間內可疏散最多人？',opts:['安全梯','緩降機','救助袋','避難梯'],ans:0},
-  {id:40,bloom:'L1',cat:'題庫',text:'國內建築物火災的主要發生原因為何？',opts:['電氣設備','人為縱火','爐火烹調','菸蒂'],ans:0},
+  {id: 1,bloom:'L1',cat:'?葫',text:'?砍?憭扳??批閮剔蔭撟曉?恕?扳??脫???',opts:['18','12','6','9'],ans:0},
+  {id: 2,bloom:'L1',cat:'憿澈',text:'?砍??怨郎?縑蝮賣?閮剔蔭?潔???',opts:['1璅炎撽?颲血摰?,'2璅??輻?颲血摰?,'3璅??瑕恕','3璅?行???],ans:1},
+  {id: 3,bloom:'L1',cat:'?葫',text:'?砍?1璅齒?砍??嚗?蔭撟暹??撘嗾蝎??怠嚗?,opts:['29','24','21','33'],ans:0},
+  {id: 4,bloom:'L1',cat:'敺葫',text:'?砍?憭扳??批閮剔蔭撟曉?楨????',opts:['8','2','6','4'],ans:3},
+  {id: 5,bloom:'L3',cat:'?梢?,text:'憒?雿撅?瑕恕????頝?餈?皛?其??潔???',opts:['蝪∪摰日???,'銝??餅０??,'蝚砌??降摰日???,'憭抒旨??],ans:1},
+  {id: 6,bloom:'L3',cat:'敺葫',text:'?乩??函洵鈭?霅啣恕?????踝?頝?餈????梯郎璈??潔???',opts:['銝?璅０??,'?瑞4颲血摰?,'隡?蝘?,'銵蝘?],ans:0},
+  {id: 7,bloom:'L1',cat:'?葫',text:'?亦?之閬芋?圈?銝血??游??鳴??砍????亦?餅????潔???',opts:['3璅??瑁齒?砍恕','2璅??輻?颲血摰?,'1璅?恕??,'?砍?瘝?蝺亦?餅?'],ans:2},
+  {id: 8,bloom:'L1',cat:'憿澈',text:'?砍????憭???憿怠嚗ED嚗身蝵格雿?嚗?,opts:['?急蝘?,'?梯撣???','銵蝘?,'?曄恣蝘?],ans:1},
+  {id: 9,bloom:'L1',cat:'憿澈',text:'?啁?啣??怎?潛???銝哨????擃雿?',opts:['?餅除?怎','蝮梁','?貉','瘝寞除????],ans:0},
+  {id:10,bloom:'L1',cat:'憿澈',text:'?粹?銋???賢?迂?箔???',opts:['?勗撠?,'?勗?瘚?,'?梯撒撠?,'暺?'],ans:0},
+  {id:11,bloom:'L1',cat:'敺葫',text:'銝?雿??航銵??脩楊蝯?蝺渡?蝔桅?嚗?,opts:['?餉閮毀','?閮毀','皛閮毀','?輸閮毀'],ans:0},
+  {id:12,bloom:'L2',cat:'敺葫',text:'銝?雿??臬????急?霈?撖行皞?嚗?,opts:['?怠撠撱嗥???敺誑皛?具偌獢嗥?敺?皛','鈭飢?４皛閮剖????????撠??征瘞?????踹?鈭飢?４??敶梢鈭箏?亙熒','?冽?Ｙ???嚗lashover嚗?嚗?恕?扳??脫???怠','皛?剝蝑??桐犖?∪?瘀??典??函恣??撠?梢??敺誑撖行??皛'],ans:1},
+  {id:13,bloom:'L1',cat:'憿澈',text:'銝?雿??胯銵??脩楊蝯???',opts:['?單?潛?單?','?皛??','鈭箏??芸?','?脫迫撱嗥??游之'],ans:1},
+  {id:14,bloom:'L2',cat:'憿澈',text:'銝?雿??舀???券閬?嚗?,opts:['?潛?怎???????潛霅衣靽⊥?嚗誑?拙?鈭箏?交?','?脩銝剖??亦?怎閮敺?銝??嗡?璅惜','撱?鈭箏撱???靽??桀?嚗蒂??撱?2甈∩誑銝?,'2璅誑銝??賣?嚗??誨?凋誑?怎?潛?隞乩?璅惜?箔蜓'],ans:1},
+  {id:15,bloom:'L2',cat:'敺葫',text:'銝?雿??舀迤蝣箇??????怒?瘜?',opts:['撠??怠?湔銝?急?銝?,'??皛?凋犖?∪?極嚗?鈭箸??怒?鈭箏??暹??怠嚗誑?葉???雿輻','皛?剖?拇??拍摰文瘨?餈暺脰?皛','雿輻皛?冽皛?Ｗ?嚗Ⅱ隤閫賊銋????臬??誑瞉偌?澈'],ans:0},
+  {id:16,bloom:'L1',cat:'憿澈',text:'銝?雿?撅祆?脩?脩?閮毀???',opts:['?桀??怎??','???脫迫?賢拿銋霅?,'??颲血??','???賢拿?潛????蔭?斗?????],ans:2},
+  {id:17,bloom:'L1',cat:'憿澈',text:'銝?雿?撅祆?脩?脩?閮毀?摰對?',opts:['?怎?銝??萄?銋???,'鈭粹???銋??,'摰雿平??銋?砌???,'?撠???銋???],ans:1},
+  {id:18,bloom:'L2',cat:'?葫',text:'銝?雿?撅祆?輸閮毀?摰對?',opts:['?119銋???,'???輸閮剜?身??雿蔭??雿瘜?,'靘?閮毀?嚗??典誨?剛身????撠??,'撠?銵????⊿?嗆瘜??摰?湔?'],ans:0},
+  {id:19,bloom:'L3',cat:'?葫',text:'銋曄?皛?其???潭皛???蝔桃?踝?',opts:['?梁??絲??,'???硃?絲??,'?銝剔???方絲??,'???舐??折?撅祉鞈芾絲??],ans:3},
+  {id:20,bloom:'L1',cat:'憿澈',text:'銝?雿?撅祆撱箇??拍??脩?輸閮剜嚗?,opts:['?箏??,'??蝛粹?','?賢','璅０'],ans:1},
+  {id:21,bloom:'L2',cat:'?葫',text:'銝?雿?撅祆撱箇??拍??脩閮剜嚗?,opts:['?脩???,'?脩瑽?,'??璈?,'?折鋆耨?'],ans:2},
+  {id:22,bloom:'L1',cat:'憿澈',text:'?剝??怨郎??銝?雿車???寞??航炊嚗?,opts:['?剝璇?,'韏啣??冽０','雿輻蝺拚?璈?,'雿輻皛'],ans:0},
+  {id:23,bloom:'L2',cat:'敺葫',text:'?怨郎霅阡???亙誨?剛身??雿?嚗銵??脩楊蝯??芸??∪?雿車銵?嚗?,opts:['?勗?銝餌恣','?Ⅱ隤?衣???霅?,'撱??','???嗉?'],ans:1},
+  {id:24,bloom:'L1',cat:'敺葫',text:'?脩??蜓閬?雿?',opts:['????,'鋆ˇ??,'?駁??怎?','?脣???],ans:2},
+  {id:25,bloom:'L2',cat:'?葫',text:'?怎?潛???頛??芯?蝺函?鈭箏蝞∪?餅０??嚗?,opts:['皛??,'摰?脰風??,'???,'?芾?瘨?'],ans:1},
+  {id:26,bloom:'L5',cat:'敺葫',text:'?怨郎?Ｘ葫?函?撣貉炊????頛?嗥????孵??箔?嚗?,opts:['撠?靽∠蜇璈?霅阡??','隢??潛?瘨撠平?銵犖?⊥炎靽?,'撠?靽∠蜇璈宏?梢?????,'?曇?銝恣'],ans:1},
+  {id:27,bloom:'L4',cat:'敺葫',text:'靘?閬?嚗??????臬祕?賡?怎恣???湔?嚗?,opts:['??閫??擗?,'銝澈??,'閮箸?','?振'],ans:2},
+  {id:28,bloom:'L2',cat:'憿澈',text:'銝????賡??脖遙???曹?????????賣?????',opts:['蝞∠?甈犖','?脩蝞∠?鈭?,'蝞∠?憪??,'?券?鈭箏'],ans:3},
+  {id:29,bloom:'L1',cat:'?梢?,text:'?銝剔??餅除閮剖??蝺??踝?撅祆?芯?憿?踝?',opts:['A憿??,'B憿??,'C憿??,'D憿??],ans:2},
+  {id:30,bloom:'L2',cat:'?梢?,text:'?銝剝蝺??急?嚗????撘??隤歹?',opts:['??餅?','??餃??砍鈭箏','?瘨鈭箏','隞交偌皛'],ans:3},
+  {id:31,bloom:'L5',cat:'?葫',text:'?交???擃蝔勗?瘨璈?憪?嚗鞎游雿脰??脩摰??銝行?瑟??怠嚗??拍???撘雿?',opts:['擃??嗉???鞈潸眺?詨皛?其誑蝷箸??,'?撌脰?頧?瘨撅?颲衣??脩?摰??嚗?瘨璈?銝衣憪?瘞???颲衣??餈啗玨蝔?,'???隞??,'憭折?鞈潸眺??券???怠銝血??扛??],ans:1},
+  {id:32,bloom:'L1',cat:'?葫',text:'靘?隞斗?憟?嚗??湔??瑟?撖阡??舫?蝞∠?甈迂?箔???',opts:['瘜犖','?脩蝞∠?鈭?,'憭扳?蝞∠???,'蝞∠?甈犖'],ans:3},
+  {id:33,bloom:'L4',cat:'?葫',text:'???擃?????銝?敶Ｗ????箏銝??蝝?',opts:['蝛箸除嚗飢瘞??','?舐???,'?梯','?????'],ans:3},
+  {id:34,bloom:'L1',cat:'敺葫',text:'銝摰?璅∩誑銝?撱箇??抬?瘨?脰風閮?雿摰?',opts:['蝞∠?甈犖','?脩蝞∠?鈭?,'瘨閮剖?撣?,'瘨閮剖?憯?],ans:1},
+  {id:35,bloom:'L4',cat:'?葫',text:'銝?雿?銝餌恣瘜??行?閬?嚗?銝?冽??脫?銋?蝭?',opts:['銝摰?璅∩誑銝??祉雿輻撱箇???,'?唬?撱箇???,'?圈璅惜??1撅支誑銝?蝞∠?甈?撅砌???雿?','?方?'],ans:3},
+  {id:36,bloom:'L1',cat:'?葫',text:'?芾?瘨蝺函??亙??身蝵格?霅瑞嚗”蝷箏撌乩犖?貉撠憭?嚗?,opts:['10鈭箔誑銝?,'20鈭箔誑銝?,'30鈭箔誑銝?,'50鈭箔誑銝?],ans:3},
+  {id:37,bloom:'L1',cat:'憿澈',text:'靘?憿?瘨摰閮剖?閮剔蔭璅???銝?雿?撅祆瘨?嗆?銝?敹?閮剜嚗?,opts:['瘨撠?偌瘙?,'?鋡?,'蝺仿皞?摨?,'?∠??駁縑頛閮剖?'],ans:1},
+  {id:38,bloom:'L1',cat:'敺葫',text:'蝝????憛?憿?銝?砍??怎嚗惇?澆銝憿?踝?',opts:['A憿??,'B憿??,'C憿??,'D憿??],ans:0},
+  {id:39,bloom:'L4',cat:'敺葫',text:'?冽迤撣詨雿輻???嚗?????詨????批??憭犖嚗?,opts:['摰璇?,'蝺拚?璈?,'?鋡?,'?輸璇?],ans:0},
+  {id:40,bloom:'L1',cat:'憿澈',text:'?撱箇??拍?賜?銝餉??潛????箔?嚗?,opts:['?餅除閮剖?','鈭箇蝮梁','??寡矽','?貉?'],ans:0},
 ];
 
-// ══════════════════════════════
-// Canvas 繪圖變數（全域）
-// ══════════════════════════════
+// ??????????????????????????????
+// Canvas 蝜芸?霈嚗??
+// ??????????????????????????????
 let cv, ctx;
-let CW=0, CH=0; // 大寫：canvas的繪圖解析度
+let CW=0, CH=0; // 憭批神嚗anvas?鼓?圾?漲
 
-// 背景圖片
-const bgImg=new Image();
-bgImg.src='../美工/Canvas中景.png';
-
-// 主角（位置用CW/CH比例即時算）
+// 銝餉?嚗?蝵桃CW/CH瘥??單?蝞?
 const HERO={state:'run',hitTimer:0,chargeTimer:0,knockback:0};
 function heroX(){ return CW*0.13; }
 function heroW(){ return CH*0.22; }
 function heroH(){ return CH*0.32; }
 function groundY(){ return CH*0.72; }
 
-// 怪物
+// ?芰
 const MON={def:null,x:0,state:'idle',alpha:1,scaleEffect:1,timer:0,visible:false};
 function monSize(){ return MON.def ? MON.def.size*CH*0.25 : CH*0.25; }
 function monTargetX(){ return CW*0.98 - monSize(); }
 
-// 拋射物
-const PROJS=[];
-// 粒子
+// ????const PROJS=[];
+// 蝎?
 const PARTS=[];
 
 let bgOff0=0,bgOff1=0,bgOff2=0;
 let animId=null, lastTs=0;
 
-// ══════════════════════════════
-// 遊戲狀態
-// ══════════════════════════════
+// ??????????????????????????????
+// ????// ??????????????????????????????
 let USER='', SESSION='S'+Date.now().toString(36).toUpperCase();
 let hp=MAX_HP, deaths=0, isDead=false, deathTimer=null;
 let qPool=[...QS], qIdx=0, currentQ=null;
@@ -476,11 +470,11 @@ let remain=GAME_SECS, gameTmr=null, over=false;
 let stageNum=1, bossesDefeated=0, bossHp=BOSS_HP, isBoss=false;
 let waitingAnim=false, lastExpText='';
 let encourageShown={5:false,10:false,15:false};
-const ENCS={5:'已進行5分鐘！繼續冒險！🔥',10:'過半了！防災技能大提升！💪',15:'最後5分鐘！全力衝刺！🏆'};
+const ENCS={5:'撌脤脰?5??嚗匱蝥??迎??',10:'??鈭??脩??賢之??嚗??,15:'?敺???嚗???綽???'};
 
-// ══════════════════════════════
-// 登入
-// ══════════════════════════════
+// ??????????????????????????????
+// ?餃
+// ??????????????????????????????
 (()=>{
   const bg=document.getElementById('fpbg');
   for(let i=0;i<20;i++){
@@ -505,21 +499,19 @@ function confirmTutorial(){
   const tut=document.getElementById('tutorial');tut.classList.add('out');
   setTimeout(()=>{
     tut.classList.remove('show');tut.style.display='none';
-    // 先顯示game
+    // ?＊蝷榫ame
     document.getElementById('game').classList.add('in');
-    // 等瀏覽器layout完成後再初始化canvas
+    // 蝑汗?甸ayout摰?敺????anvas
     setTimeout(initGame, 100);
   },350);
 }
 
-// ══════════════════════════════
-// Canvas初始化
-// ══════════════════════════════
+// ??????????????????????????????
+// Canvas????// ??????????????????????????????
 function initGame(){
   cv=document.getElementById('battle-canvas');
   const wrap=document.getElementById('battle-wrap');
-  // 讀取實際尺寸
-  CW=wrap.offsetWidth;
+  // 霈?祕?偕撖?  CW=wrap.offsetWidth;
   CH=wrap.offsetHeight;
   cv.width=CW;
   cv.height=CH;
@@ -542,16 +534,15 @@ function initGame(){
   spawnMonster();
 }
 
-// ══════════════════════════════
-// 主迴圈
-// ══════════════════════════════
+// ??????????????????????????????
+// 銝餉艘??// ??????????????????????????????
 function loop(ts){
   if(over)return;
   lastTs=ts;
   if(!ctx||CW<1||CH<1){animId=requestAnimationFrame(loop);return;}
 
-  // 背景捲動
-  if(HERO.state==='run'&&!MON.visible){bgOff0+=0.9;bgOff1+=0.8;bgOff2+=1.4;}
+  // ??脣?
+  if(HERO.state==='run'&&!MON.visible){bgOff0+=0.3;bgOff1+=0.8;bgOff2+=1.4;}
 
   ctx.clearRect(0,0,CW,CH);
   drawBG(ts);
@@ -560,7 +551,7 @@ function loop(ts){
   tickProjs();drawProjs();
   drawParts();
 
-  // 主角計時
+  // 銝餉?閮?
   if(HERO.state==='hit'){HERO.hitTimer++;if(HERO.hitTimer>28){HERO.state='run';HERO.hitTimer=0;}}
   if(HERO.state==='charge'){
     HERO.chargeTimer++;
@@ -571,7 +562,7 @@ function loop(ts){
   }
   if(HERO.knockback>0) HERO.knockback=Math.max(0,HERO.knockback-2.5);
 
-  // 怪物狀態機
+  // ?芰???
   if(MON.visible&&MON.def){
     if(MON.state==='slidein'){
       const tx=monTargetX();
@@ -599,23 +590,50 @@ function loop(ts){
   animId=requestAnimationFrame(loop);
 }
 
-// ══════════════════════════════
-// 繪製背景
-// ══════════════════════════════
+// ??????????????????????????????
+// 蝜芾ˊ?
+// ??????????????????????????????
 function drawBG(ts){
-  if(!bgImg.complete||bgImg.naturalWidth===0){
-    ctx.fillStyle='#0d0b2a';ctx.fillRect(0,0,CW,CH);return;
+  const sky=ctx.createLinearGradient(0,0,0,CH*0.7);
+  sky.addColorStop(0,'#0d0b2a');sky.addColorStop(0.5,'#1a1535');sky.addColorStop(1,'#12111e');
+  ctx.fillStyle=sky;ctx.fillRect(0,0,CW,CH);
+  // ??
+  ctx.fillStyle='rgba(255,255,255,0.5)';
+  [[10,8],[55,5],[105,10],[155,7],[210,9],[270,6],[330,14],[390,11]].forEach(([sx,sy])=>{
+    ctx.beginPath();ctx.arc(((sx-bgOff0*0.1)%CW+CW)%CW,sy,1,0,Math.PI*2);ctx.fill();
+  });
+  // ?撱箇?
+  const bw=60,bg=20,bt=bw+bg;
+  ctx.fillStyle='#1e1b3a';
+  for(let i=-1;i<Math.ceil(CW/bt)+2;i++){
+    const bx=(i*bt-bgOff0%bt+bt*10)%((Math.ceil(CW/bt)+2)*bt)-bt;
+    const bh=30+((i*7+3)%4)*15;
+    ctx.fillRect(bx,CH*0.35-bh,bw,bh);
   }
-  const imgW=bgImg.naturalWidth*(CH/bgImg.naturalHeight);
-  const off=(bgOff0%imgW+imgW)%imgW;
-  ctx.drawImage(bgImg,-off,0,imgW,CH);
-  ctx.drawImage(bgImg,-off+imgW,0,imgW,CH);
-  if(-off+imgW*2<CW)ctx.drawImage(bgImg,-off+imgW*2,0,imgW,CH);
+  // ?圈
+  const gy=groundY();
+  const grd=ctx.createLinearGradient(0,gy,0,CH);
+  grd.addColorStop(0,'#2a1f0e');grd.addColorStop(1,'#1a1208');
+  ctx.fillStyle=grd;ctx.fillRect(0,gy,CW,CH-gy);
+  ctx.fillStyle='#4a3520';ctx.fillRect(0,gy,CW,3);
+  // 蝤葦
+  ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
+  for(let i=0;i<Math.ceil(CW/40)+2;i++){
+    const tx=(i*40-bgOff1%40+400)%CW;
+    ctx.beginPath();ctx.moveTo(tx,gy);ctx.lineTo(tx,CH);ctx.stroke();
+  }
+  // ?菜?
+  ctx.fillStyle='#3a2a10';
+  for(let i=0;i<Math.ceil(CW/48)+2;i++){
+    const fx=(i*48-bgOff2%48+480)%CW;
+    ctx.fillRect(fx,gy-16,6,24);
+  }
+  ctx.fillStyle='#4a3618';ctx.fillRect(0,gy-8,CW,4);
 }
 
-// ══════════════════════════════
-// 繪製主角
-// ══════════════════════════════
+// ??????????????????????????????
+// 蝜芾ˊ銝餉?
+// ??????????????????????????????
 function lc(hex,a){const r=Math.min(255,parseInt(hex.slice(1,3),16)+a),g=Math.min(255,parseInt(hex.slice(3,5),16)+a),b=Math.min(255,parseInt(hex.slice(5,7),16)+a);return`rgb(${r},${g},${b})`;}
 function dc(hex,a){const r=Math.max(0,parseInt(hex.slice(1,3),16)-a),g=Math.max(0,parseInt(hex.slice(3,5),16)-a),b=Math.max(0,parseInt(hex.slice(5,7),16)-a);return`rgb(${r},${g},${b})`;}
 
@@ -636,34 +654,32 @@ function drawHero(now){
   ctx.translate(x+hw+kbX, y+bY+hh);
   ctx.rotate(lean);
 
-  // 影子
+  // 敶勗?
   ctx.save();ctx.translate(0,hh+6);ctx.scale(1,0.3);
   ctx.globalAlpha=0.22;ctx.fillStyle='#000';
   ctx.beginPath();ctx.ellipse(0,0,hw*0.9,hw*0.4,0,0,Math.PI*2);ctx.fill();
   ctx.globalAlpha=1;ctx.restore();
 
-  // 腿
-  const legA=HERO.state==='run'?Math.sin(now/120)*0.5:0;
+  // ??  const legA=HERO.state==='run'?Math.sin(now/120)*0.5:0;
   ctx.fillStyle=col;
   ctx.save();ctx.translate(-hw*0.25,hh*0.55);ctx.rotate(legA);
   ctx.beginPath();ctx.roundRect(-4,0,8,H*0.28,3);ctx.fill();ctx.restore();
   ctx.save();ctx.translate(hw*0.25,hh*0.55);ctx.rotate(-legA);
   ctx.beginPath();ctx.roundRect(-4,0,8,H*0.28,3);ctx.fill();ctx.restore();
 
-  // 身體
+  // 頨恍?
   const bg=ctx.createRadialGradient(-hw*.15,-hh*.1,2,0,0,hw*1.1);
   bg.addColorStop(0,lc(col,40));bg.addColorStop(.6,col);bg.addColorStop(1,dc(col,30));
   ctx.fillStyle=bg;ctx.beginPath();ctx.ellipse(0,hh*.1,hw*.8,hh*.75,0,0,Math.PI*2);ctx.fill();
 
-  // 頭
-  const hg=ctx.createRadialGradient(-hw*.2,-hh*.55,2,0,-hh*.4,hw*.85);
+  // ??  const hg=ctx.createRadialGradient(-hw*.2,-hh*.55,2,0,-hh*.4,hw*.85);
   hg.addColorStop(0,lc(col,50));hg.addColorStop(.5,lc(col,20));hg.addColorStop(1,col);
   ctx.fillStyle=hg;ctx.beginPath();ctx.arc(0,-hh*.4,hw*.82,0,Math.PI*2);ctx.fill();
 
-  // 帽子
+  // 撣賢?
   drawHat(ctx,upgrade.hat,hw,hh,now);
 
-  // 眼睛
+  // ?潛?
   const ey=-hh*.45;
   if(HERO.state==='hit'){
     ctx.strokeStyle='#1a1a2a';ctx.lineWidth=2.5;ctx.lineCap='round';
@@ -677,23 +693,22 @@ function drawHero(now){
     ctx.beginPath();ctx.arc(hw*.28,ey-2,2.5,0,Math.PI*2);ctx.fill();
   }
 
-  // 嘴
-  ctx.strokeStyle='#1a1a2a';ctx.lineWidth=2;ctx.lineCap='round';
+  // ??  ctx.strokeStyle='#1a1a2a';ctx.lineWidth=2;ctx.lineCap='round';
   ctx.beginPath();ctx.arc(0,ey+10,5,0.15,Math.PI-.15);ctx.stroke();
 
-  // 手臂
+  // ??
   const aA=HERO.state==='run'?Math.sin(now/120)*.5:0;
   ctx.fillStyle=col;
   ctx.save();ctx.translate(-hw*.8,hh*.0);ctx.rotate(-0.3+aA);ctx.beginPath();ctx.roundRect(-4,-4,8,H*.25,4);ctx.fill();ctx.restore();
   ctx.save();ctx.translate(hw*.8,hh*.0);ctx.rotate(0.3-aA);ctx.beginPath();ctx.roundRect(-4,-4,8,H*.25,4);ctx.fill();ctx.restore();
 
-  // 腮紅
+  // ?桃?
   ctx.globalAlpha=.35;ctx.fillStyle='#ff8888';
   ctx.beginPath();ctx.ellipse(-hw*.45,ey+6,7,4,0,0,Math.PI*2);ctx.fill();
   ctx.beginPath();ctx.ellipse(hw*.45,ey+6,7,4,0,0,Math.PI*2);ctx.fill();
   ctx.globalAlpha=1;
 
-  // Boss光環
+  // Boss?
   drawAura(ctx,hw,hh,now,getUpgrade(bossesDefeated).aura);
 
   ctx.restore();
@@ -728,7 +743,7 @@ function drawHat(ctx,hat,hw,hh,now){
     ctx.fillStyle='#fbbf24';ctx.fillRect(-hw*.92,ey-hw*.62,hw*1.84,4);
     ctx.beginPath();ctx.arc(0,ey-hw*.52,7,0,Math.PI*2);ctx.fill();
     ctx.fillStyle='#fff';ctx.font=`bold ${Math.floor(hw*.5)}px serif`;
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('★',0,ey-hw*.52);
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('??,0,ey-hw*.52);
   }
 }
 
@@ -740,7 +755,7 @@ function drawAura(ctx,hw,hh,now,aura){
       ctx.globalAlpha=(0.6+Math.sin(now/200+i)*0.4)*0.85;
       ctx.fillStyle='#fbbf24';ctx.font=`${Math.floor(hw*.5)}px serif`;
       ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText('✦',Math.cos(a)*hw*1.4,Math.sin(a)*hw*1.4);
+      ctx.fillText('??,Math.cos(a)*hw*1.4,Math.sin(a)*hw*1.4);
     }
     ctx.globalAlpha=1;
   }
@@ -763,7 +778,7 @@ function drawAura(ctx,hw,hh,now,aura){
       ctx.save();ctx.translate(fx,fy);ctx.scale(sc,sc);
       ctx.globalAlpha=.85;ctx.font=`${Math.floor(hw*.7)}px serif`;
       ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.fillText('🔥',0,0);ctx.restore();
+      ctx.fillText('?',0,0);ctx.restore();
     }
     ctx.globalAlpha=1;
   }
@@ -782,9 +797,9 @@ function drawAura(ctx,hw,hh,now,aura){
   }
 }
 
-// ══════════════════════════════
-// 繪製怪物
-// ══════════════════════════════
+// ??????????????????????????????
+// 蝜芾ˊ?芰
+// ??????????????????????????????
 function drawMon(now){
   if(!MON.visible||!MON.def)return;
   const sz=monSize();
@@ -799,7 +814,7 @@ function drawMon(now){
   ctx.globalAlpha=MON.alpha;
   ctx.translate(drawX+bsz/2, drawY+bsz/2);
 
-  // 影子
+  // 敶勗?
   ctx.save();ctx.translate(0,bsz/2+4);ctx.scale(1,0.3);
   ctx.globalAlpha=MON.alpha*0.3;ctx.fillStyle='#000';
   ctx.beginPath();ctx.ellipse(0,0,bsz*.5,bsz*.2,0,0,Math.PI*2);ctx.fill();
@@ -851,9 +866,8 @@ function drawMon(now){
   ctx.restore();
 }
 
-// ══════════════════════════════
-// 拋射物
-// ══════════════════════════════
+// ??????????????????????????????
+// ????// ??????????????????????????????
 function fireProj(fromHero){
   const gY=groundY();
   const hx=heroX()+heroW()*.8, hy=gY-heroH()*.55;
@@ -917,9 +931,9 @@ function onProjHit(p){
   }
 }
 
-// ══════════════════════════════
-// 粒子
-// ══════════════════════════════
+// ??????????????????????????????
+// 蝎?
+// ??????????????????????????????
 function spawnParts(x,y,colors,n){
   for(let i=0;i<n;i++){
     const a=Math.random()*Math.PI*2,sp=2+Math.random()*4;
@@ -936,9 +950,9 @@ function drawParts(){
   }
 }
 
-// ══════════════════════════════
-// 怪物系統
-// ══════════════════════════════
+// ??????????????????????????????
+// ?芰蝟餌絞
+// ??????????????????????????????
 function spawnMonster(){
   if(over||isDead)return;
   isBoss=(stageNum%BOSS_EVERY===0);
@@ -951,15 +965,14 @@ function spawnMonster(){
   if(isBoss){bossHp=BOSS_HP;updBossHP();}
   document.getElementById('boss-tag').style.display=isBoss?'inline-block':'none';
   document.getElementById('boss-hp-row').style.display=isBoss?'flex':'none';
-  // slidein結束後出題由battleLoop的slidein狀態處理
-}
+  // slidein蝯?敺憿battleLoop?lidein?????}
 
-// ══ 浮動解析面板 ══
+// ?? 瘚桀?閫???Ｘ ??
 function showResultPanel(isOk, expText, btnText, btnCallback){
   const panel=document.getElementById('result-panel');
-  document.getElementById('result-icon').textContent=isOk?'✅':'❌';
+  document.getElementById('result-icon').textContent=isOk?'??:'??;
   document.getElementById('result-exp').innerHTML=
-    `<strong>${isOk?'✓ 正確！':'✗ 答錯了！'}</strong>${expText}`;
+    `<strong>${isOk?'??甇?Ⅱ嚗?:'??蝑鈭?'}</strong>${expText}`;
   panel.className='show '+(isOk?'correct-panel':'wrong-panel');
   const btn=document.getElementById('result-btn');
   btn.textContent=btnText;
@@ -977,8 +990,7 @@ function triggerBossAppear(){
 }
 
 function onMonDead(){
-  // 只播放消滅特效，不自動推進
-  // 推進由玩家按「繼續冒險」按鈕觸發（在onHitResolved裡設定）
+  // ?芣?暹?皛??銝???  // ?券脩?拙振?匱蝥??芥??孛?潘??矣nHitResolved鋆∟身摰?
   spawnParts(MON.x+monSize()*.5,CH*.5,['#fbbf24','#ff8800','#22c55e'],18);
 }
 
@@ -987,9 +999,8 @@ function updBossHP(){
   document.getElementById('boss-hp-bar').style.width=(bossHp/BOSS_HP*100)+'%';
 }
 
-// ══════════════════════════════
-// 命中後顯示繼續按鈕
-// ══════════════════════════════
+// ??????????????????????????????
+// ?賭葉敺＊蝷箇匱蝥???// ??????????????????????????????
 function advanceStage(){
   stageNum++;updateLevelBar();
   setTimeout(spawnMonster,400);
@@ -1004,7 +1015,7 @@ function onHitResolved(isOk){
 
   if(isOk){
     if(isBoss&&bossHp>0){
-      btnText='📖 看完了，繼續攻擊 Boss →';
+      btnText='?? ??鈭?蝜潛??餅? Boss ??;
       callback=()=>{
         if(isDead||over)return;
         if(isRoundEnd){setTimeout(()=>showRoundEnd(),250);return;}
@@ -1013,7 +1024,7 @@ function onHitResolved(isOk){
     } else if(isBoss&&bossHp<=0){
       MON.state='dead';MON.timer=20;
       spawnParts(MON.x+monSize()*.5,CH*.4,['#fbbf24','#ff4400','#f472b6'],22);
-      btnText='💥 Boss擊倒！我看完了 →';
+      btnText='? Boss????摰? ??;
       callback=()=>{
         if(isDead||over)return;
         bossesDefeated++;showLevelUp();
@@ -1022,7 +1033,7 @@ function onHitResolved(isOk){
       };
     } else {
       MON.state='dead';MON.timer=20;
-      btnText='📖 看完了，下一關 →';
+      btnText='?? ??鈭?銝?????;
       callback=()=>{
         if(isDead||over)return;
         if(isRoundEnd){setTimeout(()=>showRoundEnd(),250);return;}
@@ -1031,7 +1042,7 @@ function onHitResolved(isOk){
     }
   } else {
     if(isBoss){
-      btnText='📖 看完了，繼續挑戰 Boss →';
+      btnText='?? ??鈭?蝜潛?? Boss ??;
       callback=()=>{
         if(isDead||over)return;
         if(isRoundEnd){setTimeout(()=>showRoundEnd(),250);return;}
@@ -1039,7 +1050,7 @@ function onHitResolved(isOk){
       };
     } else {
       MON.state='dead';MON.timer=20;
-      btnText='📖 看完了，下一關 →';
+      btnText='?? ??鈭?銝?????;
       callback=()=>{
         if(isDead||over)return;
         if(isRoundEnd){setTimeout(()=>showRoundEnd(),250);return;}
@@ -1050,29 +1061,29 @@ function onHitResolved(isOk){
   showResultPanel(isOk, lastExpText, btnText, callback);
 }
 
-// ══════════════════════════════
-// 升階通知
-// ══════════════════════════════
+// ??????????????????????????????
+// ???
+// ??????????????????????????????
 function showLevelUp(){
   if(over)return;
   const u=getUpgrade(bossesDefeated);
-  const icons={hair:'🧑‍💼',yellow:'👷',vest:'🦺',fire:'🧑‍🚒',elite:'🚒'};
-  document.getElementById('levelup-hero').textContent=icons[u.hat]||'🧑‍💼';
-  document.getElementById('levelup-title').textContent=u.aura>getUpgrade(bossesDefeated-1).aura?'✨ 特效解鎖！':'⬆️ LEVEL UP！';
+  const icons={hair:'?????,yellow:'?',vest:'?死',fire:'?????,elite:'??'};
+  document.getElementById('levelup-hero').textContent=icons[u.hat]||'?????;
+  document.getElementById('levelup-title').textContent=u.aura>getUpgrade(bossesDefeated-1).aura?'???寞?閫??嚗?:'漎? LEVEL UP嚗?;
   document.getElementById('levelup-text').textContent=u.notice;
   const b=document.getElementById('levelup-banner');
   b.classList.add('show');
   setTimeout(()=>b.classList.remove('show'),3000);
 }
 
-// ══════════════════════════════
-// 題目系統
-// ══════════════════════════════
+// ??????????????????????????????
+// 憿蝟餌絞
+// ??????????????????????????????
 function shufflePool(){qPool=[...QS].sort(()=>Math.random()-.5);qIdx=0;}
 function nextQ(){
   if(qIdx>=qPool.length){
-    // 40題用完，不自動重洗，下一輪由showRoundEnd的繼續按鈕觸發shufflePool
-    qIdx=qPool.length-1; // 停在最後一題，避免越界
+    // 40憿摰?銝??瘣?銝?頛芰showRoundEnd?匱蝥??孛?廣hufflePool
+    qIdx=qPool.length-1; // ??敺?憿??踹?頞?
   }
   return qPool[qIdx++];
 }
@@ -1133,8 +1144,8 @@ function handleAns(chosen){
   if(SHEETS_URL)sendData({Timestamp:new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}),UserName:USER,SessionID:SESSION,QuestionID:q.id,BloomLevel:q.bloom,QuestionCategory:q.cat,ResponseTime_ms:ms,IsCorrect:isOk,ChosenOption:['A','B','C','D'][chosen],FirstAttemptCorrect:(att===1&&isOk),AttemptNum:att,RoomName:'stage_'+stageNum,HPAtAnswer:hpB,DeathCount:deaths,TotalPlayTime:GAME_SECS-remain});
   if(isDead)return;
   document.querySelectorAll('.opt').forEach((b,i)=>{if(i===q.ans)b.classList.add('ok');else if(i===chosen&&!isOk)b.classList.add('no');b.disabled=true;});
-  const expText=' 正確答案：'+['A','B','C','D'][q.ans]+'。'+q.opts[q.ans];
-  lastExpText=expText; // 存到全域，供onHitResolved使用
+  const expText=' 甇?Ⅱ蝑?嚗?+['A','B','C','D'][q.ans]+'??+q.opts[q.ans];
+  lastExpText=expText; // 摮?典?嚗?onHitResolved雿輻
   if(isOk){
     if(isBoss)bossHp--;
     updBossHP();
@@ -1149,12 +1160,12 @@ function handleAns(chosen){
   }
 }
 
-// ══════════════════════════════
+// ??????????????????????????????
 // HP
-// ══════════════════════════════
+// ??????????????????????????????
 function renderHP(){
   const c=document.getElementById('hp-hearts');c.innerHTML='';
-  for(let i=0;i<MAX_HP;i++){const h=document.createElement('span');h.className='heart'+(i>=hp?' lost':'');h.textContent='❤';h.style.color=i<hp?'#ef4444':'rgba(239,68,68,.18)';c.appendChild(h);}
+  for(let i=0;i<MAX_HP;i++){const h=document.createElement('span');h.className='heart'+(i>=hp?' lost':'');h.textContent='??;h.style.color=i<hp?'#ef4444':'rgba(239,68,68,.18)';c.appendChild(h);}
   document.getElementById('hp-count').textContent=hp+'/'+MAX_HP;
 }
 function loseHP(){
@@ -1176,13 +1187,13 @@ function respawn(){
   spawnMonster();
 }
 
-// ══════════════════════════════
-// HUD 更新
-// ══════════════════════════════
-function updateRate(){const r=totalAns>0?Math.round(totalOk/totalAns*100):null;document.getElementById('rv').textContent=r!==null?r+'%':'—';}
+// ??????????????????????????????
+// HUD ?湔
+// ??????????????????????????????
+function updateRate(){const r=totalAns>0?Math.round(totalOk/totalAns*100):null;document.getElementById('rv').textContent=r!==null?r+'%':'??;}
 function updateAnsHUD(){document.getElementById('ansv').textContent=totalAnsCount;}
 function updateLevelBar(){document.getElementById('level-num').textContent=stageNum;document.getElementById('level-bar').style.width=((stageNum-1)%BOSS_EVERY/BOSS_EVERY*100)+'%';}
-function updateCombo(){const el=document.getElementById('combo-display');if(combo>=2){el.textContent='🔥 連擊 ×'+combo;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2000);}else el.classList.remove('show');}
+function updateCombo(){const el=document.getElementById('combo-display');if(combo>=2){el.textContent='? ??? ?'+combo;el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2000);}else el.classList.remove('show');}
 function spawnFloatPlus(){
   const bw=document.getElementById('battle-wrap').getBoundingClientRect();
   const el=document.createElement('div');el.className='float-plus';el.textContent='+1';
@@ -1192,9 +1203,9 @@ function spawnFloatPlus(){
 }
 function showEncourage(msg){if(over)return;document.getElementById('encourage-text').textContent=msg;const el=document.getElementById('encourage');el.classList.add('show');setTimeout(()=>el.classList.remove('show'),3500);}
 
-// ══════════════════════════════
-// 每輪結束
-// ══════════════════════════════
+// ??????????????????????????????
+// 瘥憚蝯?
+// ??????????????????????????????
 function showRoundEnd(){
   if(over||isDead)return;locked=true;
   const m=Math.floor(remain/60),s=remain%60;
@@ -1204,22 +1215,19 @@ function showRoundEnd(){
   document.getElementById('re-time').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
   document.getElementById('round-end').classList.add('show');
 
-  // 記住結算時的狀態
-  const bossAlive=isBoss&&bossHp>0&&MON.visible;
+  // 閮?蝯??????  const bossAlive=isBoss&&bossHp>0&&MON.visible;
 
   document.getElementById('re-continue').onclick=()=>{
     document.getElementById('round-end').classList.remove('show');
     roundOk=0;roundFail=0;roundCount++;
     locked=false;
-    shufflePool(); // 重洗題庫
-    // 重設qcont按鈕，避免殘留舊onclick
+    shufflePool(); // ??憿澈
+    // ?身qcont??嚗????onclick
     hideResultPanel();
     if(bossAlive){
-      // Boss還活著，繼續出Boss題
-      showNextBossQ();
+      // Boss?暑??蝜潛??慷oss憿?      showNextBossQ();
     } else {
-      // 正常spawn下一隻怪
-      if(!MON.visible) spawnMonster();
+      // 甇?虜spawn銝??餅?      if(!MON.visible) spawnMonster();
     }
   };
   document.getElementById('re-leave').onclick=()=>{
@@ -1228,9 +1236,9 @@ function showRoundEnd(){
   };
 }
 
-// ══════════════════════════════
-// 計時
-// ══════════════════════════════
+// ??????????????????????????????
+// 閮?
+// ??????????????????????????????
 function tickGame(){
   if(over)return;remain--;
   const m=Math.floor(remain/60),s=remain%60;
@@ -1241,9 +1249,9 @@ function tickGame(){
   [5,10,15].forEach(t=>{if(elapsed===t&&!encourageShown[t]){encourageShown[t]=true;showEncourage(ENCS[t]);}});
 }
 
-// ══════════════════════════════
-// 結束
-// ══════════════════════════════
+// ??????????????????????????????
+// 蝯?
+// ??????????????????????????????
 function endGame(){
   over=true;clearInterval(gameTmr);if(qTmr)clearInterval(qTmr);
   if(animId)cancelAnimationFrame(animId);clearSave();
@@ -1252,16 +1260,16 @@ function endGame(){
   document.getElementById('eok').textContent=totalOk;document.getElementById('erate').textContent=rate+'%';
   document.getElementById('ecover').textContent=seenIds.size+'/40';document.getElementById('edeaths').textContent=deaths;
   document.getElementById('emaxcombo').textContent=maxCombo;
-  const msgs=['優秀！防災知識掌握度極高！','良好！部分題目可再加強。','尚可，建議複習消防法規。','加油！建議熟讀防護計畫。'];
+  const msgs=['?芰?嚗?賜霅??∪漲璆菟?嚗?,'?臬末嚗???桀??撘瑯?,'撠嚗遣霅啗?蝧??脫?閬?,'?硃嚗遣霅啁?霈?脰風閮??];
   document.getElementById('emsg').textContent=msgs[rate>=90?0:rate>=70?1:rate>=50?2:3];
   document.getElementById('endscreen').classList.add('show');
   if(SHEETS_URL)sendData({Timestamp:new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}),UserName:USER,SessionID:SESSION,QuestionID:'SESSION_END',BloomLevel:'',QuestionCategory:'',ResponseTime_ms:'',IsCorrect:'',ChosenOption:'',FirstAttemptCorrect:'',AttemptNum:'',RoomName:'',HPAtAnswer:hp,DeathCount:deaths,TotalPlayTime:GAME_SECS-remain});
 }
 function sendData(r){fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(r)}).catch(()=>{});}
 
-// ══════════════════════════════
+// ??????????????????????????????
 // localStorage
-// ══════════════════════════════
+// ??????????????????????????????
 function saveGame(){
   if(over)return;
   try{localStorage.setItem(LS_KEY,JSON.stringify({USER,SESSION,hp,deaths,remain,totalAns,totalOk,totalAnsCount,combo,maxCombo,roundOk,roundFail,roundCount,stageNum,bossesDefeated,seenIds:Array.from(seenIds),qAttempts,qIdx,savedAt:Date.now()}));}catch(e){}
@@ -1284,3 +1292,4 @@ function restoreGame(s){
 </script>
 </body>
 </html>
+
