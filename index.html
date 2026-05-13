@@ -438,6 +438,10 @@ const QS=[
 let cv, ctx;
 let CW=0, CH=0; // 大寫：canvas的繪圖解析度
 
+// 背景圖片
+const bgImg=new Image();
+bgImg.src='../美工/Canvas中景.png';
+
 // 主角（位置用CW/CH比例即時算）
 const HERO={state:'run',hitTimer:0,chargeTimer:0,knockback:0};
 function heroX(){ return CW*0.13; }
@@ -547,7 +551,7 @@ function loop(ts){
   if(!ctx||CW<1||CH<1){animId=requestAnimationFrame(loop);return;}
 
   // 背景捲動
-  if(HERO.state==='run'&&!MON.visible){bgOff0+=0.3;bgOff1+=0.8;bgOff2+=1.4;}
+  if(HERO.state==='run'&&!MON.visible){bgOff0+=0.9;bgOff1+=0.8;bgOff2+=1.4;}
 
   ctx.clearRect(0,0,CW,CH);
   drawBG(ts);
@@ -599,41 +603,14 @@ function loop(ts){
 // 繪製背景
 // ══════════════════════════════
 function drawBG(ts){
-  const sky=ctx.createLinearGradient(0,0,0,CH*0.7);
-  sky.addColorStop(0,'#0d0b2a');sky.addColorStop(0.5,'#1a1535');sky.addColorStop(1,'#12111e');
-  ctx.fillStyle=sky;ctx.fillRect(0,0,CW,CH);
-  // 星星
-  ctx.fillStyle='rgba(255,255,255,0.5)';
-  [[10,8],[55,5],[105,10],[155,7],[210,9],[270,6],[330,14],[390,11]].forEach(([sx,sy])=>{
-    ctx.beginPath();ctx.arc(((sx-bgOff0*0.1)%CW+CW)%CW,sy,1,0,Math.PI*2);ctx.fill();
-  });
-  // 遠景建築
-  const bw=60,bg=20,bt=bw+bg;
-  ctx.fillStyle='#1e1b3a';
-  for(let i=-1;i<Math.ceil(CW/bt)+2;i++){
-    const bx=(i*bt-bgOff0%bt+bt*10)%((Math.ceil(CW/bt)+2)*bt)-bt;
-    const bh=30+((i*7+3)%4)*15;
-    ctx.fillRect(bx,CH*0.35-bh,bw,bh);
+  if(!bgImg.complete||bgImg.naturalWidth===0){
+    ctx.fillStyle='#0d0b2a';ctx.fillRect(0,0,CW,CH);return;
   }
-  // 地面
-  const gy=groundY();
-  const grd=ctx.createLinearGradient(0,gy,0,CH);
-  grd.addColorStop(0,'#2a1f0e');grd.addColorStop(1,'#1a1208');
-  ctx.fillStyle=grd;ctx.fillRect(0,gy,CW,CH-gy);
-  ctx.fillStyle='#4a3520';ctx.fillRect(0,gy,CW,3);
-  // 磚縫
-  ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
-  for(let i=0;i<Math.ceil(CW/40)+2;i++){
-    const tx=(i*40-bgOff1%40+400)%CW;
-    ctx.beginPath();ctx.moveTo(tx,gy);ctx.lineTo(tx,CH);ctx.stroke();
-  }
-  // 柵欄
-  ctx.fillStyle='#3a2a10';
-  for(let i=0;i<Math.ceil(CW/48)+2;i++){
-    const fx=(i*48-bgOff2%48+480)%CW;
-    ctx.fillRect(fx,gy-16,6,24);
-  }
-  ctx.fillStyle='#4a3618';ctx.fillRect(0,gy-8,CW,4);
+  const imgW=bgImg.naturalWidth*(CH/bgImg.naturalHeight);
+  const off=(bgOff0%imgW+imgW)%imgW;
+  ctx.drawImage(bgImg,-off,0,imgW,CH);
+  ctx.drawImage(bgImg,-off+imgW,0,imgW,CH);
+  if(-off+imgW*2<CW)ctx.drawImage(bgImg,-off+imgW*2,0,imgW,CH);
 }
 
 // ══════════════════════════════
