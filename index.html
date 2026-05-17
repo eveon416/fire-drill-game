@@ -59,17 +59,28 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 }
 #game.in{display:flex}
 
-/* HUD */
+/* HUD（三等分） */
 #hud{display:flex;align-items:stretch;gap:3px;flex-shrink:0}
-#hud-left{flex:0 0 62px;background:rgba(8,8,20,0.75);border-radius:8px;padding:2px 6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#hud-left{flex:1 1 0;min-width:0;background:rgba(8,8,20,0.75);border-radius:8px;padding:2px 4px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 #hud-name{font-size:18px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ffffff;line-height:1;transition:font-size .15s;max-width:100%}
-#hud-title{flex:1;min-width:52px;background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:8px;padding:2px 4px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-#hud-title-v{font-family:'Noto Sans TC',sans-serif;font-size:9px;font-weight:700;color:rgba(255,200,100,0.9);text-align:center;letter-spacing:.03em;line-height:1.3;white-space:normal}
-.hst{background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:8px;padding:2px 5px;text-align:center;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
-.hst-l{font-size:7px;color:rgba(255,255,255,0.75);text-transform:uppercase}
-.hst-v{font-family:'Orbitron',monospace;font-size:9px;font-weight:900;color:#ffffff;margin-top:1px}
-#ts{width:42px}
-#tv{color:#ff8800;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+#hud-title{flex:1 1 0;min-width:0;background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:8px;padding:2px 4px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#hud-title-v{font-family:'Noto Sans TC',sans-serif;font-size:clamp(13px,4.5vw,18px);font-weight:700;color:rgba(255,200,100,0.9);text-align:center;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+#hud-stats{flex:1 1 0;min-width:0;background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:8px;padding:2px 3px;display:flex;flex-direction:row;align-items:stretch;gap:2px}
+/* 每個欄位：label + value 同一行，並排顯示 */
+.hsl{flex:1 1 0;min-width:0;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:2px;overflow:hidden}
+.hsl-l{font-size:6px;color:rgba(255,255,255,0.65);white-space:nowrap;flex-shrink:0}
+.hsl-v{font-family:'Orbitron',monospace;font-size:9px;font-weight:900;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* STAGE + 時間並排列 */
+#stage-time-row{display:flex;align-items:stretch;gap:4px;flex-shrink:0}
+#level-row{flex:2 1 0;min-width:0;display:flex;align-items:center;gap:6px;background:rgba(8,8,20,0.75);border-radius:8px;padding:4px 8px}
+#level-label{font-family:'Orbitron',monospace;font-size:9px;color:rgba(255,255,255,0.75);flex-shrink:0}
+#level-bar-bg{flex:1;height:7px;background:#1a1a2a;border-radius:4px;overflow:hidden;border:1px solid #2a2a3e}
+#level-bar{height:100%;width:0%;background:linear-gradient(90deg,#ff4400,#ff9900);border-radius:4px;transition:width .4s}
+#level-num{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:#ffaa33;flex-shrink:0;min-width:24px;text-align:right}
+#ts{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:4px;background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:8px;padding:3px 6px}
+#ts-lbl{font-size:9px;color:rgba(255,255,255,0.75);flex-shrink:0}
+#tv{font-family:'Orbitron',monospace;font-size:12px;font-weight:900;color:#ff8800;font-variant-numeric:tabular-nums;letter-spacing:.02em;flex-shrink:0}
 #ts.urgent #tv{color:#ef4444;animation:ub .5s step-end infinite}
 @keyframes ub{50%{opacity:.25}}
 
@@ -81,19 +92,13 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .heart.lost{opacity:.18;transform:scale(.8)}
 #hp-count{font-family:'Share Tech Mono',monospace;font-size:10px;color:#ffffff;flex-shrink:0}
 
-/* 關卡條 */
-#level-row{display:flex;align-items:center;gap:8px;flex-shrink:0;background:rgba(8,8,20,0.75);border-radius:10px;padding:4px 8px}
-#level-label{font-family:'Orbitron',monospace;font-size:9px;color:rgba(255,255,255,0.75);flex-shrink:0}
-#level-bar-bg{flex:1;height:7px;background:#1a1a2a;border-radius:4px;overflow:hidden;border:1px solid #2a2a3e}
-#level-bar{height:100%;width:0%;background:linear-gradient(90deg,#ff4400,#ff9900);border-radius:4px;transition:width .4s}
-#level-num{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:#ffaa33;flex-shrink:0;min-width:32px;text-align:right}
-
-/* ══ 戰鬥區：固定高度，不用flex ══ */
+/* ══ 戰鬥區：純比例，隨手機高度自動縮放 ══ */
 #battle-wrap{
   flex-shrink:0;
-  height:33vh;          /* 固定比例，不依賴flex計算 */
-  min-height:100px;
-  max-height:220px;
+  height:28vh;          /* fallback for older browsers */
+  height:28dvh;         /* dynamic viewport height（排除手機網址列） */
+  min-height:140px;     /* 超短手機下限 */
+  /* ✱ 不設 max-height，讓大手機也能等比放大 */
   border-radius:14px;
   overflow:hidden;
   position:relative;
@@ -286,20 +291,27 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 <div id="game">
   <div id="hud">
     <div id="hud-left"><div id="hud-name">—</div></div>
-    <div id="hud-title"><div id="hud-title-v">防災<br>學習系統</div></div>
-    <div class="hst" id="ts"><div class="hst-l">時間</div><div class="hst-v" id="tv">20:00</div></div>
-    <div class="hst"><div class="hst-l">正確率</div><div class="hst-v" id="rv">—</div></div>
-    <div class="hst"><div class="hst-l">已答</div><div class="hst-v" id="ansv">0</div></div>
+    <div id="hud-title"><div id="hud-title-v">防災學習系統</div></div>
+    <div id="hud-stats">
+      <div class="hsl"><span class="hsl-l">正確率</span><span class="hsl-v" id="rv">—</span></div>
+      <div class="hsl"><span class="hsl-l">答題數</span><span class="hsl-v" id="ansv">0</span></div>
+    </div>
+  </div>
+  <div id="stage-time-row">
+    <div id="level-row">
+      <div id="level-label">STAGE</div>
+      <div id="level-bar-bg"><div id="level-bar"></div></div>
+      <div id="level-num">1</div>
+    </div>
+    <div id="ts">
+      <span id="ts-lbl">時間</span>
+      <span id="tv">20:00</span>
+    </div>
   </div>
   <div id="hp-row">
     <div id="hp-label">HP</div>
     <div id="hp-hearts"></div>
     <div id="hp-count">10/10</div>
-  </div>
-  <div id="level-row">
-    <div id="level-label">STAGE</div>
-    <div id="level-bar-bg"><div id="level-bar"></div></div>
-    <div id="level-num">1</div>
   </div>
   <div id="battle-wrap">
     <canvas id="bg-far"></canvas>
@@ -541,7 +553,7 @@ function drawBgImages(){
   const midScale=Math.max(W/midImg.width, H/midImg.height);
   const midIW=midImg.width*midScale;
   const midIH=midImg.height*midScale;
-  const midY=H-midIH+Math.round(H*0.18); // 往下偏移 18%，讓遠景多露出
+  const midY=H-midIH+Math.round(H*0.20); // 裁掉下方20%，讓遠景在上方多露出
   const mOff=((midOff%midIW)+midIW)%midIW;
   for(let x=-mOff; x<W+midIW; x+=midIW)
     midCtx.drawImage(midImg,x,midY,midIW,midIH);
@@ -620,7 +632,8 @@ const ENCS={5:'已進行5分鐘！繼續冒險！🔥',10:'過半了！防災技
 function setHudName(name){
   const el=document.getElementById('hud-name');
   el.textContent=name;
-  el.style.fontSize=name.length<=3?'18px':name.length<=6?'11px':'9px';
+  // 序號格子現在是 flex:1（約 100px+），可以容納更多字
+  el.style.fontSize=name.length<=5?'18px':name.length<=8?'13px':'9px';
 }
 function startGame(){
   USER=document.getElementById('ni').value.trim();if(!USER)return;
