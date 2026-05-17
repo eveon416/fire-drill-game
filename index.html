@@ -500,6 +500,170 @@ const PARTS=[];
 let bgOff0=0,bgOff1=0,bgOff2=0;
 let animId=null, lastTs=0;
 
+// ══ 音效系統（Web Audio API，不需音檔）══
+const SFX = (() => {
+  let _ctx = null, _master = null;
+  function boot() {
+    if (_ctx) return _ctx;
+    _ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // Compressor 防爆音，同時讓整體更飽滿
+    const comp = _ctx.createDynamicsCompressor();
+    comp.threshold.value = -12; comp.knee.value = 6;
+    comp.ratio.value = 4; comp.attack.value = 0.003; comp.release.value = 0.15;
+    comp.connect(_ctx.destination);
+    _master = comp;
+    return _ctx;
+  }
+  const ac = () => { if (_ctx && _ctx.state==='suspended') _ctx.resume(); return boot(); };
+  const out = () => _master;
+
+  // 單音：振盪器 + gain envelope
+  function tone(freq, type, dur, vol, t, freqEnd) {
+    const c=ac(), o=c.createOscillator(), g=c.createGain();
+    o.connect(g); g.connect(out());
+    o.type=type; o.frequency.setValueAtTime(freq, t);
+    if(freqEnd) o.frequency.linearRampToValueAtTime(freqEnd, t+dur);
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t+dur);
+    o.start(t); o.stop(t+dur+0.05);
+  }
+  // 噪音爆破
+  function noise(dur, vol, t, filterFreq=300, filterType='bandpass') {
+    const c=ac();
+    const buf=c.createBuffer(1, c.sampleRate*dur, c.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+    const src=c.createBufferSource(), g=c.createGain(), f=c.createBiquadFilter();
+    f.type=filterType; f.frequency.value=filterFreq;
+    src.buffer=buf; src.connect(f); f.connect(g); g.connect(out());
+    g.gain.setValueAtTime(vol, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t+dur);
+    src.start(t); src.stop(t+dur+0.05);
+  }
+
+  return {
+    correct() { // ✅ 答對：明亮三音叮咚，尾音持鈴
+      const t=ac().currentTime;
+      tone(880,  'sine', 0.12, 0.55, t);
+      tone(1108, 'sine', 0.12, 0.50, t+0.10);
+      tone(1320, 'sine', 0.35, 0.55, t+0.20);
+      tone(1760, 'sine', 0.25, 0.30, t+0.22); // 高八度疊加鈴聲
+    },
+    wrong() {   // ❌ 答錯：電玩蜂鳴器，兩聲重擊往下掉
+      const t=ac().currentTime;
+      noise(0.06, 0.6, t, 800, 'lowpass');
+      tone(320, 'sawtooth', 0.22, 0.65, t, 180);
+      noise(0.06, 0.5, t+0.22, 600, 'lowpass');
+      tone(220, 'sawtooth', 0.22, 0.55, t+0.22, 110);
+    },
+    hit() {     // 💥 扣血：重擊低爆音 + 畫面震動感
+      const t=ac().currentTime;
+      noise(0.05, 0.9, t, 150, 'lowpass');   // 低頻衝擊
+      noise(0.12, 0.5, t, 2000, 'highpass'); // 高頻沙沙
+      tone(100, 'sine', 0.30, 0.65, t, 45);  // 低頻下降
+    },
+    boss() {    // 👹 Boss出現：三層警報，震耳欲聾
+      const t=ac().currentTime;
+      noise(0.25, 0.5, t, 120, 'lowpass');
+      tone(80,  'sawtooth', 0.50, 0.60, t,       180);
+      tone(160, 'square',   0.35, 0.45, t+0.10,  80);
+      tone(240, 'sawtooth', 0.25, 0.50, t+0.35, 120);
+      noise(0.15, 0.4, t+0.20, 400, 'bandpass');
+    },
+    stageUp() { // ⭐ 升關：清脆四音上升
+      const t=ac().currentTime;
+      tone(523, 'sine', 0.13, 0.50, t);
+      tone(659, 'sine', 0.13, 0.50, t+0.12);
+      tone(784, 'sine', 0.13, 0.50, t+0.24);
+      tone(1047,'sine', 0.28, 0.55, t+0.36);
+    },
+    bossDown() { // 🏆 Boss擊敗：五音英雄勝利號角
+      const t=ac().currentTime;
+      tone(392,  'sine', 0.10, 0.50, t);
+      tone(523,  'sine', 0.10, 0.55, t+0.10);
+      tone(659,  'sine', 0.10, 0.55, t+0.20);
+      tone(784,  'sine', 0.10, 0.55, t+0.30);
+      tone(1047, 'sine', 0.45, 0.65, t+0.40);
+      noise(0.20, 0.35, t+0.38, 1200, 'bandpass'); // 歡呼感
+    }
+  };
+})();
+
+// ══ BGM 系統 ══
+const BGM = (() => {
+  const TRACKS = {
+    intro:   'assets/music/開頭音樂.mp3',
+    battle:  'assets/music/戰鬥音樂.mp3',
+    boss:    'assets/music/BOSS戰音樂.mp3',
+    victory: 'assets/music/勝利音樂.mp3',
+  };
+  const audio = {};
+  let current = null;
+  const VOL = 0.80;
+  const FADE_MS = 600;
+
+  // 優先載入：開頭 + 戰鬥（頁面載入時）
+  function preload(keys) {
+    keys.forEach(k => {
+      if (audio[k]) return;
+      const a = new Audio(TRACKS[k]);
+      a.loop = (k !== 'victory');
+      a.volume = 0;
+      a.preload = 'auto';
+      audio[k] = a;
+    });
+  }
+
+  function fadeTo(key, loop) {
+    if (!audio[key]) preload([key]);
+    const next = audio[key];
+    if (loop !== undefined) next.loop = loop;
+
+    // 淡出目前曲目
+    if (current && current !== next) {
+      const prev = current;
+      const step = prev.volume / (FADE_MS / 30);
+      const t = setInterval(() => {
+        prev.volume = Math.max(0, prev.volume - step);
+        if (prev.volume <= 0) { clearInterval(t); prev.pause(); prev.currentTime = 0; }
+      }, 30);
+    }
+
+    // 淡入新曲目
+    current = next;
+    if (next.paused) { next.currentTime = 0; next.play().catch(()=>{}); }
+    const step2 = VOL / (FADE_MS / 30);
+    const t2 = setInterval(() => {
+      next.volume = Math.min(VOL, next.volume + step2);
+      if (next.volume >= VOL) clearInterval(t2);
+    }, 30);
+  }
+
+  function stop() {
+    if (current) {
+      const prev = current; current = null;
+      const step = prev.volume / (FADE_MS / 30);
+      const t = setInterval(() => {
+        prev.volume = Math.max(0, prev.volume - step);
+        if (prev.volume <= 0) { clearInterval(t); prev.pause(); }
+      }, 30);
+    }
+  }
+
+  // 頁面載入時先備好開頭 + 戰鬥
+  preload(['intro', 'battle']);
+  // 小延遲後背景載入 boss + 勝利（不影響首屏）
+  setTimeout(() => preload(['boss', 'victory']), 3000);
+
+  return {
+    intro()   { fadeTo('intro'); },
+    battle()  { fadeTo('battle'); },
+    boss()    { fadeTo('boss'); },
+    victory() { fadeTo('victory', false); },
+    stop()    { stop(); },
+  };
+})();
+
 // ══ 背景圖片系統 ══
 const FAR_B64='assets/far.png';
 const MID_B64='assets/mid.png';
@@ -631,11 +795,13 @@ function setHudName(name){
 }
 function startGame(){
   USER=document.getElementById('ni').value.trim();if(!USER)return;
+  BGM.intro();
   setHudName(USER);
   document.getElementById('login').classList.add('out');
   setTimeout(()=>{document.getElementById('login').style.display='none';document.getElementById('tutorial').classList.add('show');},380);
 }
 function confirmTutorial(){
+  BGM.battle();
   const tut=document.getElementById('tutorial');tut.classList.add('out');
   setTimeout(()=>{
     tut.classList.remove('show');tut.style.display='none';
@@ -953,6 +1119,8 @@ let nextMonPrepared=false;
 function triggerBossAppear(){
   const bw=document.getElementById('battle-wrap');
   bw.style.animation='none';void bw.offsetWidth;bw.style.animation='shake .4s ease-out';
+  SFX.boss();
+  BGM.boss();
 }
 
 function onMonDead(){
@@ -970,6 +1138,8 @@ function updBossHP(){
 // ══════════════════════════════
 function advanceStage(){
   stageNum++;updateLevelBar();
+  SFX.stageUp();
+  BGM.battle(); // Boss 擊敗或一般升關都回到戰鬥音樂
   setTimeout(spawnMonster,400);
 }
 
@@ -991,6 +1161,7 @@ function onHitResolved(isOk){
     } else if(isBoss&&bossHp<=0){
       MON.state='dead';MON.timer=20;
       spawnParts(MON.x+monSize()*.5,CH*.4,['#fbbf24','#ff4400','#f472b6'],22);
+      SFX.bossDown();
       btnText='💥 Boss擊倒！我看完了 →';
       callback=()=>{
         if(isDead||over)return;
@@ -1103,6 +1274,8 @@ function handleAns(chosen){
   const q=currentQ;
   const isOk=chosen===q.ans;
   const hpB=hp;
+  const isBossKill = isOk && isBoss && bossHp <= 1; // 最後一擊：跳過 correct，只播 bossDown
+  if(isOk && !isBossKill) SFX.correct(); else if(!isOk) SFX.wrong();
   if(!isOk)loseHP();
   if(isOk){totalOk++;combo++;if(combo>maxCombo)maxCombo=combo;roundOk++;}
   else{combo=0;roundFail++;}
@@ -1140,6 +1313,7 @@ function renderHP(){
 }
 function loseHP(){
   if(isDead)return;hp=Math.max(0,hp-1);renderHP();
+  SFX.hit();
   const bw=document.getElementById('battle-wrap');bw.style.animation='none';void bw.offsetWidth;bw.style.animation='shake .3s ease-out';
   if(hp<=0)triggerDeath();
 }
@@ -1231,6 +1405,7 @@ function tickGame(){
 function endGame(){
   over=true;clearInterval(gameTmr);if(qTmr)clearInterval(qTmr);
   if(animId)cancelAnimationFrame(animId);clearSave();
+  BGM.victory();
   const rate=totalAns>0?Math.round(totalOk/totalAns*100):0;
   document.getElementById('ename').textContent=USER;document.getElementById('etotal').textContent=totalAns;
   document.getElementById('eok').textContent=totalOk;document.getElementById('erate').textContent=rate+'%';
