@@ -65,15 +65,12 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 #hud-name{font-size:18px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ffffff;line-height:1;transition:font-size .15s;max-width:100%}
 #hud-title{flex:1 1 0;min-width:0;background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:8px;padding:2px 4px;display:flex;align-items:center;justify-content:center;overflow:hidden}
 #hud-title-v{font-family:'Noto Sans TC',sans-serif;font-size:clamp(13px,4.5vw,18px);font-weight:700;color:rgba(255,200,100,0.9);text-align:center;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
-#hud-stats{flex:1 1 0;min-width:0;background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:8px;padding:2px 3px;display:flex;flex-direction:row;align-items:stretch;gap:2px}
-/* 每個欄位：label + value 同一行，並排顯示 */
-.hsl{flex:1 1 0;min-width:0;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:2px;overflow:hidden}
-.hsl-l{font-size:6px;color:rgba(255,255,255,0.65);white-space:nowrap;flex-shrink:0}
-.hsl-v{font-family:'Orbitron',monospace;font-size:9px;font-weight:900;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* STAGE + 時間並排列 */
-#stage-time-row{display:flex;align-items:stretch;gap:4px;flex-shrink:0}
-#level-row{flex:2 1 0;min-width:0;display:flex;align-items:center;gap:6px;background:rgba(8,8,20,0.75);border-radius:8px;padding:4px 8px}
+/* 第二行：STAGE + 正確率 + 答題數 三等分 */
+#info-row{display:flex;align-items:stretch;gap:4px;flex-shrink:0}
+#level-row{flex:1 1 0;min-width:0;display:flex;align-items:center;gap:6px;background:rgba(8,8,20,0.75);border-radius:8px;padding:4px 8px}
+.info-stat{flex:1 1 0;min-width:0;background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:8px;padding:2px 4px;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:3px;overflow:hidden}
+.info-stat-l{font-size:7px;color:rgba(255,255,255,0.65);white-space:nowrap;flex-shrink:0}
+.info-stat-v{font-family:'Orbitron',monospace;font-size:10px;font-weight:900;color:#ffffff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #level-label{font-family:'Orbitron',monospace;font-size:9px;color:rgba(255,255,255,0.75);flex-shrink:0}
 #level-bar-bg{flex:1;height:7px;background:#1a1a2a;border-radius:4px;overflow:hidden;border:1px solid #2a2a3e}
 #level-bar{height:100%;width:0%;background:linear-gradient(90deg,#ff4400,#ff9900);border-radius:4px;transition:width .4s}
@@ -292,21 +289,19 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
   <div id="hud">
     <div id="hud-left"><div id="hud-name">—</div></div>
     <div id="hud-title"><div id="hud-title-v">防災學習系統</div></div>
-    <div id="hud-stats">
-      <div class="hsl"><span class="hsl-l">正確率</span><span class="hsl-v" id="rv">—</span></div>
-      <div class="hsl"><span class="hsl-l">答題數</span><span class="hsl-v" id="ansv">0</span></div>
+    <div id="ts">
+      <span id="ts-lbl">時間</span>
+      <span id="tv">20:00</span>
     </div>
   </div>
-  <div id="stage-time-row">
+  <div id="info-row">
     <div id="level-row">
       <div id="level-label">STAGE</div>
       <div id="level-bar-bg"><div id="level-bar"></div></div>
       <div id="level-num">1</div>
     </div>
-    <div id="ts">
-      <span id="ts-lbl">時間</span>
-      <span id="tv">20:00</span>
-    </div>
+    <div class="info-stat"><span class="info-stat-l">正確率</span><span class="info-stat-v" id="rv">—</span></div>
+    <div class="info-stat"><span class="info-stat-l">答題數</span><span class="info-stat-v" id="ansv">0</span></div>
   </div>
   <div id="hp-row">
     <div id="hp-label">HP</div>
@@ -548,15 +543,14 @@ function drawBgImages(){
   const offset=(Math.sin(farT)+1)/2*maxOff;
   farCtx.drawImage(farImg,-offset,(H-farIH)/2,farIW,farIH);
 
-  // 中景循環捲動（cover 縮放，底部對齊）
+  // 中景循環捲動（高度固定85%，貼底對齊，上方15%露遠景）
   midCtx.clearRect(0,0,W,H);
-  const midScale=Math.max(W/midImg.width, H/midImg.height);
+  const midScale=(H*0.85)/midImg.height;
   const midIW=midImg.width*midScale;
   const midIH=midImg.height*midScale;
-  const midY=H-midIH+Math.round(H*0.20); // 裁掉下方20%，讓遠景在上方多露出
-  const mOff=((midOff%midIW)+midIW)%midIW;
+  const mOff=((midOff*0.85%midIW)+midIW)%midIW;
   for(let x=-mOff; x<W+midIW; x+=midIW)
-    midCtx.drawImage(midImg,x,midY,midIW,midIH);
+    midCtx.drawImage(midImg,x,H-midIH,midIW,midIH);
 }
 
 // ══ 主角精靈圖系統 ══
