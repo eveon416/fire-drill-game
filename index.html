@@ -60,24 +60,26 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 #game.in{display:flex}
 
 /* HUD */
-#hud{display:flex;align-items:center;gap:6px;flex-shrink:0}
-#hud-left{flex:1;min-width:0;background:rgba(8,8,20,0.75);border-radius:10px;padding:4px 8px}
-#hud-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ffffff}
-#hud-sub{font-size:9px;color:rgba(255,255,255,0.7);margin-top:1px}
-.hst{background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:10px;padding:5px 9px;text-align:center;flex-shrink:0}
-.hst-l{font-size:9px;color:rgba(255,255,255,0.75);text-transform:uppercase}
-.hst-v{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;color:#ffffff;margin-top:1px}
-#tv{color:#ff8800}
+#hud{display:flex;align-items:stretch;gap:3px;flex-shrink:0}
+#hud-left{flex:0 0 62px;background:rgba(8,8,20,0.75);border-radius:8px;padding:2px 6px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#hud-name{font-size:18px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ffffff;line-height:1;transition:font-size .15s;max-width:100%}
+#hud-title{flex:1;min-width:52px;background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:8px;padding:2px 4px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#hud-title-v{font-family:'Noto Sans TC',sans-serif;font-size:9px;font-weight:700;color:rgba(255,200,100,0.9);text-align:center;letter-spacing:.03em;line-height:1.3;white-space:normal}
+.hst{background:rgba(8,8,20,0.88);border:1px solid #4a4a6e;border-radius:8px;padding:2px 5px;text-align:center;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.hst-l{font-size:7px;color:rgba(255,255,255,0.75);text-transform:uppercase}
+.hst-v{font-family:'Orbitron',monospace;font-size:9px;font-weight:900;color:#ffffff;margin-top:1px}
+#ts{width:42px}
+#tv{color:#ff8800;font-variant-numeric:tabular-nums;letter-spacing:.02em}
 #ts.urgent #tv{color:#ef4444;animation:ub .5s step-end infinite}
 @keyframes ub{50%{opacity:.25}}
 
-/* HP */
-#hp-row{display:flex;align-items:center;gap:8px;flex-shrink:0;background:rgba(8,8,20,0.75);border-radius:10px;padding:4px 8px}
-#hp-label{font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:#ef4444;flex-shrink:0}
-#hp-hearts{display:flex;gap:2px;flex:1;flex-wrap:nowrap;overflow:hidden}
-.heart{font-size:12px;transition:transform .15s,opacity .15s;flex-shrink:0}
+/* HP（獨立列） */
+#hp-row{display:flex;align-items:center;gap:4px;background:rgba(8,8,20,0.75);border-radius:10px;padding:4px 8px;flex-shrink:0}
+#hp-label{font-family:'Orbitron',monospace;font-size:9px;font-weight:700;color:#ef4444;flex-shrink:0}
+#hp-hearts{display:flex;gap:1px;flex:1;flex-wrap:nowrap;overflow:hidden}
+.heart{font-size:13px;transition:transform .15s,opacity .15s;flex-shrink:0}
 .heart.lost{opacity:.18;transform:scale(.8)}
-#hp-count{font-family:'Share Tech Mono',monospace;font-size:11px;color:#ffffff;flex-shrink:0}
+#hp-count{font-family:'Share Tech Mono',monospace;font-size:10px;color:#ffffff;flex-shrink:0}
 
 /* 關卡條 */
 #level-row{display:flex;align-items:center;gap:8px;flex-shrink:0;background:rgba(8,8,20,0.75);border-radius:10px;padding:4px 8px}
@@ -227,6 +229,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 /* canvas震動 */
 @keyframes shake{0%,100%{transform:translate(0)}20%{transform:translate(-6px,2px)}40%{transform:translate(6px,-2px)}60%{transform:translate(-4px,2px)}80%{transform:translate(4px,-1px)}}
 
+
 /* ══ 戰鬥區背景圖片 ══ */
 #bg-far, #bg-mid {
   position:absolute;top:0;left:0;width:100%;height:100%;
@@ -238,8 +241,8 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 /* ══ 主角精靈圖 ══ */
 #hero-img{
   position:absolute;
-  bottom:0;
-  left:0;
+  bottom:10%;
+  left:calc(2% + 15px);
   height:48%;
   width:auto;
   image-rendering:auto;
@@ -283,6 +286,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 <div id="game">
   <div id="hud">
     <div id="hud-left"><div id="hud-name">—</div></div>
+    <div id="hud-title"><div id="hud-title-v">防災<br>學習系統</div></div>
     <div class="hst" id="ts"><div class="hst-l">時間</div><div class="hst-v" id="tv">20:00</div></div>
     <div class="hst"><div class="hst-l">正確率</div><div class="hst-v" id="rv">—</div></div>
     <div class="hst"><div class="hst-l">已答</div><div class="hst-v" id="ansv">0</div></div>
@@ -396,6 +400,7 @@ const UPGRADES=[
 ];
 function getUpgrade(n){let u=UPGRADES[0];for(const s of UPGRADES)if(n>=s.n)u=s;return u;}
 
+
 // ══════════════════════════════
 // 怪物定義
 // ══════════════════════════════
@@ -468,7 +473,7 @@ let CW=0, CH=0; // 大寫：canvas的繪圖解析度
 // 主角狀態機
 const HERO={state:'run',hitTimer:0,chargeTimer:0,knockback:0};
 function groundY(){ return CH*0.90; }
-function heroX(){ return CW*0.06; }
+function heroX(){ return CW*0.02+15; }
 function heroW(){ return CH*0.22; }
 function heroH(){ return CH*0.32; }
 // 顏色工具（drawMon 使用）
@@ -478,7 +483,7 @@ function dc(hex,a){const r=Math.max(0,parseInt(hex.slice(1,3),16)-a),g=Math.max(
 // 怪物
 const MON={def:null,x:0,state:'idle',alpha:1,scaleEffect:1,timer:0,visible:false};
 function monSize(){ return MON.def ? MON.def.size*CH*0.25 : CH*0.25; }
-function monTargetX(){ return CW*0.98 - monSize(); }
+function monTargetX(){ return CW*0.98 - monSize() - 15; }
 
 // 拋射物
 const PROJS=[];
@@ -536,7 +541,7 @@ function drawBgImages(){
   const midScale=Math.max(W/midImg.width, H/midImg.height);
   const midIW=midImg.width*midScale;
   const midIH=midImg.height*midScale;
-  const midY=H-midIH;
+  const midY=H-midIH+Math.round(H*0.18); // 往下偏移 18%，讓遠景多露出
   const mOff=((midOff%midIW)+midIW)%midIW;
   for(let x=-mOff; x<W+midIW; x+=midIW)
     midCtx.drawImage(midImg,x,midY,midIW,midIH);
@@ -612,9 +617,14 @@ const ENCS={5:'已進行5分鐘！繼續冒險！🔥',10:'過半了！防災技
   if(save){document.getElementById('login').style.display='none';restoreGame(save);}
 })();
 
+function setHudName(name){
+  const el=document.getElementById('hud-name');
+  el.textContent=name;
+  el.style.fontSize=name.length<=3?'18px':name.length<=6?'11px':'9px';
+}
 function startGame(){
   USER=document.getElementById('ni').value.trim();if(!USER)return;
-  document.getElementById('hud-name').textContent=USER;
+  setHudName(USER);
   document.getElementById('login').classList.add('out');
   setTimeout(()=>{document.getElementById('login').style.display='none';document.getElementById('tutorial').classList.add('show');},380);
 }
@@ -735,13 +745,7 @@ function loop(ts){
 // 繪製背景
 // ══════════════════════════════
 function drawBG(ts){
-  // 背景由bg-far和bg-mid canvas處理
-  // 只畫地面，讓主角有站立基準
-  const gy=groundY();
-  ctx.fillStyle='rgba(15,10,4,0.5)';
-  ctx.fillRect(0,gy,CW,CH-gy);
-  ctx.fillStyle='rgba(60,40,15,0.8)';
-  ctx.fillRect(0,gy,CW,2);
+  // 背景由bg-far和bg-mid canvas處理，無需額外地面
 }
 
 // ══════════════════════════════
@@ -1023,9 +1027,10 @@ function onHitResolved(isOk){
 function showLevelUp(){
   if(over)return;
   const u=getUpgrade(bossesDefeated);
+  const prev=getUpgrade(bossesDefeated-1);
   const icons={hair:'🧑‍💼',yellow:'👷',vest:'🦺',fire:'🧑‍🚒',elite:'🚒'};
   document.getElementById('levelup-hero').textContent=icons[u.hat]||'🧑‍💼';
-  document.getElementById('levelup-title').textContent=u.aura>getUpgrade(bossesDefeated-1).aura?'✨ 特效解鎖！':'⬆️ LEVEL UP！';
+  document.getElementById('levelup-title').textContent=u.aura>prev.aura?'✨ 特效解鎖！':'⬆️ LEVEL UP！';
   document.getElementById('levelup-text').textContent=u.notice;
   const b=document.getElementById('levelup-banner');
   b.classList.add('show');
@@ -1247,7 +1252,7 @@ function restoreGame(s){
   combo=s.combo||0;maxCombo=s.maxCombo||0;roundOk=s.roundOk||0;roundFail=s.roundFail||0;roundCount=s.roundCount||0;
   stageNum=s.stageNum||1;bossesDefeated=s.bossesDefeated||0;
   seenIds=new Set(s.seenIds||[]);qAttempts=s.qAttempts||{};qIdx=s.qIdx||0;
-  document.getElementById('hud-name').textContent=USER;
+  setHudName(USER);
   document.getElementById('game').classList.add('in');
   const m=Math.floor(remain/60),sec=remain%60;
   document.getElementById('tv').textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
