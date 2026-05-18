@@ -785,7 +785,10 @@ const ENCS={5:'已進行5分鐘！繼續冒險！🔥',10:'過半了！防災技
     bg.appendChild(p);
   }
   const ni=document.getElementById('ni'),sb=document.getElementById('sb');
-  ni.addEventListener('focus',()=>BGM.intro(),{once:true}); // 第一次點擊輸入框就播開頭音樂
+  // 第一次觸碰/點擊畫面任意處就播開頭音樂（瀏覽器最早允許的時機）
+  const _playIntro=()=>BGM.intro();
+  document.addEventListener('touchstart',_playIntro,{once:true,passive:true});
+  document.addEventListener('click',_playIntro,{once:true});
   ni.addEventListener('input',()=>{sb.disabled=ni.value.trim().length<1});
   ni.addEventListener('keydown',e=>{if(e.key==='Enter'&&ni.value.trim())startGame()});
   const save=loadSave();
