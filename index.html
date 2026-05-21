@@ -418,9 +418,16 @@ function fetchSheetsQuestions(){
         // Sheets 回傳格式：{id,text,opts:[4],ans(0-indexed),exp,bloom,cat}
         return d.questions;
       }
-      return null;
+      // 判斷具體失敗原因，方便除錯
+      if(d.status==='ok'&&d.totalRecords!==undefined){
+        throw new Error('SCRIPT_NOT_REDEPLOYED');  // 舊版 script 只回傳 totalRecords
+      }
+      if(d.status==='ok'&&Array.isArray(d.questions)&&d.questions.length===0){
+        throw new Error('SHEET_EMPTY');             // 題庫分頁存在但沒有資料
+      }
+      throw new Error(d.message||'UNKNOWN');
     })
-    .catch(()=>null);
+    .catch(e=>{ throw e; });
 }
 const LS_KEY='fire_drill_v15_save';
 
@@ -835,7 +842,7 @@ function setHudName(name){
   // 序號格子現在是 flex:1（約 100px+），可以容納更多字
   el.style.fontSize=name.length<=5?'18px':name.length<=8?'13px':'9px';
 }
-function _setTutLoad(state){
+function _setTutLoad(state, errMsg){
   // state: 'loading' | 'ok' | 'error'
   const spinner=document.getElementById('tut-spinner');
   const msg=document.getElementById('tut-load-msg');
@@ -851,7 +858,7 @@ function _setTutLoad(state){
     retry.style.display='none';btn.disabled=false;
   } else {
     spinner.style.display='none';
-    msg.textContent='❌ 題庫載入失敗，請確認網路後重試';msg.className='err';
+    msg.textContent='❌ '+(errMsg||'題庫載入失敗，請確認網路後重試');msg.className='err';
     retry.style.display='';btn.disabled=true;
   }
 }
@@ -865,9 +872,16 @@ async function _doLoadQuestions(){
     if(sheetsQs&&sheetsQs.length>0){
       _qs=sheetsQs;_setTutLoad('ok');
     } else {
-      _setTutLoad('error');
+      _setTutLoad('error','題庫為空，請確認 Sheets「題庫」分頁有資料');
     }
-  }catch(e){_setTutLoad('error');}
+  }catch(e){
+    const msgs={
+      'SCRIPT_NOT_REDEPLOYED':'Apps Script 尚未重新部署，請部署後重試',
+      'SHEET_EMPTY':'Sheets「題庫」分頁沒有資料，請填入題目',
+      'timeout':'連線逾時，請確認網路後重試',
+    };
+    _setTutLoad('error', msgs[e.message]||'題庫載入失敗，請確認網路後重試');
+  }
 }
 function retryLoadQuestions(){_doLoadQuestions();}
 
