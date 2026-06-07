@@ -273,7 +273,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
   <div class="fp-bg" id="fpbg"></div>
   <div class="lcard">
     <div class="lemblem">🔥</div>
-    <div><div class="ltitle ltitle-org">花蓮縣衛生局</div><div class="ltitle ltitle-game">防災學習系統</div></div>
+    <div><div class="ltitle ltitle-game">防災學習系統</div></div>
     <div class="ldiv"></div>
     <div><label class="llabel" for="ni">請輸入序號</label><input id="ni" class="linput" type="text" placeholder="例：001" maxlength="20" autocomplete="off"></div>
     <button class="lbtn" id="sb" disabled onclick="startGame()">準備學習 →</button>
@@ -396,6 +396,7 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
       <div class="est"><div class="est-l">最高連擊</div><div class="est-v" id="emaxcombo">0</div></div>
     </div>
     <div class="emsg" id="emsg"></div>
+    <button class="re-btn primary" onclick="location.reload()" style="margin-top:4px">🔄 返回登入畫面</button>
   </div>
 </div>
 
@@ -803,6 +804,7 @@ function stopHeroAnim(){
 let USER='', SESSION='S'+Date.now().toString(36).toUpperCase();
 let hp=MAX_HP, deaths=0, isDead=false, deathTimer=null;
 let _qs=QS; // 動態題庫（_doLoadQuestions 成功後替換）
+let _pendingDeath=false; // 答錯致命一擊：解析看完後才觸發死亡
 let qPool=[..._qs], qIdx=0, currentQ=null;
 let qStart=0, qSec=0, qTmr=null, locked=false;
 let totalAns=0, totalOk=0, seenIds=new Set(), qAttempts={};
@@ -1273,7 +1275,16 @@ function onHitResolved(isOk){
       };
     }
   } else {
-    if(isBoss){
+    if(_pendingDeath){
+      // 致命答錯：解析看完後才觸發死亡（boss 不死，一般怪消失）
+      if(!isBoss){MON.state='dead';MON.timer=20;}
+      btnText='📖 看完了（血量歸零，繼續）→';
+      callback=()=>{
+        _pendingDeath=false;
+        if(over)return;
+        triggerDeath();
+      };
+    } else if(isBoss){
       btnText='📖 看完了，繼續挑戰 Boss →';
       callback=()=>{
         if(isDead||over)return;
@@ -1371,13 +1382,13 @@ function handleAns(chosen){
   const isBossKill = isOk && isBoss && bossHp <= 1; // 最後一擊：跳過 correct，只播 bossDown
   if(isOk && !isBossKill) SFX.correct(); else if(!isOk) SFX.wrong();
   if(!isOk)loseHP();
+  if(!isOk&&hp<=0)_pendingDeath=true; // 血歸零：標記致命，解析看完後才死
   if(isOk){totalOk++;combo++;if(combo>maxCombo)maxCombo=combo;roundOk++;}
   else{combo=0;roundFail++;}
   totalAns++;totalAnsCount++;
   updateRate();updateAnsHUD();
   const att=qAttempts[q.id]||1;
   if(SHEETS_URL)sendData({Timestamp:new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei'}),UserName:USER,SessionID:SESSION,QuestionID:q.id,BloomLevel:q.bloom,QuestionCategory:q.cat,ResponseTime_ms:ms,IsCorrect:isOk,ChosenOption:['A','B','C','D'][chosen],FirstAttemptCorrect:(att===1&&isOk),AttemptNum:att,RoomName:'stage_'+stageNum,HPAtAnswer:hpB,DeathCount:deaths,TotalPlayTime:GAME_SECS-remain});
-  if(isDead)return;
   document.querySelectorAll('.opt').forEach((b,i)=>{if(i===q.ans)b.classList.add('ok');else if(i===chosen&&!isOk)b.classList.add('no');b.disabled=true;});
   let expText=' 正確答案：'+['A','B','C','D'][q.ans]+'。'+q.opts[q.ans];
   if(q.exp)expText+='<span class="q-exp">'+q.exp+'</span>';
@@ -1410,7 +1421,7 @@ function loseHP(){
   if(isDead)return;hp=Math.max(0,hp-1);renderHP();
   SFX.hit();
   const bw=document.getElementById('battle-wrap');bw.style.animation='none';void bw.offsetWidth;bw.style.animation='shake .3s ease-out';
-  if(hp<=0)triggerDeath();
+  // 不在這裡直接 triggerDeath：先讓解析面板顯示，_pendingDeath 由 handleAns 設定
 }
 function triggerDeath(){
   isDead=true;deaths++;locked=true;
@@ -1421,7 +1432,7 @@ function triggerDeath(){
   deathTimer=setInterval(()=>{cnt--;document.getElementById('death-countdown').textContent=Math.max(0,cnt);if(cnt<=0){clearInterval(deathTimer);deathTimer=null;respawn();}},1000);
 }
 function respawn(){
-  hp=MAX_HP;isDead=false;locked=false;
+  hp=MAX_HP;isDead=false;locked=false;_pendingDeath=false;
   document.getElementById('death-overlay').classList.remove('show');
   renderHP();MON.visible=false;
   bgScrolling=true;
